@@ -50,6 +50,7 @@ def makegraph(input, output, plot=False):
 	# upon hitting another keypoint, queue it up to visit after the current kp
 	# is exhausted.
 	for start, keyps in zip(starts, keyp_sets):
+		print "new component"
 		work_queue = [start]
 		visited = set()
 		while len(work_queue) > 0:
@@ -63,14 +64,13 @@ def makegraph(input, output, plot=False):
 				pt = (ly, lx)
 				last = curr
 				seg = cc[ly, lx] - 1
-				if seg > 0 and pt not in visited:
+				if seg >= 0 and pt not in visited:
 					while pt not in keyps:
 						search_pts = get_nhood_pts(pt[1], pt[0])
 						visited.add(pt)
-						# print pt
 
 						for (sy, sx) in search_pts:
-							if (cc[sy, sx] - 1) > 0 and (sy, sx) not in visited and (sy, sx) != last:
+							if (cc[sy, sx] - 1) >= 0 and (sy, sx) not in visited and (sy, sx) != last:
 								last = pt
 								pt = (sy, sx)
 								break
