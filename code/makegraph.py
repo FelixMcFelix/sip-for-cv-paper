@@ -1,4 +1,5 @@
 import argparse
+import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 import skimage.color as color
@@ -6,9 +7,7 @@ import skimage.data as data
 import skimage.filters as filters
 import skimage.morphology as morph
 
-import matplotlib.pyplot as plt
-
-def main(input, output, plot):
+def makegraph(input, output, plot=False):
 	##
 	# Step 1: read input image
 	##
@@ -31,15 +30,104 @@ def main(input, output, plot):
 	# Step 4: connected component analysis
 	##
 	cc = morph.label(skel)
-	n_classes = np.max(cc)
 	show(plot, cc)
 
 	##
 	# Step 5: endpoints, intersections, keypoints
 	##
-	endpoint_sets = [[] for i in xrange(n_classes)]
-	inters = []
+	[endpoints, inters] = initial_keypoints(cc, skel)
+	starts = find_starts(cc, endpoints, inters)
+	keyp_sets = [merge_pts(endpoints[i], inters[i], starts[i]) for i in xrange(len(starts))]
 
+	# print endpoints, inters, starts
+	print starts, keyp_sets
+
+	##
+	# Step 6: Line/Path detection
+	##
+	# walk graph to find all paths.
+	# from start point, check all values in 3x3 nhood for next place to go.
+	# upon hitting another keypoint, queue it up to visit after the current kp
+	# is exhausted.
+	for start, keyps in zip(starts, keyp_sets):
+		work_queue = [start]
+		visited = set()
+		while len(work_queue) > 0:
+			curr = work_queue.pop(0)
+			print "took", curr, "now", work_queue
+			(y, x) = curr
+
+			local_pts = get_nhood_pts(x, y)
+
+			for direction, (ly, lx) in enumerate(local_pts):
+				pt = (ly, lx)
+				last = curr
+				seg = cc[ly, lx] - 1
+				if seg > 0 and pt not in visited:
+					while pt not in keyps:
+						search_pts = get_nhood_pts(pt[1], pt[0])
+						visited.add(pt)
+						# print pt
+
+						for (sy, sx) in search_pts:
+							if (cc[sy, sx] - 1) > 0 and (sy, sx) not in visited and (sy, sx) != last:
+								last = pt
+								pt = (sy, sx)
+								break
+
+					# path completed now.
+					if pt not in work_queue:
+						work_queue.append(pt)
+
+					print "path from", curr, "to", pt, ": dir", direction
+
+			visited.add(curr)
+
+
+	##
+	# Step 7: North and Component connection
+	##
+
+def merge_pts(end, inter, start):
+	pts = set()
+	if len(end) == 0 and len(inter) == 0:
+		pts.add(start)
+	else:
+		for el in end:
+			pts.add(el)
+		for el in inter:
+			pts.add(el)
+	return pts
+
+def get_nhood(image, x, y):
+	nhood = np.zeros((3,3), dtype=np.int8)
+
+	for (ny, r) in enumerate(nhood):
+		for (nx, v) in enumerate(r):
+			im_x = x + nx - 1
+			im_y = y + ny - 1
+			nhood[ny, nx] = fetch(image, im_x, im_y, val=0)
+
+	return nhood
+
+def get_nhood_pts(x, y):
+	return [
+		# N, NE,
+		# E, SE,
+		# S, SW,
+		# W, NW
+		(y-1,x), (y-1,x+1),
+		(y,x+1), (y+1,x+1),
+		(y+1,x), (y+1,x-1),
+		(y,x-1), (y-1,x-1),
+	]
+
+def initial_keypoints(cc, skel):
+	n_classes = np.max(cc)
+	endpoints = nest_arr(n_classes)
+	inters    = nest_arr(n_classes)
+
+	# Find endpoints and intersections in each shape.
 	it = np.nditer(cc, flags=["multi_index"])
 	while not it.finished:
 		# Operate only on foreground
@@ -52,34 +140,53 @@ def main(input, output, plot):
 
 			# Count neighbours (non-centre)
 			degree = np.sum(nh) - 1
-			if degree > 2:
-				inters.append((y,x))
-			elif degree == 1:
-				endpoint_sets[cc[y, x]-1].append((y,x))
+			seg = cc[y, x] - 1
 
+			if degree > 2:
+				inters[seg].append((y,x))
+			elif degree == 1:
+				endpoints[seg].append((y,x))
 
 		it.iternext()
 
-	print endpoint_sets, inters
+	return [endpoints, inters]
 
-	##
-	# Step 6: Line/Path detection
-	##
+def find_starts(cc, endpoints, inters):
+	starts = []
+	n_classes = len(endpoints)
 
-	##
-	# Step 7: North and Component connection
-	##
+	# Identify the top-left pixel of each segment
+	top_lefts  = [None] * n_classes
 
-def get_nhood(image, x, y):
-	nhood = np.zeros((3,3), dtype=np.int8)
+	found = 0
+	for y in xrange(cc.shape[0]):
+		for x in xrange(cc.shape[1]):
+			if found >= n_classes:
+				break
 
-	for (ny, r) in enumerate(nhood):
-		for (nx, v) in enumerate(r):
-			im_x = x + nx - 1
-			im_y = y + ny - 1
-			nhood[ny, nx] = fetch(image, im_x, im_y, val=0)
+			seg = cc[y,x] - 1
+			if seg >= 0 and top_lefts[seg] is None:
+				top_lefts[seg] = (y,x)
+				found += 1
+		else:
+			continue
+		break
 
-	return nhood
+	# Choose best starting point for CC-driven search
+	# Prefer endpoints to intersection points to top-leftmost points
+	for (ends, cuts, top_left) in zip(endpoints, inters, top_lefts):
+		el = None
+
+		if len(ends) > 0:
+			el = ends[0]
+		elif len(cuts) > 0:
+			el = cuts[0]
+		else:
+			el = top_left
+
+		starts.append(el)
+
+	return starts
 
 def fetch(image, x, y, val=-1):
 	h, w = image.shape[:2]
@@ -96,6 +203,9 @@ def show(trigger, img, grey=True):
 			plt.imshow(img)
 		plt.show()
 
+def nest_arr(size):
+	return [[] for i in xrange(size)]
+
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="")
 	parser.add_argument("input",
@@ -108,4 +218,4 @@ if __name__ == "__main__":
 						default=False,
 						help="Show plots of intermediate steps.")
 	args = parser.parse_args()
-	main(args.input, args.output, args.plots)
+	makegraph(args.input, args.output, args.plots)
