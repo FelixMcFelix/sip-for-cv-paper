@@ -4,10 +4,26 @@ import networkx as nx
 import numpy as np
 import skimage.color as color
 import skimage.data as data
+import skimage.draw as draw
 import skimage.filters as filters
 import skimage.morphology as morph
 
-def makegraph(input, output, plot=False):
+# from networkx.drawing.nx_agraph import graphviz_layout
+from networkx.drawing.nx_pydot import write_dot
+
+LINE = 1
+CURVE = 2
+NEIGHBOUR = 3
+NORTH = 4
+
+COLOR_LINE = "red"
+COLOR_CURVE = "green"
+COLOR_NEIGHBOUR = "blue"
+COLOR_NORTH = "purple"
+
+def makegraph(input, output=None, plot=False, dotfile=None):
+	G = nx.MultiGraph()
+
 	##
 	# Step 1: read input image
 	##
@@ -40,7 +56,7 @@ def makegraph(input, output, plot=False):
 	keyp_sets = [merge_pts(endpoints[i], inters[i], starts[i]) for i in xrange(len(starts))]
 
 	# print endpoints, inters, starts
-	print starts, keyp_sets
+	# print starts, keyp_sets
 
 	##
 	# Step 6: Line/Path detection
@@ -50,12 +66,12 @@ def makegraph(input, output, plot=False):
 	# upon hitting another keypoint, queue it up to visit after the current kp
 	# is exhausted.
 	for start, keyps in zip(starts, keyp_sets):
-		print "new component"
+		# print "new component"
 		work_queue = [start]
 		visited = set()
 		while len(work_queue) > 0:
 			curr = work_queue.pop(0)
-			print "took", curr, "now", work_queue
+			# print "took", curr, "now", work_queue
 			(y, x) = curr
 
 			local_pts = get_nhood_pts(x, y)
@@ -64,10 +80,19 @@ def makegraph(input, output, plot=False):
 				pt = (ly, lx)
 				last = curr
 				seg = cc[ly, lx] - 1
+
 				if seg >= 0 and pt not in visited:
+					pathim = np.zeros_like(cc)
+					pathlen = 0
+					first = pt
+
 					while pt not in keyps:
 						search_pts = get_nhood_pts(pt[1], pt[0])
 						visited.add(pt)
+
+						# Mark the current path to perform fitting.
+						pathim[pt[0], pt[1]] = 1
+						pathlen += 1
 
 						for (sy, sx) in search_pts:
 							if (cc[sy, sx] - 1) >= 0 and (sy, sx) not in visited and (sy, sx) != last:
@@ -79,7 +104,26 @@ def makegraph(input, output, plot=False):
 					if pt not in work_queue:
 						work_queue.append(pt)
 
-					print "path from", curr, "to", pt, ": dir", direction
+					# now establish if this is a line or curve
+					lineim = np.zeros_like(cc)
+					rr, ll = draw.line(first[0], first[1], last[0], last[1])
+					lineim[rr, ll] = 1
+					len_line = np.sum(lineim)
+					in_line = np.sum(lineim & pathim)
+
+					label = LINE
+					col = COLOR_LINE
+					thres = 1.5
+					# print pathlen, len_line, in_line
+					if thres * len_line < pathlen:
+						label = CURVE
+						col = COLOR_CURVE
+
+					show(plot, pathim)
+					show(plot, lineim)
+
+					# print "path from", curr, "to", pt, ": dir", direction, "label", label
+					G.add_edge(curr, pt, weight=label, color=col)
 
 			visited.add(curr)
 
@@ -87,6 +131,68 @@ def makegraph(input, output, plot=False):
 	##
 	# Step 7: North and Component connection
 	##
+	zero = (0,0)
+	closest = None
+	for pt in G.nodes():
+		if closest is None or sqdist(zero, pt) < sqdist(zero, closest):
+			closest = pt
+	if closest is not None:
+		G.add_edge(zero, closest, weight=NORTH, color=COLOR_NORTH)
+		# print "path from", zero, "to", closest, "label", NORTH
+
+	for i, eps in enumerate(endpoints):
+		if len(eps) == 0:
+			eps = inters[i]
+			# print eps
+		if len(eps) == 0:
+			eps = [starts[i]]
+			# print eps
+
+		for ep in eps:
+			best = None
+			for j, keyps in enumerate(keyp_sets):
+				if i != j:
+					for kp in keyps:
+						if best is None or sqdist(ep, kp) < sqdist(ep, best):
+							best = kp
+			if best is not None:
+				v1 = (ep, best)
+				v2 = (best, ep)
+				edges = G.edges()
+				if not (v1 in edges or v2 in edges):
+					G.add_edge(ep, best, weight=NEIGHBOUR, color=COLOR_NEIGHBOUR)
+					# print "path from", ep, "to", best, "label", NEIGHBOUR
+
+	if dotfile is not None:
+		write_dot(G, dotfile)
+
+	node_code = {}
+	for i, node in enumerate(G.nodes()):
+		node_code[node] = i
+
+	##
+	# Step 8: Output
+	##
+	def graph_out(text):
+		if output is None:
+			print text
+		else:
+			output.write(text+"\n")
+
+	graph_out(str(len(node_code)) + " " + str(len(G.edges())))
+
+	for n1, n2, d in G.edges(data=True):
+		graph_out(
+			str(node_code[n1]) + " " +
+			str(node_code[n2]) + " " +
+			str(d["weight"])
+		)
+
+def sqdist(pt1, pt2):
+	out = 0
+	for c_0, c_1 in zip(pt1, pt2):
+		out += (c_0 - c_1) ** 2
+	return out
 
 def merge_pts(end, inter, start):
 	pts = set()
@@ -214,8 +320,14 @@ if __name__ == "__main__":
 						default=None, type=argparse.FileType("w"),
 						help="Path of graph output file. "+
 							"If not present, output to stdout.")
+	parser.add_argument("-df", "--dotfile",
+						default=None,
+						help="Path of graph dot file. "+
+							"Used with Graphviz for representation.")
 	parser.add_argument("-p", "--plots", action='store_true',
 						default=False,
 						help="Show plots of intermediate steps.")
 	args = parser.parse_args()
-	makegraph(args.input, args.output, args.plots)
+	makegraph(
+		args.input, output=args.output,
+		plot=args.plots, dotfile=args.dotfile)
