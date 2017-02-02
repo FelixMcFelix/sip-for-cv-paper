@@ -1,3 +1,4 @@
+
 import argparse
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -77,9 +78,9 @@ def makegraph(input, output=None, plot=False, dotfile=None):
 			local_pts = get_nhood_pts(x, y)
 
 			for direction, (ly, lx) in enumerate(local_pts):
-				pt = (ly, lx)
+				pt   = (ly, lx)
 				last = curr
-				seg = cc[ly, lx] - 1
+				seg  = cc[pt] - 1
 
 				if seg >= 0 and pt not in visited:
 					pathim = np.zeros_like(cc)
@@ -89,16 +90,33 @@ def makegraph(input, output=None, plot=False, dotfile=None):
 					while pt not in keyps:
 						search_pts = get_nhood_pts(pt[1], pt[0])
 						visited.add(pt)
+						# print "visited", pt
 
 						# Mark the current path to perform fitting.
 						pathim[pt[0], pt[1]] = 1
 						pathlen += 1
 
+						# Find first point, and first keypoint
+						next_nhood = None
+						next_keyp  = None
+
 						for (sy, sx) in search_pts:
-							if (cc[sy, sx] - 1) >= 0 and (sy, sx) not in visited and (sy, sx) != last:
-								last = pt
-								pt = (sy, sx)
+							if not (next_nhood is None or next_keyp is None):
 								break
+
+							if (cc[sy, sx] - 1) >= 0 and (sy, sx) not in visited and (sy, sx) != last:
+								if next_nhood is None:
+									next_nhood = (sy, sx)
+								if next_keyp is None and (sy, sx) in keyps:
+									next_keyp = (sy, sx)
+
+						# Move to next point
+						# Prefer choosing keypoints over neighbours
+						last = pt
+						if next_keyp is not None:
+							pt = next_keyp
+						else:
+							pt = next_nhood
 
 					# path completed now.
 					if pt not in work_queue:
@@ -233,6 +251,8 @@ def initial_keypoints(cc, skel):
 	endpoints = nest_arr(n_classes)
 	inters    = nest_arr(n_classes)
 
+	skel_col = color.gray2rgb(skel)
+
 	# Find endpoints and intersections in each shape.
 	it = np.nditer(cc, flags=["multi_index"])
 	while not it.finished:
@@ -243,10 +263,32 @@ def initial_keypoints(cc, skel):
 			# Take nhood from skel (since binary) -- this allows
 			# some nice tricks.
 			nh = get_nhood(skel, x, y)
+			nh_flat = get_nhood_pts(x, y)
 
 			# Count neighbours (non-centre)
-			degree = np.sum(nh) - 1
+			# degree = np.sum(nh) - 1
+			degree = 0
+			first = skel[nh_flat[0]]
+			last = 0
+			for p in nh_flat:
+				val = skel[p]
+				# increment degree on rise
+				if val > last:
+					degree += 1
+				last = val
+
+			if first == True and first == last:
+				degree -= 1
+
 			seg = cc[y, x] - 1
+
+			if degree != 2:
+				# print degree, seg, y, x
+
+				im = np.array(skel_col)
+				im[y,x] = [255,0,0]
+
+				show(True, im, grey=False)
 
 			if degree > 2:
 				inters[seg].append((y,x))
