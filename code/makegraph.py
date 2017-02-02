@@ -87,7 +87,7 @@ def makegraph(input, output=None, plot=False, dotfile=None):
 					pathlen = 0
 					first = pt
 
-					while pt not in keyps:
+					while pt not in keyps and pt is not None:
 						search_pts = get_nhood_pts(pt[1], pt[0])
 						visited.add(pt)
 						# print "visited", pt
@@ -117,6 +117,9 @@ def makegraph(input, output=None, plot=False, dotfile=None):
 							pt = next_keyp
 						else:
 							pt = next_nhood
+
+					# might have ended up in a dead end
+					if pt is None: break
 
 					# path completed now.
 					if pt not in work_queue:
@@ -288,7 +291,7 @@ def initial_keypoints(cc, skel):
 				im = np.array(skel_col)
 				im[y,x] = [255,0,0]
 
-				show(True, im, grey=False)
+				# show(True, im, grey=False)
 
 			if degree > 2:
 				inters[seg].append((y,x))

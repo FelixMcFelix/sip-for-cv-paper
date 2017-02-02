@@ -30,9 +30,10 @@ for cat in categories:
 		no_ext = filename.split(".")[0]
 		out = open(base + graphs_dir + cat + "/" + no_ext, "w+")
 
-		dot_out = dot_base + no_ext + ".dot"
+		dot_out = dot_base + no_ext + ".gv"
 		dot_img = dot_img_base + no_ext + ".png"
 
+		print "making", filename
 		m.makegraph(
 			in_path + "/" + filename, output=out,
 			dotfile=dot_out)
