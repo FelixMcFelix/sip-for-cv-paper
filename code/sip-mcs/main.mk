@@ -14,6 +14,7 @@ SOURCES := \
     lad.cc \
     dimacs.cc \
     vf.cc \
+    umg_attr.cc \
     solve_subgraph_isomorphism.cc
 
 TGT_LDLIBS := $(boost_ldlibs)

@@ -38,10 +38,20 @@ class Graph
          * snoop around inside it when doing message passing.
          */
         using AdjacencyMatrix = std::vector<std::uint8_t>;
+        using SequenceMatrix = std::vector<
+            std::pair<
+                std::uint64_t,
+                std::vector<
+                    std::pair<std::uint64_t, std::uint64_t>
+                >
+            >
+        >;
 
     private:
         unsigned _size = 0;
         AdjacencyMatrix _adjacency;
+        SequenceMatrix _sequences;
+        bool _attr_graph;
         bool _add_one_for_output;
 
         /**
@@ -75,6 +85,7 @@ class Graph
          * Add an edge from a to b (and from b to a).
          */
         auto add_edge(unsigned a, unsigned b) -> void;
+        auto add_edge(unsigned a, unsigned b, unsigned val) -> void;
 
         /**
          * Are vertices a and b adjacent?
@@ -85,6 +96,11 @@ class Graph
          * What is the degree of a given vertex?
          */
         auto degree(unsigned a) const -> unsigned;
+
+        /**
+         * Are we handling an attributed graph?
+         */
+        auto is_attr_graph() const -> bool;
 };
 
 #endif
