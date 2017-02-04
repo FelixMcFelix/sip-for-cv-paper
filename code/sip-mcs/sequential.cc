@@ -272,6 +272,8 @@ namespace
         };
 
         const Params & params;
+        const Graph & pattern;
+        const Graph & target;
         unsigned domain_size;
 
         Result result;
@@ -286,6 +288,8 @@ namespace
 
         SIP(const Params & k, const Graph & pattern, const Graph & target) :
             params(k),
+            pattern(pattern),
+            target(target),
             domain_size(target.size() + params.except),
             pattern_degrees(pattern.size()),
             target_degrees(domain_size),
@@ -642,10 +646,22 @@ namespace
                     d.values.reset(unit_domain_value);
 
                     // adjacency
-                    if (unit_domain_value < wildcard_start)
+                    if (unit_domain_value < wildcard_start) {
                         for (auto & c : adjacency_constraints)
                             if (c.first[unit_domain_v][d.v])
                                 d.values &= (c.second[unit_domain_value] | all_wildcards);
+
+                        // Now put in sequence-adjacency constraints.
+                        auto seq = target.get_seq_nhood(unit_domain_value, pattern.get_edge_seq(unit_domain_v, d.v));
+
+                        std::cout << "node " << d.v << " allow:";
+
+                        for (auto edge : seq)
+                            std::cout << edge << " ";
+
+                        std::cout << '\n';
+
+                    }
 
                     if (d.values.none())
                         return false;

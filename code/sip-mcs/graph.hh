@@ -38,14 +38,13 @@ class Graph
          * snoop around inside it when doing message passing.
          */
         using AdjacencyMatrix = std::vector<std::uint8_t>;
-        using SequenceMatrix = std::vector<
-            std::pair<
+        using Sequence = std::pair<
                 std::uint64_t,
                 std::vector<
                     std::pair<std::uint64_t, std::uint64_t>
                 >
-            >
         >;
+        using SequenceMatrix = std::vector<Sequence>;
 
     private:
         unsigned _size = 0;
@@ -86,6 +85,16 @@ class Graph
          */
         auto add_edge(unsigned a, unsigned b) -> void;
         auto add_edge(unsigned a, unsigned b, unsigned val) -> void;
+
+        /**
+         * Get the sequence descripbing the edge between two variables.
+         */
+        auto get_edge_seq(unsigned a, unsigned b) const -> const Sequence;
+
+        /**
+         * Get the nodes which are s-adjacent to a given vertex.
+         */
+        auto get_seq_nhood(unsigned a, Sequence s) const -> const std::vector<unsigned>;
 
         /**
          * Are vertices a and b adjacent?
