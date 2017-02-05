@@ -94,7 +94,7 @@ class Graph
         /**
          * Get the nodes which are s-adjacent to a given vertex.
          */
-        auto get_seq_nhood(unsigned a, Sequence s) const -> const std::vector<unsigned>;
+        auto get_seq_nhood(unsigned a, const Sequence & s) const -> const std::vector<unsigned>;
 
         /**
          * Are vertices a and b adjacent?

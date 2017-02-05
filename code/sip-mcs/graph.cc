@@ -74,11 +74,15 @@ auto Graph::get_edge_seq(unsigned a, unsigned b) const -> const Sequence
 
 auto in(const Graph::Sequence & pattern, const Graph::Sequence & target) -> bool
 {
+    // Are there enough edges full-stop?
+    if (pattern.first > target.first)
+        return false;
+
     for (
-        auto it_p  = pattern.second.begin(),
-             end_p = pattern.second.end(),
-             it_t  = target.second.begin(),
-             end_t = target.second.end();
+        auto it_p  = pattern.second.cbegin(),
+             end_p = pattern.second.cend(),
+             it_t  = target.second.cbegin(),
+             end_t = target.second.cend();
         it_p != end_p;
         it_p++, it_t++)
     {
@@ -92,7 +96,7 @@ auto in(const Graph::Sequence & pattern, const Graph::Sequence & target) -> bool
     return true;
 }
 
-auto Graph::get_seq_nhood(unsigned a, Sequence s) const -> const std::vector<unsigned>
+auto Graph::get_seq_nhood(unsigned a, const Sequence & s) const -> const std::vector<unsigned>
 {
     std::vector<unsigned> out;
 
