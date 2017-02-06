@@ -1,5 +1,6 @@
 
 import argparse
+import math
 import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
@@ -86,10 +87,12 @@ def makegraph(input, output=None, plot=False, dotfile=None):
 					pathim = np.zeros_like(cc)
 					pathlen = 0
 					first = pt
+					rest = []
 
 					while pt not in keyps and pt is not None:
 						search_pts = get_nhood_pts(pt[1], pt[0])
 						visited.add(pt)
+						rest.append(pt)
 						# print "visited", pt
 
 						# Mark the current path to perform fitting.
@@ -142,6 +145,21 @@ def makegraph(input, output=None, plot=False, dotfile=None):
 
 					show(plot, pathim)
 					show(plot, lineim)
+
+					my_d_min = 7
+					my_d_max = my_d_min + 2
+
+					goods = path_keyps(rest, d_min = my_d_min, d_max = my_d_max, a_max = math.radians(160))
+
+					# Testing
+					if plot: print goods
+					can = color.gray2rgb(np.array(pathim))
+
+					for index in goods:
+						can[rest[index]] = [1,0,0]
+
+					show(plot, can, grey=False)
+					# End testing
 
 					# print "path from", curr, "to", pt, ": dir", direction, "label", label
 					G.add_edge(curr, pt, weight=label, color=col)
@@ -356,6 +374,89 @@ def show(trigger, img, grey=True):
 
 def nest_arr(size):
 	return [[] for i in xrange(size)]
+
+def reverse_enumerate(L):
+	for index in reversed(xrange(len(L))):
+		yield index, L[index]
+
+DEFAULT_A_MAX = math.radians(150)
+def path_keyps(path, d_min=7, d_max=None, a_max=DEFAULT_A_MAX):
+	# Take a set of locations on a path, return a list of interest point indices
+	# (locations w high curvature) by the IPAN algorithm.
+	# (Chetverikov, 2003)
+	# based on https://www.lemoda.net/algorithms/high-curvature/index.html
+	if d_max is None:
+		d_max = d_min+2
+
+	d_max_2 = d_max * d_max
+	d_min_2 = d_min * d_min
+
+	cos_min = math.cos(a_max)
+
+	candidates = []
+	out = []
+
+	# First pass -- find candidates
+	for i, p in enumerate(path):
+		sharpness = None
+		cos_max = -1
+		seen_valid_up = False
+		for j, p_plus in enumerate(path[i+1:]):
+			true_j = j + i + 1
+			side_a = sqdist(path[i], path[true_j])
+
+			if seen_valid_up and side_a > d_max_2:
+				break
+			if side_a < d_min_2:
+				continue
+
+			seen_valid_up = True
+			seen_valid_down = False
+			for k, p_minus in reverse_enumerate(path[:i]):
+				side_b = sqdist(path[i], path[k])
+
+				if seen_valid_down and side_b > d_max_2:
+					break
+				if side_b < d_min_2:
+					continue
+
+				seen_valid_down = True
+				side_c = sqdist(path[k], path[true_j])
+
+				top = side_a + side_b - side_c
+				bottom = 2 * math.sqrt(side_a * side_b)
+
+				cos = top/bottom if bottom != 0.0 else -2
+
+				if cos < cos_min:
+					break
+				if cos_max < cos:
+					cos_max = cos
+					sharpness = (i, true_j, k, cos)
+
+		if sharpness is not None: candidates.append(sharpness)
+
+	# Second pass -- clean up.
+	# examine all other candidates under d_max_2 to find better maxima.
+	for (index, plus, minus, cos) in candidates:
+		beaten = False
+		for (index_v, plus_v, minus_v, cos_v) in candidates:
+			if beaten:
+				break
+			if index_v == index or sqdist(path[index],path[index_v]) > d_max_2:
+				continue
+
+			# point is worth considering (valid), do sharpness test.
+			beaten = not (cos > cos_v)
+
+		if not beaten:
+			out.append(index)
+
+	# done
+	return out
+
+
+
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="")
