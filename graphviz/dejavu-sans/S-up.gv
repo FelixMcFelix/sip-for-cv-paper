@@ -1,7 +1,11 @@
 graph "" {
+"(258, 32)";
 "(0, 0)";
 "(238, 21)";
 "(91, 158)";
-"(0, 0)" -- "(91, 158)"  [color=purple, key=0, weight=4];
-"(238, 21)" -- "(91, 158)"  [color=green, key=0, weight=2];
+"(75, 149)";
+"(258, 32)" -- "(238, 21)"  [color=red, key=0, weight=1];
+"(258, 32)" -- "(75, 149)"  [color=green, key=0, weight=2];
+"(0, 0)" -- "(75, 149)"  [color=purple, key=0, weight=4];
+"(91, 158)" -- "(75, 149)"  [color=red, key=0, weight=1];
 }

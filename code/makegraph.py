@@ -1,4 +1,3 @@
-
 import argparse
 import math
 import matplotlib.pyplot as plt
@@ -128,41 +127,49 @@ def makegraph(input, output=None, plot=False, dotfile=None):
 					if pt not in work_queue:
 						work_queue.append(pt)
 
-					# now establish if this is a line or curve
-					lineim = np.zeros_like(cc)
-					rr, ll = draw.line(first[0], first[1], last[0], last[1])
-					lineim[rr, ll] = 1
-					len_line = np.sum(lineim)
-					in_line = np.sum(lineim & pathim)
-
-					label = LINE
-					col = COLOR_LINE
-					thres = 1.5
-					# print pathlen, len_line, in_line
-					if thres * len_line < pathlen:
-						label = CURVE
-						col = COLOR_CURVE
-
-					show(plot, pathim)
-					show(plot, lineim)
-
 					my_d_min = 7
 					my_d_max = my_d_min + 2
 
-					goods = path_keyps(rest, d_min = my_d_min, d_max = my_d_max, a_max = math.radians(160))
+					goods = path_keyps(rest, d_min = my_d_min, d_max = my_d_max, a_max = math.radians(150))
+
+					history = [curr] + rest + [pt]
+					path_subdivs = [curr] + [rest[i] for i in goods] + [pt]
+
+					if plot: "working between", curr, "and", pt
+					show(plot, pathim)
+
+					# For each point and the next point along
+					for p1, p2 in zip(path_subdivs, path_subdivs[1:]):
+						# now establish if this is a line or curve
+						lineim = np.zeros_like(cc)
+						rr, ll = draw.line(p1[0], p1[1], p2[0], p2[1])
+						lineim[rr, ll] = 1
+						len_line = np.sum(lineim)
+						in_line = np.sum(lineim & pathim)
+
+						subpathlen = 1 + history.index(p2) - history.index(p1)
+
+						label = LINE
+						col = COLOR_LINE
+						thres = 1.5
+						# print pathlen, len_line, in_line
+						if thres * len_line < subpathlen:
+							label = CURVE
+							col = COLOR_CURVE
+						
+						G.add_edge(p1, p2, weight=label, color=col)
+						if plot: print "path from", p1, "to", p2, "label", label
+						show(plot, lineim)
 
 					# Testing
-					if plot: print goods
-					can = color.gray2rgb(np.array(pathim))
+					# if plot: print goods
+					# can = color.gray2rgb(np.array(pathim))
 
-					for index in goods:
-						can[rest[index]] = [1,0,0]
+					# for index in goods:
+					# 	can[rest[index]] = [1,0,0]
 
-					show(plot, can, grey=False)
+					# show(plot, can, grey=False)
 					# End testing
-
-					# print "path from", curr, "to", pt, ": dir", direction, "label", label
-					G.add_edge(curr, pt, weight=label, color=col)
 
 			visited.add(curr)
 
@@ -438,7 +445,12 @@ def path_keyps(path, d_min=7, d_max=None, a_max=DEFAULT_A_MAX):
 
 	# Second pass -- clean up.
 	# examine all other candidates under d_max_2 to find better maxima.
+	last_found = -1
+	lf_cos = -2
 	for (index, plus, minus, cos) in candidates:
+
+		## ORIGINAL PAPER ##
+		# Modified to stop equality from ruining maxima
 		beaten = False
 		for (index_v, plus_v, minus_v, cos_v) in candidates:
 			if beaten:
@@ -447,10 +459,38 @@ def path_keyps(path, d_min=7, d_max=None, a_max=DEFAULT_A_MAX):
 				continue
 
 			# point is worth considering (valid), do sharpness test.
-			beaten = not (cos > cos_v)
+			beaten = cos < cos_v or (cos == cos_v and index_v in out)
+			# if beaten: print index, "denied by", index_v
 
 		if not beaten:
 			out.append(index)
+		# out.append(index)
+
+		## INTERNET WEIRD ONE ##
+		# found = False
+		# remove_last = False
+		# src = ""
+		# if cos > cos_min:
+		# 	if last_found > 0:
+		# 		d = sqdist(path[index], path[last_found])
+		# 		if d > d_max_2:
+		# 			src = "dist constraint"
+		# 			found = True
+		# 		elif cos > lf_cos:
+		# 			src = "better cos"
+		# 			remove_last = True
+		# 			found = True
+		# 	else:
+		# 		src = "first pt"
+		# 		found = True
+
+		# if found:
+		# 	if remove_last:
+		# 		del out[-1]
+		# 	out.append(index)
+		# 	lf_cos = cos
+		# 	last_found = index
+		# 	print "marked", index, "with", src
 
 	# done
 	return out

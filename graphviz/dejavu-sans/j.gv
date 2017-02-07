@@ -1,13 +1,15 @@
 graph "" {
-"(62, 43)";
 "(126, 43)";
 "(0, 0)";
 "(334, 4)";
+"(62, 43)";
+"(327, 10)";
 "(71, 41)";
-"(62, 43)" -- "(126, 43)"  [color=blue, key=0, weight=3];
-"(62, 43)" -- "(0, 0)"  [color=purple, key=0, weight=4];
-"(62, 43)" -- "(71, 41)"  [color=red, key=0, weight=1];
-"(126, 43)" -- "(334, 4)"  [color=red, key=0, weight=1];
+"(126, 43)" -- "(62, 43)"  [color=blue, key=0, weight=3];
+"(126, 43)" -- "(327, 10)"  [color=red, key=0, weight=1];
 "(126, 43)" -- "(71, 41)"  [color=blue, key=0, weight=3];
+"(0, 0)" -- "(62, 43)"  [color=purple, key=0, weight=4];
+"(334, 4)" -- "(327, 10)"  [color=red, key=0, weight=1];
 "(334, 4)" -- "(71, 41)"  [color=blue, key=0, weight=3];
+"(62, 43)" -- "(71, 41)"  [color=red, key=0, weight=1];
 }

@@ -33,7 +33,7 @@ for cat in categories:
 		dot_out = dot_base + no_ext + ".gv"
 		dot_img = dot_img_base + no_ext + ".png"
 
-		print "making", filename
+		print "making", no_ext
 		m.makegraph(
 			in_path + "/" + filename, output=out,
 			dotfile=dot_out)

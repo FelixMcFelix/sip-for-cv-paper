@@ -1,8 +1,12 @@
 graph "" {
 "(245, 161)";
-"(0, 0)";
+"(187, 154)";
+"(261, 151)";
 "(191, 31)";
-"(245, 161)" -- "(191, 31)"  [color=red, key=0, weight=1];
-"(0, 0)" -- "(191, 31)"  [color=purple, key=0, weight=4];
-"(191, 31)" -- "(191, 31)"  [color=green, key=0, weight=2];
+"(0, 0)";
+"(245, 161)" -- "(261, 151)"  [color=red, key=0, weight=1];
+"(187, 154)" -- "(191, 31)"  [color=green, key=0, weight=2];
+"(187, 154)" -- "(191, 31)"  [color=red, key=1, weight=1];
+"(261, 151)" -- "(191, 31)"  [color=red, key=0, weight=1];
+"(191, 31)" -- "(0, 0)"  [color=purple, key=0, weight=4];
 }
