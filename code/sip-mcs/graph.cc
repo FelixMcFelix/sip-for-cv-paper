@@ -72,10 +72,10 @@ auto Graph::get_edge_seq(unsigned a, unsigned b) const -> const Sequence
     return _sequences[_position(a, b)];
 }
 
-auto in(const Graph::Sequence & pattern, const Graph::Sequence & target) -> bool
+auto in(const Graph::Sequence & pattern, const Graph::Sequence & target, const bool exact) -> bool
 {
     // Are there enough edges full-stop?
-    if (pattern.first > target.first)
+    if ((exact && pattern.first != target.first) || pattern.first > target.first)
         return false;
 
     for (
@@ -89,11 +89,44 @@ auto in(const Graph::Sequence & pattern, const Graph::Sequence & target) -> bool
         while(it_t != end_t && (*it_p).first != (*it_t).first)
             it_t++;
 
-        if(it_t == end_t || (*it_p).second > (*it_t).second)
-            return false;
+        if (exact)
+        {
+            if(it_t == end_t || (*it_p).second != (*it_t).second)
+                return false;
+        }
+        else
+        {
+            if(it_t == end_t || (*it_p).second > (*it_t).second)
+                return false;
+        }
     }
 
     return true;
+}
+
+auto overlaps(const Graph::Sequence & pattern, const Graph::Sequence & target) -> bool
+{
+    // Return true for any overlap
+    // Absolute least-stringent filtering
+    for (
+        auto it_p  = pattern.second.cbegin(),
+             end_p = pattern.second.cend(),
+             it_t  = target.second.cbegin(),
+             end_t = target.second.cend();
+        it_p != end_p;
+        it_p++)
+    {
+        // FIX ME
+        while(it_t != end_t && (*it_p).first > (*it_t).first)
+            it_t++;
+
+        if (it_t == end_t)
+            return false;
+        else if ((*it_p).first == (*it_t).first)
+            return true;
+    }
+
+    return false;
 }
 
 auto Graph::get_seq_nhood(unsigned a, const Sequence & s) const -> const std::vector<unsigned>
@@ -102,7 +135,31 @@ auto Graph::get_seq_nhood(unsigned a, const Sequence & s) const -> const std::ve
 
     unsigned i = 0;
     for (auto it = _sequences.begin() + a * _size, end = _sequences.begin() + (a+1) * _size; it != end; it++, i++)
-        if (in(s, *it))
+        if (in(s, *it, false))
+            out.push_back(i);
+
+    return out;
+}
+
+auto Graph::get_seq_nhood_exact(unsigned a, const Sequence & s) const -> const std::vector<unsigned>
+{
+    std::vector<unsigned> out;
+
+    unsigned i = 0;
+    for (auto it = _sequences.begin() + a * _size, end = _sequences.begin() + (a+1) * _size; it != end; it++, i++)
+        if (in(s, *it, true))
+            out.push_back(i);
+
+    return out;
+}
+
+auto Graph::get_seq_nhood_overlap(unsigned a, const Sequence & s) const -> const std::vector<unsigned>
+{
+    std::vector<unsigned> out;
+
+    unsigned i = 0;
+    for (auto it = _sequences.begin() + a * _size, end = _sequences.begin() + (a+1) * _size; it != end; it++, i++)
+        if (overlaps(s, *it))
             out.push_back(i);
 
     return out;

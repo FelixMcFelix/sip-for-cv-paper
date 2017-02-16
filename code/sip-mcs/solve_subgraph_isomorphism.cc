@@ -121,6 +121,7 @@ auto main(int argc, char * argv[]) -> int
             ("high-wildcards",                        "Treat wildcard vertices as having high degree")
             ("induced",                               "Induced")
             ("expensive-stats",                       "Calculate expensive stats")
+            ("edge-overlap",                          "Allow edge compatibility for any overlap in umg_attr")
             ;
 
         po::options_description all_options{ "All options" };
@@ -187,6 +188,7 @@ auto main(int argc, char * argv[]) -> int
         params.expensive_stats = options_vars.count("expensive-stats");
         params.high_wildcards = options_vars.count("high-wildcards");
         params.ilf = options_vars.count("ilf");
+        params.edge_overlap = options_vars.count("edge-overlap");
         if (options_vars.count("except"))
             params.except = options_vars["except"].as<int>();
 

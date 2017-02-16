@@ -24,6 +24,8 @@ struct Params
     bool high_wildcards = false;
     bool ilf = false;
 
+    bool edge_overlap = false;
+
     unsigned except = 0;
 };
 

@@ -652,14 +652,24 @@ namespace
                             if (c.first[unit_domain_v][d.v])
                                 d.values &= (c.second[unit_domain_value] | all_wildcards);
 
-                        // Now put in s-adjacency constraints, given that v and d are s-adjacent for some sequence s.
-                        auto seq = target.get_seq_nhood(unit_domain_value, pattern.get_edge_seq(unit_domain_v, d.v));
-                        Bitset_ label_mask(domain_size);
+                        if (pattern.is_attr_graph()){
+                            // Now put in s-adjacency constraints, given that v and d are s-adjacent for some sequence s.
+                            std::vector<unsigned> nhood;
 
-                        for (auto edge : seq)
-                            label_mask.set(edge);
+                            if (params.edge_overlap)
+                                nhood = target.get_seq_nhood_overlap(unit_domain_value, pattern.get_edge_seq(unit_domain_v, d.v));
+                            else if (params.induced)
+                                nhood = target.get_seq_nhood_exact(unit_domain_value, pattern.get_edge_seq(unit_domain_v, d.v));
+                            else
+                                nhood = target.get_seq_nhood(unit_domain_value, pattern.get_edge_seq(unit_domain_v, d.v));
 
-                        d.values &= (label_mask | all_wildcards);
+                            Bitset_ label_mask(domain_size);
+
+                            for (auto neighbour : nhood)
+                                label_mask.set(neighbour);
+
+                            d.values &= (label_mask | all_wildcards);
+                        }
                     }
 
                     if (d.values.none())
