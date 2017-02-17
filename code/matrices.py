@@ -44,7 +44,9 @@ for font in fonts:
 		# Fill matrix with observed values
 		for p, t in ((p, t) for p in chars for t in chars):
 			with open("{}{}-{}/{}.{}".format(results_dir, font, param_name, p, t)) as f:
-				vals[back_chars[p], back_chars[t]] = int(f.readlines()[-1].strip().split("SIZE=")[1])
+				print param_name, p, t
+				interm = f.readlines()[-1].strip().split("SIZE=")
+				vals[back_chars[p], back_chars[t]] = int(interm[1]) if len(interm) > 1 else 0
 
 		# normalisation factors
 		for i, size_p in enumerate(sizes):

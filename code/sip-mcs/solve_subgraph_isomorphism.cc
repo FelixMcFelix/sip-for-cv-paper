@@ -122,6 +122,7 @@ auto main(int argc, char * argv[]) -> int
             ("induced",                               "Induced")
             ("expensive-stats",                       "Calculate expensive stats")
             ("edge-overlap",                          "Allow edge compatibility for any overlap in umg_attr")
+            ("disable-attr-filtering",                "Disable filtering from umg_attr labels")
             ;
 
         po::options_description all_options{ "All options" };
@@ -189,6 +190,7 @@ auto main(int argc, char * argv[]) -> int
         params.high_wildcards = options_vars.count("high-wildcards");
         params.ilf = options_vars.count("ilf");
         params.edge_overlap = options_vars.count("edge-overlap");
+        params.disable_attr_filter = options_vars.count("disable-attr-filtering");
         if (options_vars.count("except"))
             params.except = options_vars["except"].as<int>();
 

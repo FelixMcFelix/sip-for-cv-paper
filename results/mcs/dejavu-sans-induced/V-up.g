@@ -1,4 +1,4 @@
 true 43
 (0 -> -1) (1 -> 2) (2 -> -1) (3 -> 4) (4 -> -1) (5 -> 0) (6 -> 1) (7 -> -1) (8 -> 5) 
-48 0 0 1 0 0
-EXCEPT=4 FAIL0=0 FAIL1=0 FAIL2=1 FAIL3=0 SIZE=5 
+6 0 0 0 0 0
+EXCEPT=4 FAIL0=0 FAIL1=0 FAIL2=0 FAIL3=0 SIZE=5 

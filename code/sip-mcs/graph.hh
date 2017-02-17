@@ -114,4 +114,7 @@ class Graph
         auto is_attr_graph() const -> bool;
 };
 
+auto in(const Graph::Sequence & pattern, const Graph::Sequence & target, const bool exact) -> bool;
+auto overlaps(const Graph::Sequence & pattern, const Graph::Sequence & target) -> bool;
+
 #endif

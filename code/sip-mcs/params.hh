@@ -25,6 +25,7 @@ struct Params
     bool ilf = false;
 
     bool edge_overlap = false;
+    bool disable_attr_filter = false;
 
     unsigned except = 0;
 };

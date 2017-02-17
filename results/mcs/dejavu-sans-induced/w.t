@@ -1,4 +1,4 @@
 true 217
 (0 -> -1) (1 -> 2) (2 -> -1) (3 -> -1) (4 -> 1) (5 -> 0) (6 -> -1) (7 -> -1) (8 -> -1) (9 -> 5) (10 -> -1) (11 -> 4) (12 -> 6) (13 -> -1) 
-16 0 0 0 0 0 0 0 2 3
-EXCEPT=8 FAIL0=0 FAIL1=0 FAIL2=0 FAIL3=0 FAIL4=0 FAIL5=0 FAIL6=0 FAIL7=2 SIZE=6 
+29 0 0 0 0 0 0 0 3 1
+EXCEPT=8 FAIL0=0 FAIL1=0 FAIL2=0 FAIL3=0 FAIL4=0 FAIL5=0 FAIL6=0 FAIL7=3 SIZE=6 

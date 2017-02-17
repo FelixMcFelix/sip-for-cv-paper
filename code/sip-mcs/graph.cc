@@ -2,6 +2,7 @@
 
 #include "graph.hh"
 #include <algorithm>
+#include <iostream>
 
 GraphFileError::GraphFileError(const std::string & filename, const std::string & message) throw () :
     _what("Error reading graph file '" + filename + "': " + message)
@@ -72,10 +73,19 @@ auto Graph::get_edge_seq(unsigned a, unsigned b) const -> const Sequence
     return _sequences[_position(a, b)];
 }
 
+auto view(const Graph::Sequence & input) -> void
+{
+    std::cout << "Seq, size " << input.first << ":";
+    for (auto el : input.second)
+        std::cout << " (" << el.first << "," << el.second << ")";
+    std::cout << "\n";
+}
+
 auto in(const Graph::Sequence & pattern, const Graph::Sequence & target, const bool exact) -> bool
 {
     // Are there enough edges full-stop?
-    if ((exact && pattern.first != target.first) || pattern.first > target.first)
+    // Are these two nodes ACTUALLY adjacent?
+    if ((exact && pattern.first != target.first) || pattern.first == 0 || pattern.first > target.first)
         return false;
 
     for (
@@ -113,11 +123,10 @@ auto overlaps(const Graph::Sequence & pattern, const Graph::Sequence & target) -
              end_p = pattern.second.cend(),
              it_t  = target.second.cbegin(),
              end_t = target.second.cend();
-        it_p != end_p;
+        it_p != end_p && it_t != end_t;
         it_p++)
     {
-        // FIX ME
-        while(it_t != end_t && (*it_p).first > (*it_t).first)
+        while(it_t != end_t && (*it_p).first < (*it_t).first)
             it_t++;
 
         if (it_t == end_t)
@@ -125,6 +134,18 @@ auto overlaps(const Graph::Sequence & pattern, const Graph::Sequence & target) -
         else if ((*it_p).first == (*it_t).first)
             return true;
     }
+
+    // std::cout << "overlap?\n";
+    // view(pattern);
+    // view(target);
+
+    // for (auto el1 : pattern.second){
+    //     for (auto el2 : target.second){
+    //         // std::cout << "els " << el1.first << " " << el1.second << ", " << el2.first << " " << el2.second << "\n";
+    //         if (el1.first == el2.first)
+    //             return true;
+    //     }
+    // }
 
     return false;
 }

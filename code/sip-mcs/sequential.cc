@@ -412,6 +412,19 @@ namespace
                                 break;
                         }
 
+                        // check loops w attrs
+                        if (ok && !params.disable_attr_filter && pattern.is_attr_graph() && pattern.adjacent(p, p)){
+                            auto seq_p = pattern.get_edge_seq(p, p);
+                            auto seq_t = target.get_edge_seq(t, t);
+
+                            if (params.edge_overlap)
+                                ok = overlaps(seq_p, seq_t);
+                            else if (params.induced)
+                                ok = in(seq_p, seq_t, true);
+                            else
+                                ok = in(seq_p, seq_t, false);
+                        }
+
                         // neighbourhood degree sequences
                         if (params.nds) {
                             for (unsigned cn = 0 ; cn < 1 && ok ; ++cn) {
@@ -652,19 +665,19 @@ namespace
                             if (c.first[unit_domain_v][d.v])
                                 d.values &= (c.second[unit_domain_value] | all_wildcards);
 
-                        if (pattern.is_attr_graph()){
-                            // Now put in s-adjacency constraints, given that v and d are s-adjacent for some sequence s.
+                        // Now put in s-adjacency constraints, given that v and d are s-adjacent for some sequence s.
+                        if (!params.disable_attr_filter && pattern.is_attr_graph() && pattern.adjacent(unit_domain_v, d.v)){
+                            auto seq = pattern.get_edge_seq(unit_domain_v, d.v);
                             std::vector<unsigned> nhood;
 
                             if (params.edge_overlap)
-                                nhood = target.get_seq_nhood_overlap(unit_domain_value, pattern.get_edge_seq(unit_domain_v, d.v));
+                                nhood = target.get_seq_nhood_overlap(unit_domain_value, seq);
                             else if (params.induced)
-                                nhood = target.get_seq_nhood_exact(unit_domain_value, pattern.get_edge_seq(unit_domain_v, d.v));
+                                nhood = target.get_seq_nhood_exact(unit_domain_value, seq);
                             else
-                                nhood = target.get_seq_nhood(unit_domain_value, pattern.get_edge_seq(unit_domain_v, d.v));
+                                nhood = target.get_seq_nhood(unit_domain_value, seq);
 
                             Bitset_ label_mask(domain_size);
-
                             for (auto neighbour : nhood)
                                 label_mask.set(neighbour);
 
