@@ -1,0 +1,149 @@
+%% example.tex
+%% Jeremy Singer
+%% 16 Oct 12
+
+\documentclass{mpaper}
+
+\usepackage[backend=bibtex,maxnames=3,maxbibnames=99,style=trad-abbrv]{biblatex}
+\addbibresource{mprop.bib}
+
+% Addendum formatting (thanks, http://tex.stackexchange.com/questions/339471/indented-addendums-using-biblatex-sourcemaps)
+% Also remove doi, url since unnecessary
+\DeclareFieldFormat{addendum}{}
+\DeclareFieldFormat{url}{}
+\DeclareFieldFormat{doi}{}
+
+\usepackage{xpatch}
+
+\xpatchbibmacro{name:andothers}{%
+	\bibstring{andothers}%
+}{%
+	\bibstring[\emph]{andothers}%
+}{}{}
+
+\begin{document}
+
+\title{Graph Models and Subgraph Isomorphism for Character Analysis}
+\author{Kyle A. Simpson}
+\matricnum{2029567}
+
+\maketitle
+%====================================================
+%====================================================
+\begin{abstract}
+%According to Simon Peyton Jones, an abstract should address
+%four key questions. First, what is the problem that this
+%paper tackles? Second, why is this an interesting problem?
+%Third, what is the solution this paper proposes?
+%Finally, why is the proposed solution a good one?
+Lorem ipsum dolor sit amet
+\end{abstract}
+%====================================================
+%====================================================
+
+%====================================================
+\section{Introduction}
+\label{sec:introduction}
+%====================================================
+
+?? Adapt proposal introduction
+
+?? Adversarial examples in ML \cite{AdversarialML}
+
+?? part of idea---need effective models to know that our similarity algorithms are a good fit?
+
+
+This paper's main contributions are:
+\begin{itemize}
+\item Demonstration of shortcomings of existing image graph work (Section ??)
+\end{itemize}
+
+%====================================================
+\section{Graph Search and Similarity}
+\label{sec:graph-search}
+%====================================================
+
+?? Graph definitions etc
+
+?? SIP \cite{SIP-VF2, SIP-LAD, SIP-SND, SIP-Glasgow}, Regin filtering \cite{AllDiff}, Complexity \cite{Cook-SAT-SIP-NP,Computers-and-Intractibility}
+
+?? MCS \cite{Between-MCS-SIP}, James+Ciaran+Pat's new paper too [??Cite]
+
+%====================================================
+\section{On Existing Image Graph Models}
+\label{sec:image-weakness}
+%====================================================
+
+\citeauthor{Plane-Graphs-From-Images} \cite{Plane-Graphs-From-Images}
+
+?? Use existing work from proposal as basis
+
+%====================================================
+\section{The Algorithm}
+\label{sec:algorithm}
+%====================================================
+
+?? Graph gen algo
+
+?? High-level diagram, walkthrough
+
+?? This guy's path splitting algo \cite{PathCurvature}
+
+%====================================================
+\section{Modifications to k-Down}
+\label{sec:k-down-mods}
+%====================================================
+
+?? Discuss/introduce $s$-adjacency, and 3 levels of filtering
+
+?? Keep standard filtering from supplemental graphs (adjacency matrix operates on at least 1-adjacency, exact matches are provided)
+
+?? Could use path-based inference for new supplemental graphs, but probably way too much work for graphs of this order (i.e.\ very small)
+
+?? Filtering at top of search---modify loop constraints, node label matching
+
+?? Per-node of search, look at $s$-neighbourhoods
+
+%====================================================
+\section{Empirical Evaluation}
+\label{sec:evaluation}
+%====================================================
+
+?? Heatmaps per font -- examine size? font v font?
+
+?? Matching effectiveness statistics
+
+?? What else?
+
+%====================================================
+\section{Related Work}
+\label{sec:related}
+%====================================================
+
+?? Handwriting analysis w/ kNN \cite{Graphs-Handwriting}
+
+%====================================================
+\section{Further Applications}
+\label{sec:applications}
+%====================================================
+
+?? Give example of graph of two circuit diagrams here
+
+?? Examine graph order---too big? Can we run SIP on it? How are the results?
+
+%====================================================
+\section{Conclusions}
+\label{sec:conclusion}
+%====================================================
+
+?? Draw conclusions here---sum up paper.
+
+?? Future work?
+
+\noindent
+{\bf Acknowledgments.}
+This is optional; it is a location for you to thank people ?? TODO
+
+\printbibliography
+
+\end{document}

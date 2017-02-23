@@ -2,7 +2,14 @@ import os
 import string
 
 # Configure me!
-fonts     = ["dejavu-sans"]
+fontpaths = [
+	"DejaVuSans.ttf",
+	"Alegreya.ttf"
+]
+fonts     = [
+	"dejavu-sans",
+	"alegreya"
+]
 params    = [
 	("",               "edgecountinc"),
 	("--edge-overlap", "edgecountdec"),
@@ -11,9 +18,12 @@ params    = [
 timelimit = 300
 num_cores = 8
 
+img_dir     = "../imgs/"
 graph_dir   = "../graphs/"
+gviz_dir    = "../graphviz/"
 results_dir = "../results/mcs/"
 tables_dir  = "../tables/"
+font_dir    = "../resources/"
 prog_name   = "sip-mcs/solve_subgraph_isomorphism"
 job_folder  = "jobs/mcs/"
 

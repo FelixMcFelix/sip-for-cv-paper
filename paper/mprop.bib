@@ -1,0 +1,911 @@
+% Subgraph/Graph papers
+
+@article{SIP-VF2,
+  author    = {Luigi P. Cordella and
+               Pasquale Foggia and
+               Carlo Sansone and
+               Mario Vento},
+  title     = {A (Sub)Graph Isomorphism Algorithm for Matching Large Graphs},
+  journal   = {{IEEE} Trans. Pattern Anal. Mach. Intell.},
+  volume    = {26},
+  number    = {10},
+  pages     = {1367--1372},
+  year      = {2004},
+  url       = {http://dx.doi.org/10.1109/TPAMI.2004.75},
+  doi       = {10.1109/TPAMI.2004.75},
+  timestamp = {Sat, 12 Mar 2016 09:04:02 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/journals/pami/CordellaFSV04},
+  bibsource = {dblp computer science bibliography, http://dblp.org},
+  addendum = {
+  \citeauthor{SIP-VF2} introduce the VF2 algorithm for solving the subgraph isomorphism problem on sizable instances, which is stated to be more space-efficient than their prior VF algorithm.
+  In particular, VF is augmented with more memory-efficient data structures for building candidate matches and evaluating state feasibility.
+  The algorithm is compared against Ullmann's algorithm and the Nauty algorithm in runtime and complexity---it is found to generally outperform its contemporaries in graph isomorphism, except on random graphs with low connectivity.
+  }
+}
+
+@article{SIP-LAD,
+  author    = {Christine Solnon},
+  title     = {AllDifferent-based filtering for subgraph isomorphism},
+  journal   = {Artif. Intell.},
+  volume    = {174},
+  number    = {12-13},
+  pages     = {850--864},
+  year      = {2010},
+  url       = {http://dx.doi.org/10.1016/j.artint.2010.05.002},
+  doi       = {10.1016/j.artint.2010.05.002},
+  timestamp = {Thu, 09 Sep 2010 10:40:31 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/journals/ai/Solnon10},
+  bibsource = {dblp computer science bibliography, http://dblp.org},
+  addendum = {
+  The work proposes a forward-checking algorithm (\emph{LAD}) for solving the subgraph isomorphism problem, based on a strong filtering procedure to prune branches of the search tree which admit no solution.
+  This filtering technique makes use of \citeauthor{AllDiff}'s \emph{All-Different} general arc-consistent constraint propagator by posting a new AllDiff constraint on a node's neighbours after assignment.
+  In comparison with VF2, ILF and Abscon, it generally outperforms its rivals on larger instances but is beaten on smaller instances due to the time complexity of filtering.
+  }
+}
+
+@inproceedings{SIP-SND,
+  author    = {Gilles Audemard and
+               Christophe Lecoutre and
+               Mouny Samy Modeliar and
+               Gilles Goncalves and
+               Daniel Cosmin Porumbel},
+  title     = {Scoring-Based Neighborhood Dominance for the Subgraph Isomorphism
+               Problem},
+  booktitle = {Principles and Practice of Constraint Programming - 20th International
+               Conference, {CP} 2014, Lyon, France, September 8-12, 2014. Proceedings},
+  pages     = {125--141},
+  year      = {2014},
+  crossref  = {DBLP:conf/cp/2014},
+  url       = {http://dx.doi.org/10.1007/978-3-319-10428-7_12},
+  doi       = {10.1007/978-3-319-10428-7_12},
+  timestamp = {Fri, 09 Oct 2015 10:03:30 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/cp/AudemardLMGP14},
+  bibsource = {dblp computer science bibliography, http://dblp.org},
+  addendum = {
+  A very strong filtering technique, \emph{SND}, designed for use in forward-checking solvers for the subgraph isomorphism problem is discussed, introduced as a generalisation of LAD filtering.
+  \citeauthor{SIP-SND} establish a form of implied constraint: for arbitrary neighbourhood and scoring functions, after assignment a variable's neighbourhood must achieve a score no larger than the neighbourhood of its assigned value in the mapping.
+  A specialisation of their framework is discussed wherein pattern vertices within a distance $k$ of one another must be mapped to target vertices at most a distance $k$ from one another---this weakened variant achieves a filtering level close to singleton arc-consistency, but is often slower in practice than LAD.
+  }
+}
+
+@proceedings{DBLP:conf/cp/2014,
+  editor    = {Barry O'Sullivan},
+  title     = {Principles and Practice of Constraint Programming - 20th International
+               Conference, {CP} 2014, Lyon, France, September 8-12, 2014. Proceedings},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {8656},
+  publisher = {Springer},
+  year      = {2014},
+  url       = {http://dx.doi.org/10.1007/978-3-319-10428-7},
+  doi       = {10.1007/978-3-319-10428-7},
+  isbn      = {978-3-319-10427-0},
+  timestamp = {Wed, 10 Sep 2014 14:25:52 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/cp/2014},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@inproceedings{SIP-Glasgow,
+  author    = {Ciaran McCreesh and
+               Patrick Prosser},
+  title     = {A Parallel, Backjumping Subgraph Isomorphism Algorithm Using Supplemental
+               Graphs},
+  booktitle = {Principles and Practice of Constraint Programming - 21st International
+               Conference, {CP} 2015, Cork, Ireland, August 31 - September 4, 2015,
+               Proceedings},
+  pages     = {295--312},
+  year      = {2015},
+  crossref  = {DBLP:conf/cp/2015},
+  url       = {http://dx.doi.org/10.1007/978-3-319-23219-5_21},
+  doi       = {10.1007/978-3-319-23219-5_21},
+  timestamp = {Thu, 13 Aug 2015 15:29:28 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/cp/McCreeshP15},
+  bibsource = {dblp computer science bibliography, http://dblp.org},
+  addendum  = {
+  \citeauthor{SIP-Glasgow} present an efficient algorithm for the subgraph isomorphism problem designed to exploit bit- and thread-parallelism to gain performance on multicore architectures.
+  Their work combines graph preprocessing with a corollary of SND's principle to obtain implied constraints; the authors observe that an isomorphism between certain transformations of the pattern and target graphs $P$ and $T$ is itself an isomorphism between $P$ and $T$.
+  Cheaper filtering alternatives which are ``good enough'' are used throughout to minimise the time spent evaluating each decision.
+  Their algorithm is shown to outperform existing subgraph isomorphism solvers except on smaller instances where VF2 remains the most effective due to the substantial initialisation time required to construct any supplemental graphs.
+  }
+}
+
+@proceedings{DBLP:conf/cp/2015,
+  editor    = {Gilles Pesant},
+  title     = {Principles and Practice of Constraint Programming - 21st International
+               Conference, {CP} 2015, Cork, Ireland, August 31 - September 4, 2015,
+               Proceedings},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {9255},
+  publisher = {Springer},
+  year      = {2015},
+  url       = {http://dx.doi.org/10.1007/978-3-319-23219-5},
+  doi       = {10.1007/978-3-319-23219-5},
+  isbn      = {978-3-319-23218-8},
+  timestamp = {Thu, 13 Aug 2015 15:25:08 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/cp/2015},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@inproceedings{TSIP-Short,
+  author    = {Ursula Redmond and
+               P{\'{a}}draig Cunningham},
+  title     = {Temporal subgraph isomorphism},
+  booktitle = {Advances in Social Networks Analysis and Mining 2013, {ASONAM} '13,
+               Niagara, ON, Canada - August 25 - 29, 2013},
+  pages     = {1451--1452},
+  year      = {2013},
+  crossref  = {DBLP:conf/asunam/2013},
+  url       = {http://doi.acm.org/10.1145/2492517.2492586},
+  doi       = {10.1145/2492517.2492586},
+  timestamp = {Mon, 25 Jan 2016 14:05:23 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/asunam/RedmondC13},
+  bibsource = {dblp computer science bibliography, http://dblp.org},
+  addendum  = {
+  \citeauthor{TSIP-Short} consider the application of the subgraph isomorphism problem to temporal networks to find patterns inside of graphs which model entities which interact at recorded times with one another.
+  They introduce the notation of \emph{time-respecting subgraphs} to capture semantically meaningful patterns within larger graphs and to provide a filtering which captures interaction patterns rather than relying strictly upon the labels.
+  Two methods of search are considered, where the above transformation is performed either after or during the VF2 algorithm---an analysis on financial data shows that the latter approach achieves better performance.
+  }
+}
+@proceedings{DBLP:conf/asunam/2013,
+  editor    = {Jon G. Rokne and
+               Christos Faloutsos},
+  title     = {Advances in Social Networks Analysis and Mining 2013, {ASONAM} '13,
+               Niagara, ON, Canada - August 25 - 29, 2013},
+  publisher = {{ACM}},
+  year      = {2013},
+  url       = {http://dl.acm.org/citation.cfm?id=2492517},
+  isbn      = {978-1-4503-2240-9},
+  timestamp = {Mon, 25 Jan 2016 14:05:23 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/asunam/2013},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@article{TSIP-Long,
+  author    = {Ursula Redmond and
+               P{\'{a}}draig Cunningham},
+  title     = {Subgraph Isomorphism in Temporal Networks},
+  journal   = {CoRR},
+  volume    = {abs/1605.02174},
+  year      = {2016},
+  url       = {http://arxiv.org/abs/1605.02174},
+  timestamp = {Wed, 01 Jun 2016 15:51:07 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/journals/corr/RedmondC16},
+  bibsource = {dblp computer science bibliography, http://dblp.org},
+  addendum  = {
+  An expansion of the ideas presented by \citeauthor{TSIP-Short} in \cite{TSIP-Short}, providing more in-depth explanations of the concepts and algorithms comprising their earlier work.
+  The paper contains an analysis on a wider array of datasets from social, communication, and musical sampling networks, as well as commentary on the most common communication patterns found within different network classes and optimal parameters for graph transformation in different fields.
+  Their performance findings from their earlier work are still found to hold on these more varied datasets.
+  }
+}
+
+@inproceedings{SIP-Hard-Instances,
+  author    = {Ciaran McCreesh and
+               Patrick Prosser and
+               James Trimble},
+  title     = {Heuristics and Really Hard Instances for Subgraph Isomorphism Problems},
+  booktitle = {Proceedings of the Twenty-Fifth International Joint Conference on
+               Artificial Intelligence, {IJCAI} 2016, New York, NY, USA, 9-15 July
+               2016},
+  pages     = {631--638},
+  year      = {2016},
+  crossref  = {DBLP:conf/ijcai/2016},
+  url       = {http://www.ijcai.org/Abstract/16/096},
+  timestamp = {Fri, 15 Jul 2016 15:58:28 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/ijcai/McCreeshPT16},
+  bibsource = {dblp computer science bibliography, http://dblp.org},
+  addendum  = {
+  \citeauthor{SIP-Hard-Instances} examine the characteristics of instances of the subgraph isomorphism problem, investigating which parameters are more likely to make an instance more ``difficult'' than another and showing how to generate such instances.
+  To this end they investigate phase transitions where problems are likely to become unsatisfiable, and show the times required for a portfolio of solvers to prove (un)satisfiability for both the induced and non-induced variants of the problem.
+  Some discussion is provided on the applicability of any heuristics within the examined models to the generated problems.
+  To show that regions of difficulty are inherent to the problem instances themselves (rather than the solvers), reductions of instances to SAT and Max-Clique are considered---the regions of difficulty remain in their original locations in these alternate formulations.
+  }
+}
+
+@proceedings{DBLP:conf/ijcai/2016,
+  editor    = {Subbarao Kambhampati},
+  title     = {Proceedings of the Twenty-Fifth International Joint Conference on
+               Artificial Intelligence, {IJCAI} 2016, New York, NY, USA, 9-15 July
+               2016},
+  publisher = {{IJCAI/AAAI} Press},
+  year      = {2016},
+  url       = {http://www.ijcai.org/Proceedings/2016},
+  isbn      = {978-1-57735-770-4},
+  timestamp = {Fri, 15 Jul 2016 15:25:58 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/ijcai/2016},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@inproceedings{Cook-SAT-SIP-NP,
+  author    = {Stephen A. Cook},
+  title     = {The Complexity of Theorem-Proving Procedures},
+  booktitle = {Proceedings of the 3rd Annual {ACM} Symposium on Theory of Computing,
+               May 3-5, 1971, Shaker Heights, Ohio, {USA}},
+  pages     = {151--158},
+  year      = {1971},
+  crossref  = {DBLP:conf/stoc/STOC3},
+  url       = {http://doi.acm.org/10.1145/800157.805047},
+  doi       = {10.1145/800157.805047},
+  timestamp = {Mon, 17 Oct 2011 17:25:06 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/stoc/Cook71},
+  bibsource = {dblp computer science bibliography, http://dblp.org},
+  addendum  = {
+  The first appearance of the \emph{Cook-Levin Theorem}, proving that SAT is an $\NP$-Complete problem.
+  Crucially, this means that any problem which can be reduced to an instance of SAT in polynomial time is itself $\NP$-Complete---Cook demonstrates that several other problems admit polynomial-time reductions to SAT, including the subgraph isomorphism problem.
+  Interestingly, no such reduction is known for graph isomorphism.
+  }
+}
+@proceedings{DBLP:conf/stoc/STOC3,
+  editor    = {Michael A. Harrison and
+               Ranan B. Banerji and
+               Jeffrey D. Ullman},
+  title     = {Proceedings of the 3rd Annual {ACM} Symposium on Theory of Computing,
+               May 3-5, 1971, Shaker Heights, Ohio, {USA}},
+  publisher = {{ACM}},
+  year      = {1971},
+  timestamp = {Mon, 17 Oct 2011 15:55:10 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/stoc/STOC3},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@book{Computers-and-Intractibility,
+  author    = {M. R. Garey and
+               David S. Johnson},
+  title     = {Computers and Intractability: {A} Guide to the Theory of NP-Completeness},
+  publisher = {W. H. Freeman},
+  year      = {1979},
+  isbn      = {0-7167-1044-7},
+  timestamp = {Thu, 29 Mar 2007 16:16:40 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/books/fm/GareyJ79},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@unpublished{Between-MCS-SIP,
+	title    = {Between Subgraph Isomorphism and Maximum Common Subgraph},
+    author   = {Ruth Hoffmann and
+                Ciaran McCreesh and
+                Craig Reilly},
+    year     = {2017},
+    month    = {2},
+    note     = {To appear in the proceedings of AAAI 2017},
+    addendum = {
+    Motivated by relative infeasibility of the maximum common subgraph problem compared to subgraph isomorphism, this work first considers a restricted form of the subgraph isomorphism problem: to find a pattern graph $P$ within a target graph $T$ such that some $k\in\mathbb{N}$ vertices go unmatched.
+    By adapting the Glasgow solver \cite{SIP-Glasgow} for this restriction and iteratively solving for different values of $k$, a very competitive solver for the maximum common subgraph problem is proposed.
+    }
+}
+@article{SIP-Ullmann,
+  author    = {Julian R. Ullmann},
+  title     = {An Algorithm for Subgraph Isomorphism},
+  journal   = {J. {ACM}},
+  volume    = {23},
+  number    = {1},
+  pages     = {31--42},
+  year      = {1976},
+  url       = {http://doi.acm.org/10.1145/321921.321925},
+  doi       = {10.1145/321921.321925},
+  timestamp = {Thu, 20 Nov 2003 12:28:25 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/journals/jacm/Ullmann76},
+  bibsource = {dblp computer science bibliography, http://dblp.org},
+  addendum  = {
+  \citeauthor{SIP-Ullmann} presents a standard backtracking algorithm for the subgraph isomorphism problem.
+  This is augmented with  a \emph{refinement procedure} to perform search tree pruning---the current state in the search corresponds to a subgraph isomorphism if and only if this refinement procedure makes no changes to the current state.
+  Additionally, the design of this refinement procedure allows for use in a parallel context.
+  It is observed that this search tree pruning procedure performs graph isomorphism more quickly (and on a larger instance) than the basic backtracking search, although performs worse than its contemporaries when used to evaluate maximum clique.
+  }
+}
+
+@inproceedings{AllDiff,
+  author    = {Jean{-}Charles R{\'{e}}gin},
+  title     = {A Filtering Algorithm for Constraints of Difference in CSPs},
+  booktitle = {Proceedings of the 12th National Conference on Artificial Intelligence,
+               Seattle, WA, USA, July 31 - August 4, 1994, Volume 1.},
+  pages     = {362--367},
+  year      = {1994},
+  crossref  = {DBLP:conf/aaai/1994-1},
+  url       = {http://www.aaai.org/Library/AAAI/1994/aaai94-055.php},
+  timestamp = {Tue, 11 Dec 2012 17:40:41 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/aaai/Regin94},
+  bibsource = {dblp computer science bibliography, http://dblp.org},
+  addendum  = {
+  \citeauthor{AllDiff} introduces an algorithm for achieving general arc-consistent filtering on \emph{All-Different constraints}, a requirement that a set of variables must not reuse a value assignment, in constraint satisfaction problems.
+  The approach applies the Hopcroft-Karp matching algorithm over variables and their domains to discover subsets of values which must be mapped to subsets of the variables.
+  This achieves better filtering in practice than decomposition into pairwise inequality constraints.
+  }
+}
+
+@proceedings{DBLP:conf/aaai/1994-1,
+  editor    = {Barbara Hayes{-}Roth and
+               Richard E. Korf},
+  title     = {Proceedings of the 12th National Conference on Artificial Intelligence,
+               Seattle, WA, USA, July 31 - August 4, 1994, Volume 1},
+  publisher = {{AAAI} Press / The {MIT} Press},
+  year      = {1994},
+  url       = {http://www.aaai.org/Conferences/AAAI/aaai94.php},
+  isbn      = {0-262-61102-3},
+  timestamp = {Thu, 01 Dec 2011 17:16:20 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/aaai/1994-1},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@inproceedings{MCS-Clique-CP,
+  author    = {Ciaran McCreesh and
+               Samba Ndojh Ndiaye and
+               Patrick Prosser and
+               Christine Solnon},
+  title     = {Clique and Constraint Models for Maximum Common (Connected) Subgraph
+               Problems},
+  booktitle = {Principles and Practice of Constraint Programming - 22nd International
+               Conference, {CP} 2016, Toulouse, France, September 5-9, 2016, Proceedings},
+  pages     = {350--368},
+  year      = {2016},
+  crossref  = {DBLP:conf/cp/2016},
+  url       = {http://dx.doi.org/10.1007/978-3-319-44953-1_23},
+  doi       = {10.1007/978-3-319-44953-1_23},
+  timestamp = {Tue, 23 Aug 2016 10:27:33 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/cp/McCreeshNPS16},
+  bibsource = {dblp computer science bibliography, http://dblp.org},
+  addendum  = {
+  A review paper presenting a survey of the state-of-the-art in solvers for the maximum common subgraph problem at the time of publication, as well as providing a new algorithm for a variant---the maximum common connected subgraph problem.
+  For both problems, constraint models performed well when acting with unlabelled graphs.
+  Clique methods, however, were found to be most effective when working with graphs with labelled edges, in contrast to earlier results produced without access to modern algorithms.
+  }
+}
+@proceedings{DBLP:conf/cp/2016,
+  editor    = {Michel Rueher},
+  title     = {Principles and Practice of Constraint Programming - 22nd International
+               Conference, {CP} 2016, Toulouse, France, September 5-9, 2016, Proceedings},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {9892},
+  publisher = {Springer},
+  year      = {2016},
+  url       = {http://dx.doi.org/10.1007/978-3-319-44953-1},
+  doi       = {10.1007/978-3-319-44953-1},
+  isbn      = {978-3-319-44952-4},
+  timestamp = {Tue, 23 Aug 2016 10:24:14 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/cp/2016},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+% CV Papers
+
+@article{SIFT,
+  author    = {David G. Lowe},
+  title     = {Distinctive Image Features from Scale-Invariant Keypoints},
+  journal   = {International Journal of Computer Vision},
+  volume    = {60},
+  number    = {2},
+  pages     = {91--110},
+  year      = {2004},
+  url       = {http://dx.doi.org/10.1023/B:VISI.0000029664.99615.94},
+  doi       = {10.1023/B:VISI.0000029664.99615.94},
+  timestamp = {Mon, 25 Apr 2005 11:02:05 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/journals/ijcv/Lowe04},
+  bibsource = {dblp computer science bibliography, http://dblp.org},
+  addendum = {
+  This work presents \emph{SIFT}---an algorithm for finding good keypoints for matching from regions of high variation in a multiscale representation of an image---and a procedure for matching objects between scenes from databases of these keypoints.
+  The high dimensionality of these keypoints also leads to the creation of very distinct keypoints, reducing accidental mismatching.
+  The approach is shown to introduce invariance to scale, rotation, illumination, partial occlusion, affine distortion and 3D viewpoint change.
+  }
+}
+
+@inproceedings{HMP,
+  author    = {Liefeng Bo and
+               Xiaofeng Ren and
+               Dieter Fox},
+  title     = {Hierarchical Matching Pursuit for Image Classification: Architecture
+               and Fast Algorithms},
+  booktitle = {Advances in Neural Information Processing Systems 24: 25th Annual
+               Conference on Neural Information Processing Systems 2011. Proceedings
+               of a meeting held 12-14 December 2011, Granada, Spain.},
+  pages     = {2115--2123},
+  year      = {2011},
+  crossref  = {DBLP:conf/nips/2011},
+  url       = {http://papers.nips.cc/paper/4473-hierarchical-matching-pursuit-for-image-classification-architecture-and-fast-algorithms},
+  timestamp = {Thu, 11 Dec 2014 17:34:08 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/nips/BoRF11},
+  bibsource = {dblp computer science bibliography, http://dblp.org},
+  addendum  = {
+  \citeauthor{HMP} propose a codebook-based sparse coding for images based on lower-level features, suited to computer vision problems.
+  An efficient algorithm is proposed to encode input images, and the encoding's performance (within a support vector machine classifier) is compared on numerous tasks to other problem encodings---HMP is found to outperform its competitors on the examined problems.
+  }
+}
+
+@proceedings{DBLP:conf/nips/2011,
+  editor    = {John Shawe{-}Taylor and
+               Richard S. Zemel and
+               Peter L. Bartlett and
+               Fernando C. N. Pereira and
+               Kilian Q. Weinberger},
+  title     = {Advances in Neural Information Processing Systems 24: 25th Annual
+               Conference on Neural Information Processing Systems 2011. Proceedings
+               of a meeting held 12-14 December 2011, Granada, Spain},
+  year      = {2011},
+  url       = {http://papers.nips.cc/book/advances-in-neural-information-processing-systems-24-2011},
+  timestamp = {Thu, 11 Dec 2014 17:34:08 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/nips/2011},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@inproceedings{Bacteria-Classification,
+  author    = {Dong Nie and
+               Elizabeth A. Shank and
+               Vladimir Jojic},
+  title     = {A deep framework for bacterial image segmentation and classification},
+  booktitle = {Proceedings of the 6th {ACM} Conference on Bioinformatics, Computational
+               Biology and Health Informatics, {BCB} 2015, Atlanta, GA, USA, September
+               9-12, 2015},
+  pages     = {306--314},
+  year      = {2015},
+  crossref  = {DBLP:conf/bcb/2015},
+  url       = {http://doi.acm.org/10.1145/2808719.2808751},
+  doi       = {10.1145/2808719.2808751},
+  timestamp = {Wed, 14 Oct 2015 10:22:23 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/bcb/NieSJ15},
+  bibsource = {dblp computer science bibliography, http://dblp.org},
+  addendum = {
+  \citeauthor{Bacteria-Classification} examine the effectiveness of a visual classifier for bacterial colonies from image data.
+  This is motivated by the fact that the visual properties of any one species might vary in relation to other bacteria in their environment.
+  This is tackled in two stages: a convolutional deep belief network and support vector machine are used to classify image patches and pixels as foreground or background, before a convolutional neural network is used to label and classify colonies which lie in the foreground.
+  Their framework is shown to achieve better performance than a SIFT-based classifier, but has difficulty when two colonies come into contact.
+  }
+}
+
+@proceedings{DBLP:conf/bcb/2015,
+  title     = {Proceedings of the 6th {ACM} Conference on Bioinformatics, Computational
+               Biology and Health Informatics, {BCB} 2015, Atlanta, GA, USA, September
+               9-12, 2015},
+  publisher = {{ACM}},
+  year      = {2015},
+  url       = {http://dl.acm.org/citation.cfm?id=2808719},
+  isbn      = {978-1-4503-3853-0},
+  timestamp = {Wed, 14 Oct 2015 10:04:36 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/bcb/2015},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@article{Perf-Local-Descriptors,
+  author    = {Krystian Mikolajczyk and
+               Cordelia Schmid},
+  title     = {A Performance Evaluation of Local Descriptors},
+  journal   = {{IEEE} Trans. Pattern Anal. Mach. Intell.},
+  volume    = {27},
+  number    = {10},
+  pages     = {1615--1630},
+  year      = {2005},
+  url       = {http://dx.doi.org/10.1109/TPAMI.2005.188},
+  doi       = {10.1109/TPAMI.2005.188},
+  timestamp = {Sat, 12 Mar 2016 09:04:11 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/journals/pami/MikolajczykS05},
+  bibsource = {dblp computer science bibliography, http://dblp.org},
+  addendum  = {
+  A paper reviewing and comparing the matching performance of various local feature techniques, including SIFT, PCA-SIFT and steerable filters against a variety of scenes before and after distortion.
+  Additionally, the author's propose their own variant---\emph{gradient location and orientation histograms (GLOH)}---with higher dimensionality and distinctiveness than SIFT, which tends to provide better matching.
+  No commentary is given on the runtime of GLOH compared to its rivals.
+  }
+}
+
+@article{Sift-Variants-Comparison,
+  title={A Comparative Study of SIFT and its Variants},
+  author={Wu, Jian and Cui, Zhiming and Sheng, Victor S and Zhao, Pengpeng and Su, Dongliang and Gong, Shengrong},
+  journal  = {Measurement Science Review},
+  volume   = {13},
+  number   = {3},
+  pages    = {122--131},
+  year     = {2013},
+  addendum = {
+  A number of SIFT-like feature descriptors (SIFT, PCA-SIFT, GSIFT, CSIFT, SURF) are examined to compare their matching effectiveness, and determine which variants achieve the best accuracy under a given distortion.
+  The execution time required to perform matchings and feature computation are also examined---SURF is considered to be the fastest feature detector, at the expense of accuracy and data dimensionality.
+  Other SIFT variants tend to have fairly good accuracy in all cases, being more tuned for invariance against one or two classes of distortion.
+  }
+}
+
+@inproceedings{SURF,
+  author    = {Herbert Bay and
+               Tinne Tuytelaars and
+               Luc J. Van Gool},
+  title     = {{SURF:} Speeded Up Robust Features},
+  booktitle = {Computer Vision - {ECCV} 2006, 9th European Conference on Computer
+               Vision, Graz, Austria, May 7-13, 2006, Proceedings, Part {I}},
+  pages     = {404--417},
+  year      = {2006},
+  crossref  = {DBLP:conf/eccv/2006-1},
+  url       = {http://dx.doi.org/10.1007/11744023_32},
+  doi       = {10.1007/11744023_32},
+  timestamp = {Mon, 30 Oct 2006 14:02:12 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/eccv/BayTG06},
+  bibsource = {dblp computer science bibliography, http://dblp.org},
+  addendum  = {
+  Influenced by SIFT's powerful and accurate matching performance but computational complexity, \citeauthor{SURF} propose a Hessian-based feature point detector, \emph{SURF}, able to leverage integral images for fast computation.
+  Feature vectors have lower dimensionality than SIFT, modelling Haar-like features in keypoint neighbourhoods.
+  In general, the features are found to be similarly robust to the same phenomena as SIFT at a fraction of the computation time (both detection and matching).
+  }
+}
+@proceedings{DBLP:conf/eccv/2006-1,
+  editor    = {Ales Leonardis and
+               Horst Bischof and
+               Axel Pinz},
+  title     = {Computer Vision - {ECCV} 2006, 9th European Conference on Computer
+               Vision, Graz, Austria, May 7-13, 2006, Proceedings, Part {I}},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {3951},
+  publisher = {Springer},
+  year      = {2006},
+  isbn      = {3-540-33832-2},
+  timestamp = {Mon, 30 Oct 2006 13:57:55 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/eccv/2006-1},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@inproceedings{Viola-Jones-Haar,
+  author    = {Paul A. Viola and
+               Michael J. Jones},
+  title     = {Rapid Object Detection using a Boosted Cascade of Simple Features},
+  booktitle = {2001 {IEEE} Computer Society Conference on Computer Vision and Pattern
+               Recognition {(CVPR} 2001), with CD-ROM, 8-14 December 2001, Kauai,
+               HI, {USA}},
+  pages     = {511--518},
+  year      = {2001},
+  crossref  = {DBLP:conf/cvpr/2001},
+  url       = {http://doi.ieeecomputersociety.org/10.1109/CVPR.2001.990517},
+  doi       = {10.1109/CVPR.2001.990517},
+  timestamp = {Tue, 25 Nov 2014 17:05:17 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/cvpr/ViolaJ01},
+  bibsource = {dblp computer science bibliography, http://dblp.org},
+  addendum  = {
+  This work presents a machine learning approach for object recognition based on the application of progressively more complex classifiers---filtering out image regions which cannot possibly contain the desired object early on in search.
+  The reliance on Haar-like features allows for the use of \emph{integral images}, a novel technique for computing integrals over these feature regions.
+  This is proven to be both fast and accurate, but no mention is given on classifier robustness to distortion or the change in training set size to support such robustness.
+  }
+}
+
+@proceedings{DBLP:conf/cvpr/2001,
+  title     = {2001 {IEEE} Computer Society Conference on Computer Vision and Pattern
+               Recognition {(CVPR} 2001), with CD-ROM, 8-14 December 2001, Kauai,
+               HI, {USA}},
+  publisher = {{IEEE} Computer Society},
+  year      = {2001},
+  url       = {http://ieeexplore.ieee.org/xpl/mostRecentIssue.jsp?punumber=7768},
+  isbn      = {0-7695-1272-0},
+  timestamp = {Tue, 25 Nov 2014 17:05:17 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/cvpr/2001},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@inproceedings{ConvNet,
+  author    = {Alex Krizhevsky and
+               Ilya Sutskever and
+               Geoffrey E. Hinton},
+  title     = {ImageNet Classification with Deep Convolutional Neural Networks},
+  booktitle = {Advances in Neural Information Processing Systems 25: 26th Annual
+               Conference on Neural Information Processing Systems 2012. Proceedings
+               of a meeting held December 3-6, 2012, Lake Tahoe, Nevada, United States.},
+  pages     = {1106--1114},
+  year      = {2012},
+  crossref  = {DBLP:conf/nips/2012},
+  url       = {http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks},
+  timestamp = {Thu, 11 Dec 2014 17:34:07 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/nips/KrizhevskySH12},
+  bibsource = {dblp computer science bibliography, http://dblp.org},
+  addendum  = {
+  \citeauthor{ConvNet} explore the effectiveness of a deep convolutional neural network design against a large dataset with over 1000 labels attributed to objects.
+  In particular, their approach relies upon a fast GPU implementation of the convolution operation and the ability to split the layered design over two GPUs to bypass single-card memory limitations.
+  Methods for reducing overfitting and increasing learning rate during training are discussed, and the model is observed to have a considerably lower error rate than its closest competitor against an established benchmark.
+  Removal of convolutional layers is show to have a negative impact on classification accuracy, demonstrating the advantages of additional depth.
+  }
+}
+
+@proceedings{DBLP:conf/nips/2012,
+  editor    = {Peter L. Bartlett and
+               Fernando C. N. Pereira and
+               Christopher J. C. Burges and
+               L{\'{e}}on Bottou and
+               Kilian Q. Weinberger},
+  title     = {Advances in Neural Information Processing Systems 25: 26th Annual
+               Conference on Neural Information Processing Systems 2012. Proceedings
+               of a meeting held December 3-6, 2012, Lake Tahoe, Nevada, United States},
+  year      = {2012},
+  url       = {http://papers.nips.cc/book/advances-in-neural-information-processing-systems-25-2012},
+  timestamp = {Thu, 11 Dec 2014 17:34:07 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/nips/2012},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+% Graph-based image matching
+
+@inproceedings{Plane-Graphs-From-Images,
+  author    = {{\'{E}}milie Samuel and
+               Colin de la Higuera and
+               Jean{-}Christophe Janodet},
+  title     = {Extracting Plane Graphs from Images},
+  booktitle = {Structural, Syntactic, and Statistical Pattern Recognition, Joint
+               {IAPR} International Workshop, SSPR{\&}SPR 2010, Cesme, Izmir,
+               Turkey, August 18-20, 2010. Proceedings},
+  pages     = {233--243},
+  year      = {2010},
+  crossref  = {DBLP:conf/sspr/2010},
+  url       = {http://dx.doi.org/10.1007/978-3-642-14980-1_22},
+  doi       = {10.1007/978-3-642-14980-1_22},
+  timestamp = {Tue, 25 Jan 2011 15:58:31 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/sspr/SamuelHJ10},
+  bibsource = {dblp computer science bibliography, http://dblp.org},
+  addendum = {
+  \citeauthor{Plane-Graphs-From-Images} present an algorithm for converting images into plane graphs for matching, which also serve as a form of image compression.
+  Images are segmented, interest pixels are extracted, preliminary plane graphs are built and triangulated, and faces are assigned colours---it is asserted that this approach preserves segment shapes in the graph representation.
+  The approach, tested against perfectly segmented images, produces satisfactory loss on images after reconstruction but no evaluation is given to the performance of these graphs in matching or any robustness the graph generation procedure holds.
+  }
+}
+
+@proceedings{DBLP:conf/sspr/2010,
+  editor    = {Edwin R. Hancock and
+               Richard C. Wilson and
+               Terry Windeatt and
+               Ilkay Ulusoy and
+               Francisco Escolano},
+  title     = {Structural, Syntactic, and Statistical Pattern Recognition, Joint
+               {IAPR} International Workshop, SSPR{\&}SPR 2010, Cesme, Izmir,
+               Turkey, August 18-20, 2010. Proceedings},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {6218},
+  publisher = {Springer},
+  year      = {2010},
+  url       = {http://dx.doi.org/10.1007/978-3-642-14980-1},
+  doi       = {10.1007/978-3-642-14980-1},
+  isbn      = {978-3-642-14979-5},
+  timestamp = {Tue, 25 Jan 2011 15:58:31 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/sspr/2010},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@article{SIFT-Graph-Topology-Faces,
+  author    = {Dakshina Ranjan Kisku and
+               Ajita Rattani and
+               Enrico Grosso and
+               Massimo Tistarelli},
+  title     = {Face Identification by SIFT-based Complete Graph Topology},
+  journal   = {CoRR},
+  volume    = {abs/1002.0411},
+  year      = {2010},
+  url       = {http://arxiv.org/abs/1002.0411},
+  timestamp = {Mon, 05 Dec 2011 18:03:23 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/journals/corr/abs-1002-0411},
+  bibsource = {dblp computer science bibliography, http://dblp.org},
+  addendum  = {
+  The authors examine the validity of graph similarity as a metric for facial recognition between pairs of complete graphs built from image keypoints.
+  The use of SIFT is motivated by a desire to gain robustness against illumination and partial occlusion of the subject.
+  Due to the large quantity of nodes and accidental matches that SIFT keypoints create, \citeauthor{SIFT-Graph-Topology-Faces} examine methods of filtering and weighting keypoints and their contribution to the dissimilarity metric.
+  They find their symmetric-correspondence filtering to be effective, and typically achieve the desired robustness on their test data.
+  }
+}
+
+@inproceedings{Submap-Iso-Images,
+  author    = {Guillaume Damiand and
+               Colin de la Higuera and
+               Jean{-}Christophe Janodet and
+               {\'{E}}milie Samuel and
+               Christine Solnon},
+  title     = {A Polynomial Algorithm for Submap Isomorphism},
+  booktitle = {Graph-Based Representations in Pattern Recognition, 7th {IAPR-TC-15}
+               International Workshop, GbRPR 2009, Venice, Italy, May 26-28, 2009.
+               Proceedings},
+  pages     = {102--112},
+  year      = {2009},
+  crossref  = {DBLP:conf/gbrpr/2009},
+  url       = {http://dx.doi.org/10.1007/978-3-642-02124-4_11},
+  doi       = {10.1007/978-3-642-02124-4_11},
+  timestamp = {Sun, 06 Sep 2009 11:26:26 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/gbrpr/DamiandHJSS09},
+  bibsource = {dblp computer science bibliography, http://dblp.org},
+  addendum  = {
+  This paper considers a variant of the subgraph isomorphism problem applicable to face-connected plane graphs---by transforming such graphs into \emph{combinatorial maps} it is possible to model face structure explicitly.
+  An algorithm is demonstrated to find a copy of one such structure within another in polynomial time, which is then evaluated against image data sets---built by taking the Delaunay triangulation over all interest pixels.
+  In particular, a rotated cropping of a large image is shown to be located within its original context in a faster time than the VF2 SIP algorithm could achieve.
+  }
+}
+
+@proceedings{DBLP:conf/gbrpr/2009,
+  editor    = {Andrea Torsello and
+               Francisco Escolano and
+               Luc Brun},
+  title     = {Graph-Based Representations in Pattern Recognition, 7th {IAPR-TC-15}
+               International Workshop, GbRPR 2009, Venice, Italy, May 26-28, 2009.
+               Proceedings},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {5534},
+  publisher = {Springer},
+  year      = {2009},
+  url       = {http://dx.doi.org/10.1007/978-3-642-02124-4},
+  doi       = {10.1007/978-3-642-02124-4},
+  isbn      = {978-3-642-02123-7},
+  timestamp = {Sun, 06 Sep 2009 11:25:01 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/gbrpr/2009},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@mastersthesis{Picture-Problems,
+  author       = {Benjamin de Wergifosse and
+                  Alexis Pierret}, 
+  title        = {Solving problems by taking pictures: Study of general graph matching approaches},
+  school       = {\'{E}cole polytechnique de Louvain},
+  year         = 2016,
+  address      = {Universit\'{e} catholique de Louvain},
+  month        = 6,
+  url          = {http://hdl.handle.net/2078.1/thesis:4602}
+}
+
+@inproceedings{Graphs-Handwriting,
+  author    = {Michael Stauffer and
+               Andreas Fischer and
+               Kaspar Riesen},
+  title     = {A Novel Graph Database for Handwritten Word Images},
+  booktitle = {Structural, Syntactic, and Statistical Pattern Recognition - Joint
+               {IAPR} International Workshop, {S+SSPR} 2016, M{\'{e}}rida, Mexico,
+               November 29 - December 2, 2016, Proceedings},
+  pages     = {553--563},
+  year      = {2016},
+  crossref  = {DBLP:conf/sspr/2016},
+  url       = {http://dx.doi.org/10.1007/978-3-319-49055-7_49},
+  doi       = {10.1007/978-3-319-49055-7_49},
+  timestamp = {Tue, 08 Nov 2016 08:01:22 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/sspr/Stauffer0R16},
+  bibsource = {dblp computer science bibliography, http://dblp.org},
+  addendum  = {
+  An exploration of the viability of graph modellings in handwriting recognition.
+  \citeauthor{Graphs-Handwriting} present a portfolio of algorithms to generate attributed graphs from word images based on keypoints, fixed-size segmentation, and adaptive segmentation.
+  Additionally, a machine learning-based approach for performing the matching task is proposed, using k-Nearest Neighbours with an approximation of graph edit distance.
+  In practice, the adaptive segmentation approaches are found to achieve both the best classification performance \emph{and} the smallest graph sizes, with no comment on the associated computation time for matching.
+  }
+}
+@proceedings{DBLP:conf/sspr/2016,
+  editor    = {Antonio Robles{-}Kelly and
+               Marco Loog and
+               Battista Biggio and
+               Francisco Escolano and
+               Richard C. Wilson},
+  title     = {Structural, Syntactic, and Statistical Pattern Recognition - Joint
+               {IAPR} International Workshop, {S+SSPR} 2016, M{\'{e}}rida, Mexico,
+               November 29 - December 2, 2016, Proceedings},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {10029},
+  year      = {2016},
+  url       = {http://dx.doi.org/10.1007/978-3-319-49055-7},
+  doi       = {10.1007/978-3-319-49055-7},
+  isbn      = {978-3-319-49054-0},
+  timestamp = {Tue, 08 Nov 2016 08:01:22 +0100},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/sspr/2016},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+% Topology Papers
+
+@article{Lens-Topology,
+  author    = {Partha Niyogi and
+               Stephen Smale and
+               Shmuel Weinberger},
+  title     = {A Topological View of Unsupervised Learning from Noisy Data},
+  journal   = {{SIAM} J. Comput.},
+  volume    = {40},
+  number    = {3},
+  pages     = {646--663},
+  year      = {2011},
+  url       = {http://dx.doi.org/10.1137/090762932},
+  doi       = {10.1137/090762932},
+  timestamp = {Thu, 09 Jun 2011 08:47:40 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/journals/siamcomp/NiyogiSW11},
+  bibsource = {dblp computer science bibliography, http://dblp.org},
+  addendum = {
+  The authors present an unsupervised method for recovering inherent structure in high-dimensional data.
+  By considering an approach grounded in topology, they are able to capture more complex structures than the mixture of Gaussians of standard spectral clustering techniques.
+  The authors hypothesise that structures for data clustering typically occur in a lower-dimensionality space than the data itself.
+  Detailed mathematical proof is given for the validity of this technique as well as their theorem that (up to some noise limit) the required sample count to detect such features relies upon the feature's dimensionality and \emph{not} that of the data.
+  }
+}
+
+% Misc
+
+@inproceedings{PathCurvature,
+	author    = {Dmitry Chetverikov},
+	title     = {A Simple and Efficient Algorithm for Detection of High Curvature Points
+	in Planar Curves},
+	booktitle = {Computer Analysis of Images and Patterns, 10th International Conference,
+	{CAIP} 2003, Groningen, The Netherlands, August 25-27, 2003, Proceedings},
+	pages     = {746--753},
+	year      = {2003},
+	crossref  = {DBLP:conf/caip/2003},
+	url       = {http://dx.doi.org/10.1007/978-3-540-45179-2_91},
+	doi       = {10.1007/978-3-540-45179-2_91},
+	timestamp = {Tue, 05 Jul 2011 11:03:22 +0200},
+	biburl    = {http://dblp.uni-trier.de/rec/bib/conf/caip/Chetverikov03},
+	bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+@proceedings{DBLP:conf/caip/2003,
+	editor    = {Nicolai Petkov and
+	Michel A. Westenberg},
+	title     = {Computer Analysis of Images and Patterns, 10th International Conference,
+	{CAIP} 2003, Groningen, The Netherlands, August 25-27, 2003, Proceedings},
+	series    = {Lecture Notes in Computer Science},
+	volume    = {2756},
+	publisher = {Springer},
+	year      = {2003},
+	isbn      = {3-540-40730-8},
+	timestamp = {Fri, 12 Dec 2003 13:30:00 +0100},
+	biburl    = {http://dblp.uni-trier.de/rec/bib/conf/caip/2003},
+	bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+% Future ML stuff
+
+@article{AdversarialML,
+	author    = {Ian J. Goodfellow and
+	Jonathon Shlens and
+	Christian Szegedy},
+	title     = {Explaining and Harnessing Adversarial Examples},
+	journal   = {CoRR},
+	volume    = {abs/1412.6572},
+	year      = {2014},
+	url       = {http://arxiv.org/abs/1412.6572},
+	timestamp = {Thu, 01 Jan 2015 19:51:08 +0100},
+	biburl    = {http://dblp.uni-trier.de/rec/bib/journals/corr/GoodfellowSS14},
+	bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@article{MultilabelCNN,
+	author    = {Yunchao Wei and
+	Wei Xia and
+	Junshi Huang and
+	Bingbing Ni and
+	Jian Dong and
+	Yao Zhao and
+	Shuicheng Yan},
+	title     = {{CNN:} Single-label to Multi-label},
+	journal   = {CoRR},
+	volume    = {abs/1406.5726},
+	year      = {2014},
+	url       = {http://arxiv.org/abs/1406.5726},
+	timestamp = {Tue, 01 Jul 2014 11:58:08 +0200},
+	biburl    = {http://dblp.uni-trier.de/rec/bib/journals/corr/WeiXHNDZY14},
+	bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@article{ObjectRelnDescriptor,
+	author    = {Paul Guerrero and
+	Niloy J. Mitra and
+	Peter Wonka},
+	title     = {{RAID:} a relation-augmented image descriptor},
+	journal   = {{ACM} Trans. Graph.},
+	volume    = {35},
+	number    = {4},
+	pages     = {46:1--46:12},
+	year      = {2016},
+	url       = {http://doi.acm.org/10.1145/2897824.2925939},
+	doi       = {10.1145/2897824.2925939},
+	timestamp = {Tue, 03 Jan 2017 12:35:33 +0100},
+	biburl    = {http://dblp.uni-trier.de/rec/bib/journals/tog/MitraW16},
+	bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@inproceedings{BING,
+	author    = {Ming{-}Ming Cheng and
+	Ziming Zhang and
+	Wen{-}Yan Lin and
+	Philip H. S. Torr},
+	title     = {{BING:} Binarized Normed Gradients for Objectness Estimation at 300fps},
+	booktitle = {2014 {IEEE} Conference on Computer Vision and Pattern Recognition,
+	{CVPR} 2014, Columbus, OH, USA, June 23-28, 2014},
+	pages     = {3286--3293},
+	year      = {2014},
+	crossref  = {DBLP:conf/cvpr/2014},
+	url       = {http://dx.doi.org/10.1109/CVPR.2014.414},
+	doi       = {10.1109/CVPR.2014.414},
+	timestamp = {Thu, 28 Apr 2016 10:52:27 +0200},
+	biburl    = {http://dblp.uni-trier.de/rec/bib/conf/cvpr/ChengZLT14},
+	bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+@proceedings{DBLP:conf/cvpr/2014,
+	title     = {2014 {IEEE} Conference on Computer Vision and Pattern Recognition,
+	{CVPR} 2014, Columbus, OH, USA, June 23-28, 2014},
+	publisher = {{IEEE} Computer Society},
+	year      = {2014},
+	url       = {http://ieeexplore.ieee.org/xpl/mostRecentIssue.jsp?punumber=6909096},
+	isbn      = {978-1-4799-5118-5},
+	timestamp = {Thu, 28 Apr 2016 10:52:27 +0200},
+	biburl    = {http://dblp.uni-trier.de/rec/bib/conf/cvpr/2014},
+	bibsource = {dblp computer science bibliography, http://dblp.org}
+}

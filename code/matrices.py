@@ -44,7 +44,7 @@ for font in fonts:
 		# Fill matrix with observed values
 		for p, t in ((p, t) for p in chars for t in chars):
 			with open("{}{}-{}/{}.{}".format(results_dir, font, param_name, p, t)) as f:
-				print param_name, p, t
+				# print param_name, p, t
 				interm = f.readlines()[-1].strip().split("SIZE=")
 				vals[back_chars[p], back_chars[t]] = int(interm[1]) if len(interm) > 1 else 0
 
@@ -55,5 +55,5 @@ for font in fonts:
 				nrms[i, i+j] = nrms[i+j, i] = el
 
 		# print vals
-		write_matrix(tables_dir, "{}-{}.conf-reg".format(font, param_name), vals.astype(np.int_))
-		write_matrix(tables_dir, "{}-{}.conf-nrm".format(font, param_name), vals/nrms)
+		write_matrix(tables_dir, "{}/{}.conf-reg".format(font, param_name), vals.astype(np.int_))
+		write_matrix(tables_dir, "{}/{}.conf-nrm".format(font, param_name), vals/nrms)
