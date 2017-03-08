@@ -328,7 +328,7 @@ def makegraph(input, output=None, plot=False, dotfile=None, dual_output=None, du
 			dual_output.write("{}\n".format(label))
 
 		for n1, n2, d in G2.edges(data=True):
-			dual_output.write("{} {} {}\n".format(label_map[n1], label_map[n2], d["label"]))
+			dual_output.write("{} {} {}\n".format(n1, n2, d["label"]))
 
 
 def sqdist(pt1, pt2):

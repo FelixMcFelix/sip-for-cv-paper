@@ -1,4 +1,4 @@
 true 473
 (0 -> 5) (1 -> -1) (2 -> -1) (3 -> 1) (4 -> 4) (5 -> 0) (6 -> -1) (7 -> -1) (8 -> -1) (9 -> -1) (10 -> -1) (11 -> -1) (12 -> 6) (13 -> -1) (14 -> -1) 
-46 0 0 0 0 0 0 0 0 1 5 6
-EXCEPT=10 FAIL0=0 FAIL1=0 FAIL2=0 FAIL3=0 FAIL4=0 FAIL5=0 FAIL6=0 FAIL7=0 FAIL8=1 FAIL9=5 SIZE=5 
+28 0 0 0 0 0 0 0 0 1 4 8
+EXCEPT=10 FAIL0=0 FAIL1=0 FAIL2=0 FAIL3=0 FAIL4=0 FAIL5=0 FAIL6=0 FAIL7=0 FAIL8=1 FAIL9=4 SIZE=5 

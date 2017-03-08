@@ -1,4 +1,4 @@
 true 141
 (0 -> -1) (1 -> -1) (2 -> 2) (3 -> 5) (4 -> -1) (5 -> 0) (6 -> -1) (7 -> 1) (8 -> 6) (9 -> 4) 
-90 0 0 0 3 0
-EXCEPT=4 FAIL0=0 FAIL1=0 FAIL2=0 FAIL3=3 SIZE=6 
+47 0 0 0 2 0
+EXCEPT=4 FAIL0=0 FAIL1=0 FAIL2=0 FAIL3=2 SIZE=6 

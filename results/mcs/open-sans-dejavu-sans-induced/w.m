@@ -1,4 +1,4 @@
 true 993
 (0 -> 1) (1 -> 4) (2 -> -1) (3 -> -1) (4 -> 7) (5 -> 0) (6 -> 5) (7 -> -1) (8 -> -1) (9 -> -1) (10 -> -1) (11 -> 3) 
-19 0 0 0 0 1 7 6
-EXCEPT=6 FAIL0=0 FAIL1=0 FAIL2=0 FAIL3=0 FAIL4=1 FAIL5=7 SIZE=6 
+10 0 0 0 0 0 3 3
+EXCEPT=6 FAIL0=0 FAIL1=0 FAIL2=0 FAIL3=0 FAIL4=0 FAIL5=3 SIZE=6 

@@ -1,4 +1,4 @@
-true 795
+true 578
 (0 -> -1) (1 -> -1) (2 -> -1) (3 -> -1) (4 -> 0) (5 -> 1) (6 -> -1) (7 -> 6) (8 -> -1) (9 -> 4) (10 -> -1) (11 -> -1) (12 -> 2) (13 -> 3) 
-43 0 0 0 0 0 0 0 2 12
-EXCEPT=8 FAIL0=0 FAIL1=0 FAIL2=0 FAIL3=0 FAIL4=0 FAIL5=0 FAIL6=0 FAIL7=2 SIZE=6 
+28 0 0 0 0 0 0 0 1 8
+EXCEPT=8 FAIL0=0 FAIL1=0 FAIL2=0 FAIL3=0 FAIL4=0 FAIL5=0 FAIL6=0 FAIL7=1 SIZE=6 
