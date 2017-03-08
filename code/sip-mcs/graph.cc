@@ -42,7 +42,7 @@ auto Graph::add_edge(unsigned a, unsigned b) -> void
 auto Graph::add_edge(unsigned a, unsigned b, unsigned val) -> void
 {
     add_edge(a, b);
-    _attr_graph &= true;
+    _attr_graph |= true;
 
     auto sequence_data = _sequences[_position(a, b)];
     std::get<0>(sequence_data) += 1;
@@ -217,7 +217,7 @@ auto Graph::has_node_labels() const -> bool
 
 auto Graph::add_label(unsigned node, unsigned val) -> void
 {
-    _label_graph &= true;
+    _label_graph |= true;
     _label[node] = val;
 }
 
