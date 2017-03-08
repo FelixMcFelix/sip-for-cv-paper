@@ -4,6 +4,7 @@
 #include "vf.hh"
 #include "dimacs.hh"
 #include "umg_attr.hh"
+#include "umg_attr_lab.hh"
 #include "sequential.hh"
 
 #include <boost/program_options.hpp>
@@ -110,7 +111,7 @@ auto main(int argc, char * argv[]) -> int
         display_options.add_options()
             ("help",                                  "Display help information")
             ("timeout",            po::value<int>(),  "Abort after this many seconds")
-            ("format",             po::value<std::string>(), "Specify graph file format (lad, dimacs, vf or umg_attr)")
+            ("format",             po::value<std::string>(), "Specify graph file format (lad, dimacs, vf, umg_attr or umg_attr_lab)")
             ("d2graphs",                              "Use d2 graphs")
             ("d2cgraphs",                             "Use d2 complement graphs")
             ("degree",                                "Use degree filtering")
@@ -205,6 +206,8 @@ auto main(int argc, char * argv[]) -> int
                 read_function = read_vf;
             else if (options_vars["format"].as<std::string>() == "umg_attr")
                 read_function = read_umg_attr;
+            else if (options_vars["format"].as<std::string>() == "umg_attr_lab")
+                read_function = read_umg_attr_lab;
             else {
                 std::cerr << "Unknown format " << options_vars["format"].as<std::string>() << std::endl;
                 return EXIT_FAILURE;

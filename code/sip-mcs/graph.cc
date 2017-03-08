@@ -30,6 +30,7 @@ auto Graph::resize(unsigned size) -> void
     _size = size;
     _adjacency.resize(size * size);
     _sequences.resize(size * size);
+    _label.resize(size);
 }
 
 auto Graph::add_edge(unsigned a, unsigned b) -> void
@@ -207,4 +208,20 @@ auto Graph::degree(unsigned a) const -> unsigned
 auto Graph::is_attr_graph() const -> bool
 {
     return _attr_graph;
+}
+
+auto Graph::has_node_labels() const -> bool
+{
+    return _label_graph;
+}
+
+auto Graph::add_label(unsigned node, unsigned val) -> void
+{
+    _label_graph &= true;
+    _label[node] = val;
+}
+
+auto Graph::get_label(unsigned node) const -> unsigned
+{
+    return _label[node];
 }

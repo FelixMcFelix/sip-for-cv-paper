@@ -45,12 +45,15 @@ class Graph
                 >
         >;
         using SequenceMatrix = std::vector<Sequence>;
+        using LabelList = std::vector<unsigned>;
 
     private:
         unsigned _size = 0;
         AdjacencyMatrix _adjacency;
         SequenceMatrix _sequences;
+        LabelList _label;
         bool _attr_graph;
+        bool _label_graph;
         bool _add_one_for_output;
 
         /**
@@ -112,6 +115,12 @@ class Graph
          * Are we handling an attributed graph?
          */
         auto is_attr_graph() const -> bool;
+
+        auto has_node_labels() const -> bool;
+
+        auto add_label(unsigned node, unsigned val) -> void;
+
+        auto get_label(unsigned node) const -> unsigned;
 };
 
 auto in(const Graph::Sequence & pattern, const Graph::Sequence & target, const bool exact) -> bool;

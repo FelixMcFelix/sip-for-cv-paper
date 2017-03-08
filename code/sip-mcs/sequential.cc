@@ -393,9 +393,13 @@ namespace
 
                         bool ok = true;
 
+                        // Node label filtering.
+                        if (pattern.has_node_labels() && target.has_node_labels())
+                            ok = pattern.get_label(p) == target.get_label(t);
+
                         for (auto & c : adjacency_constraints) {
                             // check loops
-                            if (c.first[p][p] && ! c.second[t][t])
+                            if (ok && c.first[p][p] && ! c.second[t][t])
                                 ok = false;
 
                             auto c_second_t = c.second[t] & initial_domains_union;
