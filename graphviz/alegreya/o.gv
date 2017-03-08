@@ -2,5 +2,5 @@ graph "" {
 "(0, 0)";
 "(174, 72)";
 "(0, 0)" -- "(174, 72)"  [color=purple, key=0, weight=4];
-"(174, 72)" -- "(174, 72)"  [color=red, key=0, weight=1];
+"(174, 72)" -- "(174, 72)"  [color=green, key=0, weight=2];
 }

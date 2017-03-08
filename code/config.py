@@ -4,11 +4,19 @@ import string
 # Configure me!
 fontpaths = [
 	"DejaVuSans.ttf",
-	"Alegreya.ttf"
+	"Alegreya.ttf",
+	"OpenSans.ttf"
 ]
 fonts     = [
 	"dejavu-sans",
-	"alegreya"
+	"alegreya",
+	"open-sans"
+]
+font_comp = [
+	("dejavu-sans", "alegreya"),
+	("alegreya",    "dejavu-sans"),
+	("dejavu-sans", "open-sans"),
+	("open-sans",    "dejavu-sans")
 ]
 params    = [
 	("",               "edgecountinc"),
@@ -21,6 +29,7 @@ num_cores = 8
 img_dir     = "../imgs/"
 graph_dir   = "../graphs/"
 gviz_dir    = "../graphviz/"
+dual_suffix = "dual/"
 results_dir = "../results/mcs/"
 tables_dir  = "../tables/"
 font_dir    = "../resources/"
@@ -34,8 +43,8 @@ chars = list(string.lowercase) + [c + "-up" for c in string.uppercase]
 # ---------------------------------------------------------------------------- #
 
 def make_exec(filename):
-		st = os.stat(filename)
-		os.chmod(filename, st.st_mode | 0111)
+	st = os.stat(filename)
+	os.chmod(filename, st.st_mode | 0111)
 
 def mkdirnotex(filename):
 	folder = os.path.dirname(filename)

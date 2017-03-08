@@ -3,6 +3,6 @@ graph "" {
 "(303, 112)";
 "(347, 235)";
 "(0, 0)" -- "(303, 112)"  [color=purple, key=0, weight=4];
-"(303, 112)" -- "(303, 112)"  [color=red, key=0, weight=1];
+"(303, 112)" -- "(303, 112)"  [color=green, key=0, weight=2];
 "(303, 112)" -- "(347, 235)"  [color=red, key=0, weight=1];
 }

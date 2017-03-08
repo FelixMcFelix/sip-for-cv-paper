@@ -22,8 +22,9 @@ COLOR_CURVE = "green"
 COLOR_NEIGHBOUR = "blue"
 COLOR_NORTH = "purple"
 
-def makegraph(input, output=None, plot=False, dotfile=None):
+def makegraph(input, output=None, plot=False, dotfile=None, dual_output=None, dual_dotfile=None):
 	G = nx.MultiGraph()
+	G2 = nx.MultiGraph()
 
 	##
 	# Step 1: read input image
@@ -58,6 +59,31 @@ def makegraph(input, output=None, plot=False, dotfile=None):
 
 	# print endpoints, inters, starts
 	# print starts, keyp_sets
+
+	# NOTE: need this for construction of the dual graph.
+	label_map = []
+	edges_for_pt = {}
+	special_edges_for_pt = {}
+
+	def base_register(edge, label, descriptors, collection, col):
+		index = len(label_map)
+		label_map.append(label)
+
+		for pt, descriptor in zip(edge, descriptors):
+			tu = (index, descriptor)
+			if pt not in collection:
+				collection[pt] = [tu]
+			else:
+				collection[pt].append(tu)
+
+		G.add_edge(*edge, attr_dict={"weight":label, "color":col})
+		G2.add_node(index, attr_dict={"weight":label, "color":col})
+
+	def reg_edge(edge, label, descriptors, color):
+		base_register(edge, label, descriptors, edges_for_pt, color)
+
+	def reg_special(edge, label, color):
+		base_register(edge, label, [0]*len(edge), special_edges_for_pt, color)
 
 	##
 	# Step 6: Line/Path detection
@@ -138,6 +164,8 @@ def makegraph(input, output=None, plot=False, dotfile=None):
 					if plot: "working between", curr, "and", pt
 					show(plot, pathim)
 
+					lastgood = 0
+
 					# For each point and the next point along
 					for p1, p2 in zip(path_subdivs, path_subdivs[1:]):
 						# now establish if this is a line or curve
@@ -147,7 +175,11 @@ def makegraph(input, output=None, plot=False, dotfile=None):
 						len_line = np.sum(lineim)
 						in_line = np.sum(lineim & pathim)
 
-						subpathlen = 1 + history.index(p2) - history.index(p1)
+						h_sub = history[lastgood:]
+
+						currgood = h_sub.index(p2) if p1 != p2 else len(h_sub) - 1
+						subpathlen = currgood
+						lastgood += currgood
 
 						label = LINE
 						col = COLOR_LINE
@@ -157,8 +189,30 @@ def makegraph(input, output=None, plot=False, dotfile=None):
 							label = CURVE
 							col = COLOR_CURVE
 						
-						G.add_edge(p1, p2, weight=label, color=col)
-						if plot: print "path from", p1, "to", p2, "label", label
+						# G.add_edge(p1, p2, weight=label, color=col)
+						edge = (p1, p2)
+						mods = [1, -1]
+
+						# print edge
+						# print history
+						# print [
+						# 	history[history.index(pt)+mod]
+						# 	# history[history.index(pt)+mod]
+						# 	# get_nhood_pts(*pt)
+						# 	for pt, mod in zip(edge, mods)
+						# ]
+
+						descriptors = [
+							get_nhood_pts(*pt, img_order=False).index(h[h.index(pt)+mod])
+							# history[history.index(pt)+mod]
+							# get_nhood_pts(*pt)
+							for pt, mod, h in zip(edge, mods, [h_sub, h_sub[(p1==p2):]])
+						]
+						reg_edge(edge, label, descriptors, col)
+
+						if plot:
+							print "path from", p1, "to", p2, "label", label
+
 						show(plot, lineim)
 
 					# Testing
@@ -183,7 +237,8 @@ def makegraph(input, output=None, plot=False, dotfile=None):
 		if closest is None or sqdist(zero, pt) < sqdist(zero, closest):
 			closest = pt
 	if closest is not None:
-		G.add_edge(zero, closest, weight=NORTH, color=COLOR_NORTH)
+		reg_special((zero, closest), NORTH, COLOR_NORTH)
+		# G.add_edge(zero, closest, weight=NORTH, color=COLOR_NORTH)
 		# print "path from", zero, "to", closest, "label", NORTH
 
 	for i, eps in enumerate(endpoints):
@@ -206,7 +261,8 @@ def makegraph(input, output=None, plot=False, dotfile=None):
 				v2 = (best, ep)
 				edges = G.edges()
 				if not (v1 in edges or v2 in edges):
-					G.add_edge(ep, best, weight=NEIGHBOUR, color=COLOR_NEIGHBOUR)
+					reg_special((ep, best), NEIGHBOUR, COLOR_NEIGHBOUR)
+					# G.add_edge(ep, best, weight=NEIGHBOUR, color=COLOR_NEIGHBOUR)
 					# print "path from", ep, "to", best, "label", NEIGHBOUR
 
 	if dotfile is not None:
@@ -234,10 +290,58 @@ def makegraph(input, output=None, plot=False, dotfile=None):
 			str(d["weight"])
 		)
 
+	##
+	# Step 9: Dual Graph
+	##
+	# Only make it if we need it.
+
+	# print edges_for_pt, special_edges_for_pt
+
+	if dual_output is None and dual_dotfile is None:
+		return
+
+	for pt in edges_for_pt:
+		l = edges_for_pt[pt]
+		for i, (dex1, attr1) in enumerate(l):
+			for dex2, attr2 in l[i+1:]:
+				G2.add_edge(dex1, dex2, label=abs(attr1-attr2))
+
+	for pt in special_edges_for_pt:
+		l = special_edges_for_pt[pt]
+		for i, (dex1, attr1) in enumerate(l):
+			for dex2, attr2 in l[i+1:]:
+				G2.add_edge(dex1, dex2, label=abs(attr1-attr2))
+
+			if pt in edges_for_pt:
+				for dex_far, _ in edges_for_pt[pt]:
+					G2.add_edge(dex1, dex_far, label=8)					
+
+	# print G2.nodes(data=True)
+	if dual_dotfile is not None:
+		# nx.to_agraph(G2).write(dual_dotfile)
+		write_dot(G2, dual_dotfile)
+
+	if dual_output is not None:
+		dual_output.write("{} {}\n".format(len(label_map), len(G2.edges())))
+
+		for label in label_map:
+			dual_output.write("{}\n".format(label))
+
+		for n1, n2, d in G2.edges(data=True):
+			dual_output.write("{} {} {}\n".format(label_map[n1], label_map[n2], d["label"]))
+
+
 def sqdist(pt1, pt2):
 	out = 0
 	for c_0, c_1 in zip(pt1, pt2):
 		out += (c_0 - c_1) ** 2
+	return out
+
+def manh_dist(pt1, pt2):
+	out = 0
+	for c_0, c_1 in zip(pt1, pt2):
+		diff = (c_0 - c_1)
+		out += diff if diff >= 0 else -diff
 	return out
 
 def merge_pts(end, inter, start):
@@ -262,8 +366,8 @@ def get_nhood(image, x, y):
 
 	return nhood
 
-def get_nhood_pts(x, y):
-	return [
+def get_nhood_pts(x, y, img_order=True):
+	out = [
 		# N, NE,
 		# E, SE,
 		# S, SW,
@@ -273,6 +377,7 @@ def get_nhood_pts(x, y):
 		(y+1,x), (y+1,x-1),
 		(y,x-1), (y-1,x-1),
 	]
+	return out if img_order else [(x, y) for (y, x) in out]
 
 def initial_keypoints(cc, skel):
 	n_classes = np.max(cc)
@@ -510,10 +615,18 @@ if __name__ == "__main__":
 						default=None,
 						help="Path of graph dot file. "+
 							"Used with Graphviz for representation.")
+	parser.add_argument("-ddf", "--dual-dotfile",
+						default=None,
+						help="Path of dual graph dot file. "+
+							"Used with Graphviz for representation.")
+	parser.add_argument("-do", "--dual-output",
+						default=None, type=argparse.FileType("w"),
+						help="Path of dual-graph output file. "+
+							"If not present, graph is not produced.")
 	parser.add_argument("-p", "--plots", action='store_true',
 						default=False,
 						help="Show plots of intermediate steps.")
 	args = parser.parse_args()
 	makegraph(
-		args.input, output=args.output,
-		plot=args.plots, dotfile=args.dotfile)
+		args.input, output=args.output, dual_output=args.dual_output,
+		plot=args.plots, dotfile=args.dotfile, dual_dotfile=args.dual_dotfile)

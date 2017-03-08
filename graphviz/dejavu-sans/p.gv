@@ -7,5 +7,5 @@ graph "" {
 "(126, 41)" -- "(152, 42)"  [color=red, key=0, weight=1];
 "(152, 42)" -- "(239, 42)"  [color=green, key=0, weight=2];
 "(152, 42)" -- "(239, 42)"  [color=red, key=1, weight=1];
-"(239, 42)" -- "(239, 42)"  [color=red, key=0, weight=1];
+"(239, 42)" -- "(239, 42)"  [color=green, key=0, weight=2];
 }

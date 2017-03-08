@@ -6,5 +6,5 @@ graph "" {
 "(263, 43)" -- "(177, 44)"  [color=red, key=0, weight=1];
 "(0, 0)" -- "(73, 44)"  [color=purple, key=0, weight=4];
 "(73, 44)" -- "(177, 44)"  [color=red, key=0, weight=1];
-"(73, 44)" -- "(177, 44)"  [color=red, key=1, weight=1];
+"(73, 44)" -- "(177, 44)"  [color=green, key=1, weight=2];
 }

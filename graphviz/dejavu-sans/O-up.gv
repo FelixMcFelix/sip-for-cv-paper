@@ -1,6 +1,6 @@
 graph "" {
 "(67, 106)";
 "(0, 0)";
-"(67, 106)" -- "(67, 106)"  [color=red, key=0, weight=1];
+"(67, 106)" -- "(67, 106)"  [color=green, key=0, weight=2];
 "(67, 106)" -- "(0, 0)"  [color=purple, key=0, weight=4];
 }
