@@ -1,0 +1,8 @@
+graph "" {
+"(0, 0)";
+"(6, 120)";
+"(9, 79)";
+"(0, 0)" -- "(9, 79)"  [color=purple, key=0, weight=4];
+"(6, 120)" -- "(9, 79)"  [color=red, key=0, weight=1];
+"(9, 79)" -- "(9, 79)"  [color=green, key=0, weight=2];
+}

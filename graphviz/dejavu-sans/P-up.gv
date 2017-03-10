@@ -1,10 +1,10 @@
 graph "" {
-"(263, 43)";
+"(178, 45)";
 "(0, 0)";
-"(73, 44)";
-"(177, 44)";
-"(263, 43)" -- "(177, 44)"  [color=red, key=0, weight=1];
-"(0, 0)" -- "(73, 44)"  [color=purple, key=0, weight=4];
-"(73, 44)" -- "(177, 44)"  [color=red, key=0, weight=1];
-"(73, 44)" -- "(177, 44)"  [color=green, key=1, weight=2];
+"(74, 45)";
+"(264, 44)";
+"(178, 45)" -- "(74, 45)"  [color=red, key=0, weight=1];
+"(178, 45)" -- "(74, 45)"  [color=green, key=1, weight=2];
+"(178, 45)" -- "(264, 44)"  [color=red, key=0, weight=1];
+"(0, 0)" -- "(74, 45)"  [color=purple, key=0, weight=4];
 }

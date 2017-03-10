@@ -22,15 +22,17 @@ COLOR_CURVE = "green"
 COLOR_NEIGHBOUR = "blue"
 COLOR_NORTH = "purple"
 
-def makegraph(input, output=None, plot=False, dotfile=None, dual_output=None, dual_dotfile=None):
+def makegraph(input, output=None, plot=False, dotfile=None, dual_output=None, dual_dotfile=None, pad=1):
 	G = nx.MultiGraph()
 	G2 = nx.MultiGraph()
 
 	##
-	# Step 1: read input image
+	# Step 1: read (and pad) input image
 	##
-	image = color.rgb2grey(data.imread(input))
-	show(plot, image)
+	firstimage = color.rgb2grey(data.imread(input))
+	image = np.ones((firstimage.shape[0] + 2*pad, firstimage.shape[1] + 2*pad)) * 255
+	image[pad:firstimage.shape[0]+pad,pad:firstimage.shape[1]+pad] = firstimage
+	show(plot, firstimage)
 
 	##
 	# Step 2: threshold, and invert to make text "foreground"
@@ -106,7 +108,7 @@ def makegraph(input, output=None, plot=False, dotfile=None, dual_output=None, du
 			for direction, (ly, lx) in enumerate(local_pts):
 				pt   = (ly, lx)
 				last = curr
-				seg  = cc[pt] - 1
+				seg  = cc[pt] - 1#fetch(cc, pt[1], pt[0], val=0) - 1
 
 				if seg >= 0 and pt not in visited:
 					pathim = np.zeros_like(cc)
@@ -132,7 +134,9 @@ def makegraph(input, output=None, plot=False, dotfile=None, dual_output=None, du
 							if not (next_nhood is None or next_keyp is None):
 								break
 
-							if (cc[sy, sx] - 1) >= 0 and (sy, sx) not in visited and (sy, sx) != last:
+							found_cc = cc[sy, sx]#fetch(cc, sy, sx, val=0)
+
+							if (found_cc - 1) >= 0 and (sy, sx) not in visited and (sy, sx) != last:
 								if next_nhood is None:
 									next_nhood = (sy, sx)
 								if next_keyp is None and (sy, sx) in keyps:

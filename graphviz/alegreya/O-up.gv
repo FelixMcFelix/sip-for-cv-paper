@@ -1,6 +1,6 @@
 graph "" {
+"(121, 99)";
 "(0, 0)";
-"(120, 98)";
-"(0, 0)" -- "(120, 98)"  [color=purple, key=0, weight=4];
-"(120, 98)" -- "(120, 98)"  [color=green, key=0, weight=2];
+"(121, 99)" -- "(121, 99)"  [color=green, key=0, weight=2];
+"(121, 99)" -- "(0, 0)"  [color=purple, key=0, weight=4];
 }

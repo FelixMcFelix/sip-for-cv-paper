@@ -1,0 +1,33 @@
+graph "" {
+0 [color=red, weight=1];
+1 [color=red, weight=1];
+2 [color=red, weight=1];
+3 [color=red, weight=1];
+4 [color=red, weight=1];
+5 [color=red, weight=1];
+6 [color=red, weight=1];
+7 [color=red, weight=1];
+8 [color=red, weight=1];
+9 [color=red, weight=1];
+10 [color=red, weight=1];
+11 [color=red, weight=1];
+12 [color=red, weight=1];
+13 [color=purple, weight=4];
+0 -- 1  [key=0, label=2];
+0 -- 2  [key=0, label=4];
+0 -- 13  [key=0, label=8];
+1 -- 2  [key=0, label=2];
+1 -- 3  [key=0, label=1];
+2 -- 9  [key=0, label=6];
+2 -- 7  [key=0, label=3];
+3 -- 4  [key=0, label=3];
+4 -- 5  [key=0, label=5];
+5 -- 6  [key=0, label=4];
+6 -- 10  [key=0, label=2];
+6 -- 11  [key=0, label=2];
+7 -- 8  [key=0, label=5];
+7 -- 9  [key=0, label=3];
+8 -- 9  [key=0, label=3];
+10 -- 11  [key=0, label=4];
+11 -- 12  [key=0, label=3];
+}

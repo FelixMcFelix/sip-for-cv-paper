@@ -1,0 +1,34 @@
+graph "" {
+"(20, 23)";
+"(0, 0)";
+"(10, 13)";
+"(13, 15)";
+"(33, 29)";
+"(29, 33)";
+"(29, 23)";
+"(13, 18)";
+"(28, 27)";
+"(28, 32)";
+"(30, 31)";
+"(31, 30)";
+"(20, 27)";
+"(32, 28)";
+"(20, 23)" -- "(13, 18)"  [color=red, key=0, weight=1];
+"(20, 23)" -- "(28, 27)"  [color=red, key=0, weight=1];
+"(20, 23)" -- "(20, 27)"  [color=red, key=0, weight=1];
+"(0, 0)" -- "(10, 13)"  [color=purple, key=0, weight=4];
+"(10, 13)" -- "(13, 18)"  [color=red, key=0, weight=1];
+"(13, 15)" -- "(13, 18)"  [color=red, key=0, weight=1];
+"(33, 29)" -- "(31, 30)"  [color=red, key=0, weight=1];
+"(33, 29)" -- "(32, 28)"  [color=red, key=0, weight=1];
+"(33, 29)" -- "(32, 28)"  [color=red, key=1, weight=1];
+"(29, 33)" -- "(30, 31)"  [color=red, key=0, weight=1];
+"(29, 33)" -- "(28, 32)"  [color=red, key=0, weight=1];
+"(29, 33)" -- "(28, 32)"  [color=red, key=1, weight=1];
+"(29, 23)" -- "(28, 27)"  [color=red, key=0, weight=1];
+"(28, 27)" -- "(30, 31)"  [color=red, key=0, weight=1];
+"(28, 32)" -- "(30, 31)"  [color=red, key=0, weight=1];
+"(30, 31)" -- "(31, 30)"  [color=red, key=0, weight=1];
+"(30, 31)" -- "(31, 30)"  [color=red, key=1, weight=1];
+"(31, 30)" -- "(32, 28)"  [color=red, key=0, weight=1];
+}

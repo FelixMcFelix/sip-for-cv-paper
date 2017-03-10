@@ -1,0 +1,12 @@
+graph "" {
+"(0, 0)";
+"(260, 2)";
+"(9, 8)";
+"(160, 16)";
+"(10, 14)";
+"(0, 0)" -- "(9, 8)"  [color=purple, key=0, weight=4];
+"(260, 2)" -- "(160, 16)"  [color=blue, key=0, weight=3];
+"(260, 2)" -- "(10, 14)"  [color=red, key=0, weight=1];
+"(9, 8)" -- "(10, 14)"  [color=blue, key=0, weight=3];
+"(9, 8)" -- "(160, 16)"  [color=green, key=0, weight=2];
+}

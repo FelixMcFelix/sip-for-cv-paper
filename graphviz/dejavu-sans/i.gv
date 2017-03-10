@@ -1,13 +1,13 @@
 graph "" {
+"(72, 41)";
+"(63, 43)";
 "(0, 0)";
-"(265, 40)";
-"(62, 42)";
-"(71, 40)";
-"(126, 42)";
-"(0, 0)" -- "(62, 42)"  [color=purple, key=0, weight=4];
-"(265, 40)" -- "(126, 42)"  [color=red, key=0, weight=1];
-"(265, 40)" -- "(71, 40)"  [color=blue, key=0, weight=3];
-"(62, 42)" -- "(71, 40)"  [color=red, key=0, weight=1];
-"(62, 42)" -- "(126, 42)"  [color=blue, key=0, weight=3];
-"(71, 40)" -- "(126, 42)"  [color=blue, key=0, weight=3];
+"(266, 41)";
+"(127, 43)";
+"(72, 41)" -- "(63, 43)"  [color=red, key=0, weight=1];
+"(72, 41)" -- "(266, 41)"  [color=blue, key=0, weight=3];
+"(72, 41)" -- "(127, 43)"  [color=blue, key=0, weight=3];
+"(63, 43)" -- "(127, 43)"  [color=blue, key=0, weight=3];
+"(63, 43)" -- "(0, 0)"  [color=purple, key=0, weight=4];
+"(266, 41)" -- "(127, 43)"  [color=red, key=0, weight=1];
 }

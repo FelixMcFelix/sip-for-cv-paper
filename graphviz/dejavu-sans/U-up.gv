@@ -1,7 +1,7 @@
 graph "" {
-"(72, 41)";
-"(72, 179)";
+"(73, 42)";
 "(0, 0)";
-"(72, 41)" -- "(72, 179)"  [color=green, key=0, weight=2];
-"(72, 41)" -- "(0, 0)"  [color=purple, key=0, weight=4];
+"(73, 180)";
+"(73, 42)" -- "(0, 0)"  [color=purple, key=0, weight=4];
+"(73, 42)" -- "(73, 180)"  [color=green, key=0, weight=2];
 }

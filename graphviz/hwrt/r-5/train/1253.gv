@@ -1,0 +1,6 @@
+graph "" {
+"(0, 0)";
+"(8, 111)";
+"(0, 0)" -- "(8, 111)"  [color=purple, key=0, weight=4];
+"(8, 111)" -- "(8, 111)"  [color=green, key=0, weight=2];
+}

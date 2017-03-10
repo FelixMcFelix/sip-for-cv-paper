@@ -1,0 +1,29 @@
+graph "" {
+"(15, 13)";
+"(68, 19)";
+"(54, 13)";
+"(18, 14)";
+"(69, 19)";
+"(0, 0)";
+"(19, 12)";
+"(26, 10)";
+"(21, 12)";
+"(17, 14)";
+"(56, 11)";
+"(15, 13)" -- "(0, 0)"  [color=purple, key=0, weight=4];
+"(15, 13)" -- "(17, 14)"  [color=red, key=0, weight=1];
+"(68, 19)" -- "(54, 13)"  [color=red, key=0, weight=1];
+"(68, 19)" -- "(69, 19)"  [color=red, key=0, weight=1];
+"(68, 19)" -- "(69, 19)"  [color=red, key=1, weight=1];
+"(68, 19)" -- "(69, 19)"  [color=red, key=2, weight=1];
+"(54, 13)" -- "(56, 11)"  [color=red, key=0, weight=1];
+"(54, 13)" -- "(26, 10)"  [color=red, key=0, weight=1];
+"(18, 14)" -- "(19, 12)"  [color=red, key=0, weight=1];
+"(18, 14)" -- "(17, 14)"  [color=red, key=0, weight=1];
+"(18, 14)" -- "(17, 14)"  [color=red, key=1, weight=1];
+"(18, 14)" -- "(17, 14)"  [color=red, key=2, weight=1];
+"(19, 12)" -- "(21, 12)"  [color=red, key=0, weight=1];
+"(19, 12)" -- "(19, 12)"  [color=green, key=0, weight=2];
+"(26, 10)" -- "(21, 12)"  [color=red, key=0, weight=1];
+"(26, 10)" -- "(21, 12)"  [color=red, key=1, weight=1];
+}

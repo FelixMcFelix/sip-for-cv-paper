@@ -1,0 +1,13 @@
+graph "" {
+"(6, 235)";
+"(16, 222)";
+"(0, 0)";
+"(16, 221)";
+"(6, 235)" -- "(16, 222)"  [color=red, key=0, weight=1];
+"(16, 222)" -- "(16, 221)"  [color=red, key=0, weight=1];
+"(16, 222)" -- "(16, 221)"  [color=red, key=1, weight=1];
+"(16, 222)" -- "(16, 221)"  [color=red, key=2, weight=1];
+"(16, 222)" -- "(16, 221)"  [color=red, key=3, weight=1];
+"(0, 0)" -- "(16, 221)"  [color=purple, key=0, weight=4];
+"(16, 221)" -- "(16, 221)"  [color=green, key=0, weight=2];
+}

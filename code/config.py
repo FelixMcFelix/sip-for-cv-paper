@@ -23,8 +23,31 @@ params    = [
 	("--edge-overlap", "edgecountdec"),
 	("--induced",      "induced")
 ]
+
+datasets  = [
+	"hwrt"
+]
+
+splits    = [
+	"test",
+	"train"
+]
+
+dataset_sizes = [
+	500,
+	1000
+]
+
+pen_rads  = range(1+4*1, 2 + 4*2, 4)
+
+pen_to_start = {
+	# 5: 142741
+}
+
 timelimit = 300
 num_cores = 8
+
+base = ".."
 
 img_dir     = "../imgs/"
 graph_dir   = "../graphs/"

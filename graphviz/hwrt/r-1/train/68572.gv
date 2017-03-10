@@ -1,0 +1,14 @@
+graph "" {
+"(0, 0)";
+"(5, 7)";
+"(7, 7)";
+"(45, 7)";
+"(33, 60)";
+"(17, 59)";
+"(0, 0)" -- "(5, 7)"  [color=purple, key=0, weight=4];
+"(5, 7)" -- "(7, 7)"  [color=red, key=0, weight=1];
+"(7, 7)" -- "(17, 59)"  [color=red, key=0, weight=1];
+"(7, 7)" -- "(45, 7)"  [color=red, key=0, weight=1];
+"(45, 7)" -- "(33, 60)"  [color=red, key=0, weight=1];
+"(33, 60)" -- "(17, 59)"  [color=red, key=0, weight=1];
+}
