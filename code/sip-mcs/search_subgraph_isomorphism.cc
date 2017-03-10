@@ -229,7 +229,8 @@ auto main(int argc, char * argv[]) -> int
 
         std::string line;
 
-        while (std::getline(p_csv_file, line)) {
+        // read in target graphs (training set)
+        while (std::getline(t_csv_file, line)) {
             std::stringstream lineStream(line);
 
             std::string name;
@@ -238,10 +239,11 @@ auto main(int argc, char * argv[]) -> int
             unsigned label;
             lineStream >> label;
 
-            targets.push_back(std::make_tuple(read_function(p_folder + "/" + name), label));
+            targets.push_back(std::make_tuple(read_function(t_folder + "/" + name), label));
         }
 
-        while (std::getline(t_csv_file, line)) {
+        // read in pattern graphs (test set)
+        while (std::getline(p_csv_file, line)) {
             std::stringstream lineStream(line);
 
             std::string name;
@@ -291,7 +293,7 @@ auto main(int argc, char * argv[]) -> int
                 dists.push_back(std::make_pair(ged, class_t));
             }
 
-            // Sort by distance, take the k-closest elements.
+            // Sort by increasing distance, take the k-closest elements.
             // Tally up their votes.
             std::sort(dists.begin(), dists.end());
 
@@ -316,6 +318,7 @@ auto main(int argc, char * argv[]) -> int
             // Now sort.
             std::vector<std::pair<unsigned, unsigned> > v_tall(tallies.begin(), tallies.end());
 
+            // Sort into decreasing order on vote count.
             std::sort(v_tall.begin(), v_tall.end(),
                 [](std::pair<unsigned, unsigned> & a, std::pair<unsigned, unsigned> & b){
                     return a.second > b.second;
