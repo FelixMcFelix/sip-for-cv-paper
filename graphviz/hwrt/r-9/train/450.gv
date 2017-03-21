@@ -1,0 +1,25 @@
+graph "" {
+"(24, 9)";
+"(0, 0)";
+"(102, 40)";
+"(98, 97)";
+"(17, 21)";
+"(172, 68)";
+"(10, 123)";
+"(27, 63)";
+"(100, 63)";
+"(100, 65)";
+"(24, 9)" -- "(17, 21)"  [color=red, key=0, weight=1];
+"(24, 9)" -- "(172, 68)"  [color=blue, key=0, weight=3];
+"(24, 9)" -- "(0, 0)"  [color=purple, key=0, weight=4];
+"(24, 9)" -- "(102, 40)"  [color=blue, key=0, weight=3];
+"(24, 9)" -- "(27, 63)"  [color=blue, key=0, weight=3];
+"(102, 40)" -- "(100, 63)"  [color=red, key=0, weight=1];
+"(98, 97)" -- "(10, 123)"  [color=blue, key=0, weight=3];
+"(98, 97)" -- "(100, 65)"  [color=red, key=0, weight=1];
+"(17, 21)" -- "(10, 123)"  [color=red, key=0, weight=1];
+"(172, 68)" -- "(100, 65)"  [color=red, key=0, weight=1];
+"(10, 123)" -- "(27, 63)"  [color=blue, key=0, weight=3];
+"(27, 63)" -- "(100, 63)"  [color=red, key=0, weight=1];
+"(100, 63)" -- "(100, 65)"  [color=red, key=0, weight=1];
+}

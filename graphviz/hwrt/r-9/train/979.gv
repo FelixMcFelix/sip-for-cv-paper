@@ -1,13 +1,9 @@
 graph "" {
-"(13, 31)";
+"(277, 247)";
 "(273, 14)";
-"(277, 13)";
 "(0, 0)";
-"(274, 14)";
-"(13, 31)" -- "(0, 0)"  [color=purple, key=0, weight=4];
-"(13, 31)" -- "(273, 14)"  [color=red, key=0, weight=1];
-"(273, 14)" -- "(274, 14)"  [color=red, key=0, weight=1];
-"(273, 14)" -- "(274, 14)"  [color=red, key=1, weight=1];
-"(273, 14)" -- "(274, 14)"  [color=red, key=2, weight=1];
-"(277, 13)" -- "(274, 14)"  [color=red, key=0, weight=1];
+"(9, 31)";
+"(277, 247)" -- "(273, 14)"  [color=red, key=0, weight=1];
+"(273, 14)" -- "(9, 31)"  [color=red, key=0, weight=1];
+"(0, 0)" -- "(9, 31)"  [color=purple, key=0, weight=4];
 }
