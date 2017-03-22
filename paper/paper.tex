@@ -67,7 +67,8 @@ Research into computer vision tasks, such as image and object recognition, is cu
 Machine learning methods apply statistical inference from training data to teach classifiers how to recognise the desired elements or features from an image---and have become popular due to their versatility, effectiveness and accuracy across many problem domains.
 Vector-space models capture the area around high-contrast regions in images as salient features, or describe an image's contents in a dense and very low-level fashion.
 
-In many cases it can be hard to reason about such models' robustness or sensitivity to different phenomena, for instance in a machine learning context these are often a function of both the training data and the model itself.
+In many cases it can be hard to reason about such models' robustness or sensitivity to different phenomena.
+For instance, in a machine learning context these are often a function of both the training data and the model itself.
 The parameters learned by these models aren't structured in a way that allows humans to easily intuit what the model has learned or to comment on the system's correctness, and it can be difficult to discern \textit{why} a particular image might be misclassified.
 Recent work into \emph{adversarial images} \cite{AdversarialML} has affirmed this, given that interference can lead to classifications contrary to image content.
 %Outside of this, vector-space models can represent image interest points in a way that describes their neighbourhood (or indeed, the entirety of an image), and so are easier to understand; yet they lack any way to describe the relationships between these points or to capture an object's shape.
@@ -76,7 +77,7 @@ Recent work into \emph{adversarial images} \cite{AdversarialML} has affirmed thi
 
 Graph models, long-explored in discrete mathematics, provide a simpler way of visualising problems.
 Systems are broken down into \emph{vertices} and \emph{edges} between vertex pairs---capturing the relationships between objects or key features within a scene.
-For many domains, this is an intuitive and effective representation, encoding rich semantics in a very natural way---which enjoys use in computational chemistry \cite{Graph-Molecules-2,Graph-Molecules-3,Graph-Molecules-1}, biology \cite{Graph-Biology-1}, and graph database analysis.
+For many domains, this is an intuitive and effective representation, encoding rich semantics in a very natural way which enjoys use in computational chemistry \cite{Graph-Molecules-2,Graph-Molecules-3,Graph-Molecules-1}, biology \cite{Graph-Biology-1}, and graph database analysis.
 Furthermore, exact graph search and similarity metrics (e.g.\ the \emph{subgraph isomorphism} and \emph{maximum common subgraph} problems, respectively) are well-understood and an area of continual research in the field of algorithms.
 %?? part of idea---need effective models to know that our similarity algorithms are a good fit?
 
@@ -163,7 +164,7 @@ An undirected graph $\mathcal{G}$ may be written $\mathcal{G} = (V,E)$ for a ver
 For some $u,v \in V$, we may write $u \sim_\mathcal{G} v$ to mean $u$ and $v$ are adjacent vertices in $\mathcal{G}$ ($\lbrace u,v \rbrace \in E$), and use $N_\mathcal{G}(u)$ to refer to $u$'s \emph{neighbourhood}---the set of all vertices in $V \backslash \lbrace u \rbrace$ adjacent to $u$ in $\mathcal{G}$.
 This definition allows loops, e.g.\ $u \sim_\mathcal{G} u$ with the caveat that $u \notin N_\mathcal{G}(u)$.
 Additionally, the \emph{order} of $\mathcal{G}$ refers to the count of $\mathcal{G}$'s vertices ($O(\mathcal{G})=|V|$), and the \emph{size} of $\mathcal{G}$ refers to the count of $\mathcal{G}$'s edges ($S(\mathcal{G})=|E|$).
-Where $\mathcal{G}$ is indicated by context, the relevant subscripts will be elided.
+Where $\mathcal{G}$ is clear from context, the relevant subscripts will be elided.
 
 The graphs produced by the techniques I outline are \emph{attributed undirected multigraphs}: vertices and edges may have labels, and each pair of vertices may share multiple edges.
 Given domains $L_v, L_e$ for vertex and edge labels respectively, we redefine $\mathcal{G} = (V,E,l_v,l_e)$ for a vertex set $V$, an edge set $E$, a vertex label mapping $l_v: V \rightarrow L_v$ and an edge mapping $l_e: E \rightarrow \lbrace(\lbrace u,v \rbrace, l): u,v \in V, l \in L_e\rbrace$.
@@ -171,15 +172,16 @@ Given domains $L_v, L_e$ for vertex and edge labels respectively, we redefine $\
 We can succinctly describe the edges between any $u, v \in V$ with a sorted (non-decreasing) sequence of labels, $seq_\mathcal{G}(u, v)$.
 This allows us to define basic adjacency, and thus the basic neighbourhood: $u \sim_\mathcal{G} v \iff |seq_\mathcal{G}(u,v)| \ge 1$.
 For matching such graphs, we require two new neighbourhood definitions.
-Given a sorted label sequence $s$, we may define the \emph{exact neighbourhood} $N^{=}_{s,\mathcal{G}}(u)$ as the set of all $v \in N_\mathcal{G}(u)$ such that $seq_\mathcal{G}(u,v)=s$, and the \emph{sufficient neighbourhood} $N^{\ge}_{s,\mathcal{G}}(u)$ as the set of all $v \in N_\mathcal{G}(u)$ where we may map each label in $s$ to a distinct label of equal value in $seq_\mathcal{G}(u,v)$.
+Given a sorted label sequence $s$, we may define the \emph{exact neighbourhood} $N^{=}_{s,\mathcal{G}}(u)$ as the set of all $v \in N_\mathcal{G}(u)$ such that $seq_\mathcal{G}(u,v)=s$,
+The \emph{sufficient neighbourhood} $N^{\succcurlyeq}_{s,\mathcal{G}}(u)$ is the set of all $v \in N_\mathcal{G}(u)$ where we may map each label in $s$ to a distinct label of equal value in $seq_\mathcal{G}(u,v)$---we say that $s \preccurlyeq seq_\mathcal{G}(u,v)$ if such a mapping exists.
 %=\lbrace v \in V \backslash \lbrace u \rbrace: seq_\mathcal{G}(u,v)=s\rbrace$
 For simplicity, I shall define the core search and similarity problems using undirected graphs.
 
-Transformation from an image to a graph will lead to a graph whose structure corresponds to the image's content and invariants.
-If an image $I$ contains an object, it is thus reasonable to assume that the graph produced from an image of only that object should be reproduced within $I$'s graph model---such a problem might be the identification of a road sign as seen by an autonomous car.
+Transformation from an image to a graph will create a graph whose structure corresponds to the image's content and invariants.
+If an image $I$ contains an object, it is thus reasonable to assume that the graph produced from an image of only that object should be reproduced within $I$'s graph model---this may be useful when e.g., searching for a road sign in a view seen by an autonomous car.
 This form of graph search is known as the \emph{subgraph isomorphism problem} (SIP), which is concerned with finding the exact structure of some pattern graph $\mathcal{P}=(V_\mathcal{P}, E_\mathcal{P})$ within a target graph $\mathcal{T}=(V_\mathcal{T}, E_\mathcal{T})$---an example is provided in \cref{fig:lit-sip}.
 More precisely, for the non-induced variant of SIP the problem is to find an injective mapping $i : \mathcal{P} \rightarrow \mathcal{T}$ such that $\forall u,v \in V_\mathcal{P}, i(u) \neq i(v)$ and $u \sim_\mathcal{P} v \Rightarrow i(u) \sim_\mathcal{T} i(v)$, preserving adjacency and ensuring no two vertices of $\mathcal{P}$ are mapped to the same vertex of $\mathcal{T}$.
-The induced variant additionally imposes that $\forall u,v \in V_P, u \nsim_P v \Rightarrow i(u) \nsim_T i(v)$, ensuring that non-adjacent vertices in $P$ must remain non-adjacent in the embedding in $T$.
+The induced variant additionally imposes that $\forall u,v \in V_\mathcal{P}, u \nsim_\mathcal{P} v \Rightarrow i(u) \nsim_\mathcal{T} i(v)$, ensuring that non-adjacent vertices in $\mathcal{P}$ must remain non-adjacent in the embedding in $\mathcal{T}$.
 While SIP is \NP-Complete \cite{Cook-SAT-SIP-NP, Computers-and-Intractibility}, with modern algorithms such as \citeauthor{SIP-Glasgow}'s Glasgow solver it is computationally feasible for graphs on the order of several thousand vertices \cite{SIP-Glasgow}.
 Trends in recent work have focused on increasing performance for larger instances through more costly filtering and pre-processing \cite{SIP-LAD, SIP-SND, SIP-Glasgow}---for this reason, older approaches such as VF2 \cite{SIP-VF2} remain competitive on smaller instances \cite{SIP-Hard-Instances}.
 %The constraint programming 
@@ -264,6 +266,12 @@ Trends in recent work have focused on increasing performance for larger instance
 In reality, elements of an object's graph structure may not be reproduced in the graph of an embedding due to either occlusion, image distortion or object scale.
 In this case, it is worthwhile to examine how much two image graphs have in common to identify common elements and substructures.
 Between two graphs $\mathcal{P}$ and $\mathcal{T}$ this is known as the \emph{maximum common subgraph problem} (MCS), which is the search for the largest subgraph of $\mathcal{T}$ which is isomorphic to $\mathcal{P}$ as in SIP.
+\Cref{fig:lit-mcs} offers an example instance.
+While this problem is also \NP-Complete \cite[p.\ 74--75]{Computers-and-Intractibility}, it is considerably harder in practice than SIP---the current state-of-the-art, McSplit, can operate on graphs of order 35--40 \cite{MCS-McSplit}, where other approaches are limited to around 30 vertices.
+Even so, this approach applies only to the induced variant of MCS and largely prevents the addition of side constraints.
+For such flexibility we must consider either $k\downarrow$ \cite{Between-MCS-SIP}, a repeated application of the Glasgow SIP solver excluding $k$ vertices, or a max-clique-based approach using the \emph{association graph encoding} \cite{MCS-Clique-CP}.
+In this regard there is a trade-off to be made: while the clique-based approach still achieves the best performance on labelled instances \cite{MCS-McSplit}, $k\downarrow$ requires far less memory to process high-order graphs.
+I choose to examine and modify $k\downarrow$ for these reasons, but this still requires that the order of any graphs must remain small to perform occlusion invariant matching with this technique.
 
 \begin{figure}
 	\centering
