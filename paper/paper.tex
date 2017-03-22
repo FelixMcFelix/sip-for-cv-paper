@@ -38,7 +38,7 @@
 
 \begin{document}
 
-\title{Graph Models and Subgraph Isomorphism for Character Analysis}
+\title{Graph Models and Maximum Common Subgraph for Character Analysis}
 \author{Kyle A. Simpson}
 \matricnum{2029567}
 
@@ -80,13 +80,13 @@ For many domains, this is an intuitive and effective representation, encoding ri
 Furthermore, exact graph search and similarity metrics (e.g.\ the \emph{subgraph isomorphism} and \emph{maximum common subgraph} problems, respectively) are well-understood and an area of continual research in the field of algorithms.
 %?? part of idea---need effective models to know that our similarity algorithms are a good fit?
 
-The main aim of this paper is to explore the hypothesis that, after suitable transformation, image similarity corresponds to graph similarity according to these techniques; \cref{fig:intro-sim} gives a rough illustration of the concept.
+The main aim of this paper is to explore the hypothesis that, after suitable transformation, image similarity corresponds to graph similarity according to these known metrics; \cref{fig:intro-sim} gives a rough illustration of the concept.
 In particular, this work focuses on character analysis and recognition, considering both the performance of graph models within a domain alongside the usefulness of any chosen analytic techniques.
 By investigating these questions, this paper contributes:
 \begin{itemize}
 	\item A demonstration of the shortcomings of existing image graph work (\Cref{sec:image-weakness}), by attempting similarity computation on graphs built using common techniques from the literature. %given that this also requires an investigation into the effectiveness of known graph similarity techniques, this motivates the development of new models.
 	This weakness motivates the development of new modelling strategies.
-	\item ?? More
+	\item ?? Detail as paper written
 \end{itemize}
 
 \begin{figure}
@@ -149,23 +149,198 @@ By investigating these questions, this paper contributes:
 		node[midway,fill=white] {Transform};
 	\end{tikzpicture}
 }
-\caption{\textit{An example of the expected similarity between two views of the same scene. Similar objects and scenes should theoretically generate similar graphs after a suitable transformation, enabling recognition across images.}\label{fig:intro-sim}}
+\caption{\emph{An example of the expected similarity between two views of the same scene. Similar objects and scenes should theoretically generate similar graphs after a suitable transformation, enabling recognition across images.}\label{fig:intro-sim}}
 \end{figure}
 
 %====================================================
-\section{Graph Search and Similarity}
+\section{Graphs, Search and Similarity}
 \label{sec:graph-search}
 %====================================================
 
 %?? Graph definitions etc
 First, we must define graphs more precisely.
-An undirected graph $G$ may be written $G=(V,E)$ for a vertex set $V$ and an edge set $E \subseteq \lbrace \lbrace u,v \rbrace : u,v \in V \rbrace $, i.e.\ each edge $e \in E$ is a set of two nodes from $V$.
-Borrowing notation from \citeauthor{SIP-Glasgow} \cite{SIP-Glasgow}, for $u,v \in V$ we may write $u \sim_G v$ to mean $u$ and $v$ are adjacent vertices in $G$ ($\lbrace u,v \rbrace \in E$), and use $adj_G(u)$ to refer to the set of all vertices adjacent to $u$ in $G$.
-Additionally, the \textit{order} of $G$ refers to the count of $G$'s vertices ($|V|$), and the \textit{size} of $G$ refers to the count of $G$'s edges ($|E|$).
+An undirected graph $\mathcal{G}$ may be written $\mathcal{G} = (V,E)$ for a vertex set $V$ and an edge set $E \subseteq \lbrace \lbrace u,v \rbrace : u,v \in V \rbrace $, i.e.\ each edge $e \in E$ is a set of two nodes from $V$.
+For some $u,v \in V$, we may write $u \sim_\mathcal{G} v$ to mean $u$ and $v$ are adjacent vertices in $\mathcal{G}$ ($\lbrace u,v \rbrace \in E$), and use $N_\mathcal{G}(u)$ to refer to $u$'s \emph{neighbourhood}---the set of all vertices in $V \backslash \lbrace u \rbrace$ adjacent to $u$ in $\mathcal{G}$.
+This definition allows loops, e.g.\ $u \sim_\mathcal{G} u$ with the caveat that $u \notin N_\mathcal{G}(u)$.
+Additionally, the \emph{order} of $\mathcal{G}$ refers to the count of $\mathcal{G}$'s vertices ($O(\mathcal{G})=|V|$), and the \emph{size} of $\mathcal{G}$ refers to the count of $\mathcal{G}$'s edges ($S(\mathcal{G})=|E|$).
+Where $\mathcal{G}$ is indicated by context, the relevant subscripts will be elided.
 
-?? SIP \cite{SIP-VF2, SIP-LAD, SIP-SND, SIP-Glasgow}, Regin filtering \cite{AllDiff}, Complexity \cite{Cook-SAT-SIP-NP,Computers-and-Intractibility}
+The graphs produced by the techniques I outline are \emph{attributed undirected multigraphs}: vertices and edges may have labels, and each pair of vertices may share multiple edges.
+Given domains $L_v, L_e$ for vertex and edge labels respectively, we redefine $\mathcal{G} = (V,E,l_v,l_e)$ for a vertex set $V$, an edge set $E$, a vertex label mapping $l_v: V \rightarrow L_v$ and an edge mapping $l_e: E \rightarrow \lbrace(\lbrace u,v \rbrace, l): u,v \in V, l \in L_e\rbrace$.
+%For any vertex $v \in V$, its label in $\mathcal{G}$ is given as $l_\mathcal{G}(v)$.
+We can succinctly describe the edges between any $u, v \in V$ with a sorted (non-decreasing) sequence of labels, $seq_\mathcal{G}(u, v)$.
+This allows us to define basic adjacency, and thus the basic neighbourhood: $u \sim_\mathcal{G} v \iff |seq_\mathcal{G}(u,v)| \ge 1$.
+For matching such graphs, we require two new neighbourhood definitions.
+Given a sorted label sequence $s$, we may define the \emph{exact neighbourhood} $N^{=}_{s,\mathcal{G}}(u)$ as the set of all $v \in N_\mathcal{G}(u)$ such that $seq_\mathcal{G}(u,v)=s$, and the \emph{sufficient neighbourhood} $N^{\ge}_{s,\mathcal{G}}(u)$ as the set of all $v \in N_\mathcal{G}(u)$ where we may map each label in $s$ to a distinct label of equal value in $seq_\mathcal{G}(u,v)$.
+%=\lbrace v \in V \backslash \lbrace u \rbrace: seq_\mathcal{G}(u,v)=s\rbrace$
+For simplicity, I shall define the core search and similarity problems using undirected graphs.
 
-?? MCS \cite{Between-MCS-SIP}, James+Ciaran+Pat's new paper too \cite{MCS-McSplit}
+Transformation from an image to a graph will lead to a graph whose structure corresponds to the image's content and invariants.
+If an image $I$ contains an object, it is thus reasonable to assume that the graph produced from an image of only that object should be reproduced within $I$'s graph model---such a problem might be the identification of a road sign as seen by an autonomous car.
+This form of graph search is known as the \emph{subgraph isomorphism problem} (SIP), which is concerned with finding the exact structure of some pattern graph $\mathcal{P}=(V_\mathcal{P}, E_\mathcal{P})$ within a target graph $\mathcal{T}=(V_\mathcal{T}, E_\mathcal{T})$---an example is provided in \cref{fig:lit-sip}.
+More precisely, for the non-induced variant of SIP the problem is to find an injective mapping $i : \mathcal{P} \rightarrow \mathcal{T}$ such that $\forall u,v \in V_\mathcal{P}, i(u) \neq i(v)$ and $u \sim_\mathcal{P} v \Rightarrow i(u) \sim_\mathcal{T} i(v)$, preserving adjacency and ensuring no two vertices of $\mathcal{P}$ are mapped to the same vertex of $\mathcal{T}$.
+The induced variant additionally imposes that $\forall u,v \in V_P, u \nsim_P v \Rightarrow i(u) \nsim_T i(v)$, ensuring that non-adjacent vertices in $P$ must remain non-adjacent in the embedding in $T$.
+While SIP is \NP-Complete \cite{Cook-SAT-SIP-NP, Computers-and-Intractibility}, with modern algorithms such as \citeauthor{SIP-Glasgow}'s Glasgow solver it is computationally feasible for graphs on the order of several thousand vertices \cite{SIP-Glasgow}.
+Trends in recent work have focused on increasing performance for larger instances through more costly filtering and pre-processing \cite{SIP-LAD, SIP-SND, SIP-Glasgow}---for this reason, older approaches such as VF2 \cite{SIP-VF2} remain competitive on smaller instances \cite{SIP-Hard-Instances}.
+%The constraint programming 
+%?? SIP \cite{SIP-VF2, SIP-LAD, SIP-SND, SIP-Glasgow}, Regin filtering \cite{AllDiff}, Complexity \cite{Cook-SAT-SIP-NP}
+
+\begin{figure}
+	\centering
+	\resizebox{\columnwidth}{!}{
+	\begin{tikzpicture}
+	
+	\node[label=below:{$\mathcal{P}$}] (p) at (0,0){
+		\begin{tikzpicture}[scale=1]
+		\node[draw, circle] (n1) at (0,0) {a};
+		\node[draw, circle] (n2) at (0,-1) {c};
+		\node[draw, circle] (n3) at (1,0) {b};
+		\node[draw, circle] (n4) at (1,-1) {d};
+		
+		\draw[-] (n1) -- (n3);
+		\draw[-] (n2) -- (n4);
+		\draw[-] (n1) -- (n4);
+		\draw[-] (n2) -- (n3);
+		\draw[-] (n3) -- (n4);
+		\end{tikzpicture}
+	};
+	
+	\node[label=below:{$\mathcal{T}$}] (t) at (4,0){
+		\begin{tikzpicture}[scale=1]
+		\node[draw, circle] (n1) at (2,0) {2};
+		\node[draw, circle] (n2) at (0,-1) {4};
+		\node[draw, circle] (n3) at (1,0) {1};
+		\node[draw, circle] (n4) at (1,-1) {5};
+		
+		\node[draw, circle] (n5) at (2,-1) {6};
+		\node[draw, circle] (n6) at (3,0) {3};
+		
+		\draw[-] (n1) -- (n3);
+		\draw[-] (n2) -- (n4);
+		\draw[-] (n1) -- (n4);
+		\draw[-] (n2) -- (n3);
+		\draw[-] (n3) -- (n4);
+		
+		\draw[-] (n5) -- (n6);
+		\draw[-] (n1) -- (n6);
+		\draw[-] (n3) -- (n5);
+		\end{tikzpicture}
+	};
+	
+	\node[label=below:{Embedding}] (em) at (9,0){
+		\begin{tikzpicture}[scale=1]
+		\node[draw, circle, fill=graphc3] (n1) at (2,0) {2};
+		\node[draw, circle, fill=graphc3] (n2) at (0,-1) {4};
+		\node[draw, circle, fill=graphc3] (n3) at (1,0) {1};
+		\node[draw, circle, fill=graphc3] (n4) at (1,-1) {5};
+		
+		\node[draw, circle] (n5) at (2,-1) {6};
+		\node[draw, circle] (n6) at (3,0) {3};
+		
+		\draw[-, color=orange] (n1) -- (n3);
+		\draw[-, color=orange] (n2) -- (n4);
+		\draw[-, color=orange] (n1) -- (n4);
+		\draw[-, color=orange] (n2) -- (n3);
+		\draw[-, color=orange] (n3) -- (n4);
+		
+		\draw[-] (n5) -- (n6);
+		\draw[-] (n1) -- (n6);
+		\draw[-] (n3) -- (n5);
+		\end{tikzpicture}
+	};
+	
+	\draw[->, thick] (t) -- (em);
+	
+\end{tikzpicture}
+}
+\caption{\emph{
+		An example of the subgraph isomorphism problem between two graphs $\mathcal{P}$ and $\mathcal{T}$.
+		$\mathcal{P}$'s embedding within $\mathcal{T}$ is highlighted in orange---this is a valid matching in both the induced and non-induced SIP variants.
+		\label{fig:lit-sip}
+}}
+\end{figure}
+
+%?? MCS \cite{Between-MCS-SIP}, James+Ciaran+Pat's new paper too \cite{MCS-McSplit}, complexity \cite[p.\ 74--75]{Computers-and-Intractibility}
+In reality, elements of an object's graph structure may not be reproduced in the graph of an embedding due to either occlusion, image distortion or object scale.
+In this case, it is worthwhile to examine how much two image graphs have in common to identify common elements and substructures.
+Between two graphs $\mathcal{P}$ and $\mathcal{T}$ this is known as the \emph{maximum common subgraph problem} (MCS), which is the search for the largest subgraph of $\mathcal{T}$ which is isomorphic to $\mathcal{P}$ as in SIP.
+
+\begin{figure}
+	\centering
+	\resizebox{\columnwidth}{!}{
+	\begin{tikzpicture}
+	
+	\node[label=below:{$\mathcal{P}$}] (p) at (0,0){
+		\begin{tikzpicture}[scale=1]
+		\node[draw, circle] (n1) at (0,0) {a};
+		\node[draw, circle] (n2) at (0,-1) {c};
+		\node[draw, circle] (n3) at (1,0) {b};
+		\node[draw, circle] (n4) at (1,-1) {d};
+		
+		\draw[-] (n1) -- (n3);
+		\draw[-] (n2) -- (n4);
+		\draw[-] (n1) -- (n4);
+		\draw[-] (n2) -- (n3);
+		\draw[-] (n3) -- (n4);
+		\end{tikzpicture}
+	};
+	
+	\node[label=below:{$\mathcal{T}$}] (t) at (3,0){
+		\begin{tikzpicture}[scale=1]
+		\node[draw, circle] (n1) at (0,0) {1};
+		\node[draw, circle] (n2) at (0,-1) {3};
+		\node[draw, circle] (n3) at (1,0) {2};
+		\node[draw, circle] (n4) at (1,-1) {4};
+		
+		
+		\draw[-] (n1) -- (n3);
+		\draw[-] (n2) -- (n4);
+		\draw[-] (n1) -- (n2);
+		\draw[-] (n2) -- (n3);
+		\draw[-] (n3) -- (n4);
+		
+		\end{tikzpicture}
+	};
+	
+	\node[label=below:{Embedding}] (em) at (7,0){
+		\begin{tikzpicture}[scale=1]
+		\node[draw, circle] (n1) at (0,0) {a};
+		\node[draw, circle, fill=graphc3] (n2) at (0,-1) {c};
+		\node[draw, circle, fill=graphc3] (n3) at (1,0) {b};
+		\node[draw, circle, fill=graphc3] (n4) at (1,-1) {d};
+		
+		\draw[-] (n1) -- (n3);
+		\draw[-, color=orange] (n2) -- (n4);
+		\draw[-] (n1) -- (n4);
+		\draw[-, color=orange] (n2) -- (n3);
+		\draw[-, color=orange] (n3) -- (n4);
+		
+		\node[draw, circle] (n1') at (2,0) {1};
+		\node[draw, circle, fill=graphc3] (n2') at (2,-1) {3};
+		\node[draw, circle, fill=graphc3] (n3') at (3,0) {2};
+		\node[draw, circle, fill=graphc3] (n4') at (3,-1) {4};
+		
+		
+		\draw[-] (n1') -- (n3');
+		\draw[-, color=orange] (n2') -- (n4');
+		\draw[-] (n1') -- (n2');
+		\draw[-, color=orange] (n2') -- (n3');
+		\draw[-, color=orange] (n3') -- (n4');
+		
+		\end{tikzpicture}
+	};
+	
+	\draw[->, thick] (t) -- (em);
+	
+\end{tikzpicture}
+}
+\caption{\emph{
+		An example of the maximum common subgraph problem between two graphs $\mathcal{P}$ and $\mathcal{T}$.
+		The MCS's embedding within both $\mathcal{P}$ and $\mathcal{T}$ is highlighted in orange.
+		Note that this embedding is not unique, although for this choice of $\mathcal{P}$ and $\mathcal{T}$ the MCS itself is.
+		\label{fig:lit-mcs}
+}}
+\end{figure}
 
 %====================================================
 \section{On Existing Image Graph Models}
