@@ -35,10 +35,12 @@ splits    = [
 
 dataset_sizes = [
 	500,
-	1000
+	1000,
+	2000,
+	4000
 ]
 
-pen_rads  = range(1+4*1, 2 + 4*2, 4)
+pen_rads  = range(1+4*0, 2 + 4*2, 4)
 
 pen_to_start = {
 	# 5: 142741

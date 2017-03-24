@@ -229,6 +229,8 @@ auto main(int argc, char * argv[]) -> int
 
         std::string line;
 
+        // std::cout << "Opened csv streams\n";
+
         // read in target graphs (training set)
         while (std::getline(t_csv_file, line)) {
             std::stringstream lineStream(line);
@@ -240,8 +242,23 @@ auto main(int argc, char * argv[]) -> int
             unsigned label;
             lineStream >> label;
 
-            targets.push_back(std::make_tuple(read_function(t_folder + "/" + name), label));
+            // std::cout << "Read a name\n";
+
+            auto g = read_function(t_folder + "/" + name);
+
+            // std::cout << "Made a graph\n";
+
+            auto p = std::make_tuple(g, label);
+
+            // std::cout << "Made a pair\n";
+
+            // targets.push_back(std::make_tuple(read_function(t_folder + "/" + name), label));
+            targets.push_back(p);
+
+            // std::cout << "Stored a pair\n";
         }
+
+        // std::cout << "Read in training graphs\n";
 
         // read in pattern graphs (test set)
         while (std::getline(p_csv_file, line)) {
@@ -256,6 +273,8 @@ auto main(int argc, char * argv[]) -> int
 
             patterns.push_back(std::make_tuple(read_function(p_folder + "/" + name), label, name));
         }
+
+        // std::cout << "Read in test graphs\n";
 
         for (auto & p : patterns) {
             // List of GED, classification

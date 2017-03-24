@@ -41,6 +41,7 @@ def make_graphs():
 					call(["dot", "-Tpng", "-o", dual_dot_img, dual_dot_out])
 
 	print "Online Data Graphs:"
+	made = {}
 	for dset in datasets:
 		for r in pen_rads:
 			for split in splits:
@@ -65,6 +66,12 @@ def make_graphs():
 
 						for filename, classification in rdr:
 							no_ext = filename.split(".")[0]
+
+							query = (dset, r, split, no_ext)
+
+							if query in made:
+								continue
+								
 							with open(graph_dir + dset + "/r-" + str(r) + "/" + split + "/" + no_ext, "w+") as out:
 								with open(graph_dir + dual_suffix + dset + "/r-" + str(r) + "/" + split + "/" + no_ext, "w+") as dual_out:
 									dot_out = dot_base + no_ext + ".gv"
@@ -74,9 +81,11 @@ def make_graphs():
 									dual_dot_img = dual_dot_img_base + no_ext + ".png"
 
 									print "making", "{}-{}/{}/".format(dset,r,split), "--", no_ext
+									
 									m.makegraph(
 										in_path + "/" + filename, output=out, dual_output=dual_out,
 										dotfile=dot_out, dual_dotfile=dual_dot_out)
+									made[query] = True
 
 									call(["dot", "-Tpng", "-o", dot_img, dot_out])
 									call(["dot", "-Tpng", "-o", dual_dot_img, dual_dot_out])

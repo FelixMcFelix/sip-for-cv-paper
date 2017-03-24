@@ -3,6 +3,7 @@
 #include "umg_attr.hh"
 #include "graph.hh"
 
+#include <iostream>
 #include <fstream>
 
 namespace
@@ -19,13 +20,20 @@ auto read_umg_attr(const std::string & filename) -> Graph
 {
     Graph result(0);
 
+    // std::cout << "Opening graph: " << filename << "\n";
+
     std::ifstream infile{ filename };
     if (! infile)
         throw GraphFileError{ filename, "unable to open file" };
 
-    result.resize(read_word(infile));
+    auto sizy = read_word(infile);
+    // std::cout << "Size: " << sizy << "\n";
+
+    result.resize(sizy);
     if (! infile)
         throw GraphFileError{ filename, "error reading size" };
+
+    // std::cout << "Size: " << sizy << "\n";
 
     unsigned edge_count = read_word(infile);
 
