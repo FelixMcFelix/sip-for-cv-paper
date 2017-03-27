@@ -7,6 +7,8 @@
 \usepackage{tikz}
 \usetikzlibrary{fit, arrows.meta}
 
+\usepackage{lipsum}
+
 \usepackage{siunitx}
 \usepackage[basic]{complexity}
 \usepackage[super,negative]{nth}
@@ -19,6 +21,8 @@
 \usepackage{enumitem}
 %\setlist{nosep}
 
+\usepackage{microtype}
+
 \usepackage[backend=bibtex,maxnames=3,maxbibnames=99,style=trad-abbrv]{biblatex}
 \addbibresource{mprop.bib}
 
@@ -27,6 +31,10 @@
 \DeclareFieldFormat{addendum}{}
 %\DeclareFieldFormat{url}{}
 %\DeclareFieldFormat{doi}{}
+\DeclareFieldFormat*{url}{}
+\DeclareFieldFormat[online]{url}{\mkbibacro{URL}\addcolon\space\url{#1}}
+\DeclareFieldFormat*{urldate}{}
+\DeclareFieldFormat[online]{urldate}{\mkbibparens{\bibstring{urlseen}\space#1}}
 
 \usepackage{xpatch}
 
@@ -56,7 +64,8 @@
 %paper tackles? Second, why is this an interesting problem?
 %Third, what is the solution this paper proposes?
 %Finally, why is the proposed solution a good one?
-Lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet
+%Lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet
+\lipsum[1]
 
 ?? Write me
 \end{abstract}
@@ -167,7 +176,7 @@ By investigating these questions, this paper contributes:
 
 %?? Graph definitions etc
 First, we must define graphs more precisely.
-An undirected graph $\mathcal{G}$ may be written $\mathcal{G} = (V,E)$ for a vertex set $V$ and an edge set $E \subseteq \lbrace \lbrace u,v \rbrace : u,v \in V \rbrace $, i.e.\ each edge $e \in E$ is a set of two nodes from $V$.
+An undirected graph $\mathcal{G}$ may be written $\mathcal{G} = (V,E)$ for a vertex set $V$ and an edge set $E \subseteq \lbrace \lbrace u,v \rbrace : u,v \in V \rbrace $, i.e.\ each edge $e \in E$ is a set of two vertices from $V$.
 For some $u,v \in V$, we may write $u \sim_\mathcal{G} v$ to mean $u$ and $v$ are adjacent vertices in $\mathcal{G}$ ($\lbrace u,v \rbrace \in E$), and use $N_\mathcal{G}(u)$ to refer to $u$'s \emph{neighbourhood}---the set of all vertices in $V \backslash \lbrace u \rbrace$ adjacent to $u$ in $\mathcal{G}$.
 This definition allows loops, e.g.\ $u \sim_\mathcal{G} u$ with the caveat that $u \notin N_\mathcal{G}(u)$.
 Additionally, the \emph{order} of $\mathcal{G}$ refers to the count of $\mathcal{G}$'s vertices ($O(\mathcal{G})=|V|$), and the \emph{size} of $\mathcal{G}$ refers to the count of $\mathcal{G}$'s edges ($S(\mathcal{G})=|E|$).
@@ -274,7 +283,7 @@ In reality, elements of an object's graph structure may not be reproduced in the
 In this case, it is worthwhile to examine how much two image graphs have in common to identify common elements and substructures.
 Between two graphs $\mathcal{P}$ and $\mathcal{T}$ this is known as the \emph{maximum common subgraph problem} (MCS), which is the search for the largest subgraph of $\mathcal{P}$ which is isomorphic to some subgraph of $\mathcal{T}$ as in SIP.
 \Cref{fig:lit-mcs} offers an example instance.
-While this problem is also \NP-Complete \cite[p.\ 74--75]{Computers-and-Intractibility}, it is considerably harder in practice than SIP---the current state-of-the-art, McSplit, can operate on graphs of order 35--40 \cite{MCS-McSplit}, where other approaches are limited to around 30 vertices.
+While this problem as described is \NP-Hard, it is considerably harder in practice than SIP---the current state-of-the-art, McSplit, can operate on graphs of order 35--40 \cite{MCS-McSplit}, where other approaches are limited to around 30 vertices.
 Even so, this approach applies only to the induced variant of MCS and largely prevents the addition of side constraints.
 For such flexibility we must consider either $k\downarrow$ \cite{Between-MCS-SIP}, a repeated application of the Glasgow SIP solver excluding $k$ vertices, or a max-clique-based approach using the \emph{association graph encoding} \cite{MCS-Clique-CP}.
 In this regard there is a trade-off to be made: while the clique-based approach still achieves the best performance on labelled instances \cite{MCS-McSplit}, $k\downarrow$ requires far less memory to process high-order graphs.
@@ -445,8 +454,11 @@ $$ GED(\mathcal{P}, \mathcal{T}) = O(\mathcal{P}) + O(\mathcal{T}) - 2 O(MCS(\ma
 	}
 \end{figure*}
 
-For graph modelling of generic images, present techniques typically build graphs by applying the Delaunay triangulation to a set of interest pixels located within an image.
-This is explored briefly by \citeauthor{Submap-Iso-Images} \cite{Submap-Iso-Images}, and expanded upon by \citeauthor{Plane-Graphs-From-Images} to make use of structural cues provided by image segmentation algorithms \cite{Plane-Graphs-From-Images}.
+For graph modelling of generic images, present techniques typically build graphs by applying the \emph{Delaunay triangulation} \cite{Delaunay} to a set of interest pixels located within an image.
+This process places edges between vertices with coordinate labels to construct a face-connected plane graph; specifically, where each face is a triangle.
+Crucially, this mesh is subject to one key criterion designed to minimise the incidence of sliver triangles: no point may lie inside the circumcircle of any produced triangle.
+Efficient algorithms exist for its computation \cite{DelaunayAlgs,DelaunayModern}.
+This avenue is explored briefly by \citeauthor{Submap-Iso-Images} \cite{Submap-Iso-Images}, and expanded upon by \citeauthor{Plane-Graphs-From-Images} to make use of structural cues provided by image segmentation algorithms \cite{Plane-Graphs-From-Images}.
 The authors of these approaches assess the effectiveness of their models by either searching for an image cropping within itself (using \emph{submap} isomorphism) or by quantifying the ``loss'' incurred by reconstruction from the generated graph.
 In this regard much is made of matching of graphs \emph{within} an image, and not \emph{between} images; making it unclear whether any discriminative features are captured or modelled in a way that allows matching using MCS algorithms.
 
@@ -458,7 +470,7 @@ Two experiments were performed:
 	\item Establishing whether graphs of a test image from the Berkeley Segmentation Dataset \cite{BerkeleyDatabase} (\cref{fig:explor-bsd}) before and after \SI{180}{\degree} rotation were isomorphic, and measuring their similarity if not.
 	\item Measuring the similarity between two adjacent frames of Sergio Leone's \emph{The Good, the Bad and the Ugly} (\cref{fig:explor-ff1} and \subref{fig:explor-ff2}).
 \end{enumerate}
-As the image graphs were expected to be high-order, nodes were labelled with their $(x,y)$ image locations to augment the $k\downarrow$ procedure with Euclidean distance filtering to make matching feasible---nodes could be mapped to one another if their distance was smaller than 1 for the first, or 5 for the second experiment.
+As the image graphs were expected to be high-order, vertices were labelled with their $(x,y)$ image locations to augment the $k\downarrow$ procedure with Euclidean distance filtering to make matching feasible---vertices could be mapped to one another if their distance was smaller than 1 for the first, or 5 for the second experiment.
 These distances were chosen due to the expected similarity in each case---while the first experiment governs essentially identical images (once positions have been corrected to negate the transform), in the second case mild variance is expected.
 
 \Cref{fig:explor-bsdnrmgraph,fig:explor-bsd180graph} show that the expected isomorphism in the first experiment was \emph{not} observed---both graphs have different order and size.
@@ -476,7 +488,7 @@ After 5 days runtime, the graph order was not exactly identified in either case,
 \end{table}
 
 \noindent Due to the difficulty of finding an exactly optimal $k$, both of these results have an unacceptably high degree of uncertainty---we cannot draw any conclusive answers on the actual graph similarity for this reason.
-The level of uncertainty here is strongly tied to the level of filtering provided in each experiment: a higher distance threshold gives more candidate mappings for each node, and so weaker filtering.
+The level of uncertainty here is strongly tied to the level of filtering provided in each experiment: a higher distance threshold gives more candidate mappings for each vertex, and so weaker filtering.
 The bound in the first experiment is, however, low enough for two identical images to assert that this transformation is not isotropic.
 This heavily indicates that the approach's validity and sensitivities depend upon the choice of interest pixel detector.
 Furthermore, the presence of more unique structures would improve matching performance---I believe that the structure offered by the Delaunay triangulation is too uniform, and thus hinders our ability to compute the MCS.
@@ -507,7 +519,7 @@ Most pressingly, this shows that the current work is wholly inappropriate for th
 
 ?? Could use path-based inference for new supplemental graphs, but probably way too much work for graphs of this order (i.e.\ very small)
 
-?? Filtering at top of search---modify loop constraints, node label matching
+?? Filtering at top of search---modify loop constraints, vertex label matching
 
 ?? Per-node of search, look at $s$-neighbourhoods
 
@@ -522,7 +534,7 @@ Most pressingly, this shows that the current work is wholly inappropriate for th
 
 ?? Matching effectiveness statistics with HWRT \cite{HwrtDatabase} (Discuss effects of pen thickness, filtering class, dual vs regular). kNN classifier ($k=5$ I think)
 
-?? What else? Try it out on the george washington letters dataset for direct comparison with \cite{Graphs-Handwriting}?
+?? What else? Try it out on the george washington letters dataset for direct comparison with \cite{Graphs-Handwriting}? IF NOT DONE, PUT IN FUTURE WORK
 
 %====================================================
 \section{Related Work}
