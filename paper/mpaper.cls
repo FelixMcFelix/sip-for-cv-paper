@@ -17,7 +17,7 @@
 \usepackage{amsfonts}
 \usepackage{listings} % Environment for code listings
 \usepackage[a4paper]{geometry}
-\usepackage[breaklinks,colorlinks,citecolor=black,urlcolor=black,linkcolor=black,pdfpagelabels=false,pdfusetitle,draft]{hyperref}
+\usepackage[breaklinks,colorlinks,citecolor=black,urlcolor=black,linkcolor=black,pdfpagelabels=false,pdfusetitle]{hyperref}
 \usepackage{flushend} % Automatically balances columns on the last page
 
 % Settings for code listing environment

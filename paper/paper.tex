@@ -12,7 +12,10 @@
 \usepackage{siunitx}
 \usepackage[basic]{complexity}
 \usepackage[super,negative]{nth}
-\usepackage[linesnumbered,lined,boxed,commentsnumbered]{algorithm2e}
+
+\usepackage[linesnumbered,vlined,ruled,commentsnumbered]{algorithm2e}
+\SetNlSty{}{}{}
+\SetAlgoNlRelativeSize{-3}
 
 \usepackage[labelfont=bf,textfont={bf,it}]{caption}
 \usepackage{subcaption}
@@ -33,8 +36,8 @@
 %\DeclareFieldFormat{doi}{}
 \DeclareFieldFormat*{url}{}
 \DeclareFieldFormat[online]{url}{\mkbibacro{URL}\addcolon\space\url{#1}}
-\DeclareFieldFormat*{urldate}{}
-\DeclareFieldFormat[online]{urldate}{\mkbibparens{\bibstring{urlseen}\space#1}}
+%\DeclareFieldFormat*{urldate}{}
+%\DeclareFieldFormat[online]{urldate}{\mkbibparens{\bibstring{urlseen}\space#1}}
 
 \usepackage{xpatch}
 
@@ -48,6 +51,9 @@
 \definecolor{graphc2}{RGB}{250,71,37}
 \definecolor{graphc3}{RGB}{253,161,77}
 \definecolor{graphc4}{RGB}{141,246,135}
+
+\usepackage[uppercase,tiny,noindentafter]{titlesec}
+\titlelabel{\thetitle.\quad}
 
 \begin{document}
 
@@ -496,9 +502,103 @@ Aside from this, the reliance on perfect segmentation (which is available within
 Most pressingly, this shows that the current work is wholly inappropriate for the task of image matching with currently available tools: extremely high-order graphs with little discriminative structure are produced, making analysis computationally infeasible.
 
 %====================================================
-\section{The Algorithm}
+\section{Algorithms for Modelling Text}
 \label{sec:algorithm}
 %====================================================
+
+There is a clear mismatch between current models for broad matching and the capabilities of modern algorithms.
+To investigate the value of MCS in image graph matching we must consider a smaller problem domain where instances have a few clear features.
+In particular, I choose to examine character and handwriting analysis---where the flow and form of glyphs can be captured by measuring the \emph{topological relationships} between disconnected components, \emph{path curvature} between keypoints and some sense of \emph{orientation}.
+
+\begin{algorithm}
+	\DontPrintSemicolon
+%	\KwData{An input image $I$.}
+%	\KwResult{An attributed multigraph $\mathcal{G}=...$}
+	\caption{An algorithm for graph modelling of glyphs\label{alg:glyphgraph}}
+	\texttt{GlyphGraph}(Image $I$, Float $curve\_thres$)\;
+	\Begin{
+		$V \leftarrow \lbrace\rbrace$\;
+		$E \leftarrow []$\;
+		$B \leftarrow I$ after padding, thresholding and binarisation\;
+		$S \leftarrow B$ after skeletonisation\;
+		$C \leftarrow S$ after connected component labelling\;
+		$n_{components} = max(C)$\;
+		$Keyps, Ends \leftarrow$ \texttt{FindKeypoints}($C$, $S$)\;
+		
+		\For{$i\leftarrow 1$; $i \le n_{components}$; $i$\texttt{++}}{
+			$PathPoints = [(x,y,l) \in Keyps \cup Ends : l = i]$\; 
+			\uIf{$|PathPoints| > 1$}{$start_i \leftarrow$ any $p \in PathPoints$}
+			\Else{$start \leftarrow$ topmost, leftmost $(x,y,l)$ with $l=C[x,y]=i$}
+			
+			$Paths \leftarrow$ \texttt{Traverse}($start, PathPoints, S$)\;
+			\ForEach{$(p_{start}, p_{end}) \in Paths$}{
+				$Splits \leftarrow$ \texttt{IPAN}($S, p_{start}, p_{end}$)\;
+%				Then Modify Edge and vertex sets. Note---where are verts added in code?\;
+				\For{$j \leftarrow 0$; $j < |Splits|-1$; $j$\texttt{++}}{
+					$p_1 \leftarrow Splits[j]$\;
+					$p_2 \leftarrow Splits[j+1]$\;
+					
+					$d \leftarrow dist(p_1, p_2)$\;
+					$t \leftarrow trace\_dist(S, p_{start}, p_{end}, p_1, p_2)$\;
+					
+					$V \leftarrow V \cup \lbrace p_1, p_2\rbrace$\;
+					\uIf{$curve\_thres * d < t$}{
+						$label \leftarrow$ \texttt{CURVE}\;
+					}
+					\Else{$label \leftarrow$ \texttt{LINE}\;}
+					
+					$E.append((p_1, p_2, label))$\;
+				}
+			}
+		}
+	
+		$zero \leftarrow (0,0)$\;
+		$north \leftarrow null$\;
+		\ForEach{$v \in V$}{\If{$north = null \lor dist(v, zero) < dist(north, zero)$}{$north \leftarrow v$}}
+		$V \leftarrow V \cup {zero}$\;
+		\If{$north \ne null$}{$E.append(zero, north,\texttt{NORTH})$}
+		
+		\For{$i\leftarrow 1$; $i \le n_{components}$; $i$\texttt{++}}{
+			$eps \leftarrow [(x,y,l) \in Ends : l=i]$\;
+			\lIf{$|eps| = 0$}{$eps \leftarrow [(x,y,l) \in Keyps : l=i]$}
+			\lIf{$|eps| = 0$}{$eps \leftarrow [start_i]$}
+			\ForEach{$(x,y,l) \in eps$}{
+				$p \leftarrow (x,y)$\;
+				$best \leftarrow null$\;
+				\ForEach{
+					$\lbrace (x', y', l') \in Keyps \cup Ends : l' \ne i\rbrace$
+				}{
+					$v\leftarrow(x', y')$\;
+					\If{$best = null \lor dist(v, p) < dist(best, p)$}{$best \leftarrow v$}
+				}
+				\If{$best \ne null$}{$E.append(p, best,\texttt{NEIGHBOUR})$}
+			}
+		}
+	
+		\Return{$V, E$}\;
+	}
+\end{algorithm}
+\begin{algorithm}
+	\DontPrintSemicolon
+	\caption{Supplemental functions}
+	\texttt{FindKeypoints}(Image $C$, Image $S$)\;
+	\Begin{
+		$Keyps, Ends \leftarrow \lbrace\rbrace$\;
+		\ForEach{$label_{x,y} \in C$}{
+			\If{$label_{x,y} < 1$}{
+				continue
+			}
+			$degree \leftarrow$ n\si{\degree} contiguous blocks in $Nhood_{S}(x,y)$\;
+			\uIf{$degree = 1$}{
+				$Ends \leftarrow Endps \cup \lbrace(x,y,label_{x,y})\rbrace$
+			}
+			\ElseIf{$degree > 1$}{
+				$Keyps \leftarrow Keyps \cup \lbrace(x,y,label_{x,y})\rbrace$
+			}	
+		}
+		\Return Keyps, Ends\;
+	}
+\end{algorithm}
 
 ?? Graph gen algo -- kinda explain this guy's path splitting algo \cite{PathCurvature}
 
@@ -530,7 +630,7 @@ Most pressingly, this shows that the current work is wholly inappropriate for th
 
 ?? Machine statistics, find the code here\footnote{\url{https://github.com/FelixMcFelix/sip-for-cv-paper}}, roll up a nice VM for review?
 
-?? Heatmaps per font -- examine size? font v font? sans vs serif? Dual vs regular? How do the different filtering levels affect character distinctness?
+?? Heatmaps per font -- examine size? font v font? sans vs serif? Dual vs regular? How do the different filtering levels affect character distinctness? Use the word ``curiously'' to describe relation between more distinct chars and reduced classifier performance.
 
 ?? Matching effectiveness statistics with HWRT \cite{HwrtDatabase} (Discuss effects of pen thickness, filtering class, dual vs regular). kNN classifier ($k=5$ I think)
 
