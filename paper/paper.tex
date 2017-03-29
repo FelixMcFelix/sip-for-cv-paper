@@ -52,8 +52,10 @@
 \definecolor{graphc3}{RGB}{253,161,77}
 \definecolor{graphc4}{RGB}{141,246,135}
 
+\newcommand{\subparagraph}{}
 \usepackage[uppercase,tiny,noindentafter]{titlesec}
 \titlelabel{\thetitle.\quad}
+\titleformat{\paragraph}[runin]{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
 
 \begin{document}
 
@@ -493,7 +495,7 @@ After 5 days runtime, the graph order was not exactly identified in either case,
 \end{tabular}
 \end{table}
 
-\noindent Due to the difficulty of finding an exactly optimal $k$, both of these results have an unacceptably high degree of uncertainty---we cannot draw any conclusive answers on the actual graph similarity for this reason.
+\noindent Due to the difficulty of finding an optimal $k$, both of these results have an unacceptably high degree of uncertainty---we cannot draw any conclusive answers on the actual graph similarity for this reason.
 The level of uncertainty here is strongly tied to the level of filtering provided in each experiment: a higher distance threshold gives more candidate mappings for each vertex, and so weaker filtering.
 The bound in the first experiment is, however, low enough for two identical images to assert that this transformation is not isotropic.
 This heavily indicates that the approach's validity and sensitivities depend upon the choice of interest pixel detector.
@@ -509,6 +511,7 @@ Most pressingly, this shows that the current work is wholly inappropriate for th
 There is a clear mismatch between current models for broad matching and the capabilities of modern algorithms.
 To investigate the value of MCS in image graph matching we must consider a smaller problem domain where instances have a few clear features.
 In particular, I choose to examine character and handwriting analysis---where the flow and form of glyphs can be captured by measuring the \emph{topological relationships} between disconnected components, \emph{path curvature} between keypoints and some sense of \emph{orientation}.
+Ideally, this should capture feature locations and relationships in a somewhat \emph{scale-invariant} manner.
 
 \begin{algorithm}
 	\DontPrintSemicolon
@@ -517,29 +520,27 @@ In particular, I choose to examine character and handwriting analysis---where th
 	\caption{An algorithm for graph modelling of glyphs\label{alg:glyphgraph}}
 	\texttt{GlyphGraph}(Image $I$, Float $curve\_thres$)\;
 	\Begin{
-		$V \leftarrow \lbrace\rbrace$\;
-		$E \leftarrow []$\;
-		$B \leftarrow I$ after padding, thresholding and binarisation\;
+		$V \leftarrow \lbrace\rbrace$, $E \leftarrow []$\;
+		$B \leftarrow I$ after padding, thresholding and binarisation\;\label{alg:glyphgraph:start-proc}
 		$S \leftarrow B$ after skeletonisation\;
 		$C \leftarrow S$ after connected component labelling\;
-		$n_{components} = max(C)$\;
+		$n_{components} = max(C)$\;\label{alg:glyphgraph:end-proc}
 		$Keyps, Ends \leftarrow$ \texttt{FindKeypoints}($C$, $S$)\;
 		
 		\For{$i\leftarrow 1$; $i \le n_{components}$; $i$\texttt{++}}{
-			$PathPoints = [(x,y,l) \in Keyps \cup Ends : l = i]$\; 
+			$PathPoints = \lbrace(x,y,l) \in Keyps \cup Ends : l = i\rbrace$\; 
 			\uIf{$|PathPoints| > 1$}{$start_i \leftarrow$ any $p \in PathPoints$}
 			\Else{$start \leftarrow$ topmost, leftmost $(x,y,l)$ with $l=C[x,y]=i$}
 			
-			$Paths \leftarrow$ \texttt{Traverse}($start, PathPoints, S$)\;
-			\ForEach{$(p_{start}, p_{end}) \in Paths$}{
-				$Splits \leftarrow$ \texttt{IPAN}($S, p_{start}, p_{end}$)\;
-%				Then Modify Edge and vertex sets. Note---where are verts added in code?\;
-				\For{$j \leftarrow 0$; $j < |Splits|-1$; $j$\texttt{++}}{
+			$Paths \leftarrow$ \texttt{Traverse}($start, PathPoints, S$)\;\label{alg:glyphgraph:dft}
+			\ForEach{$(p_{start}, p_{end}, dir_{start}, dir_{end}) \in Paths$}{
+				$Splits \leftarrow$ \texttt{IPAN}($S, p_{start}, p_{end}$)\;\label{alg:glyphgraph:ipan}
+				\For{$j \leftarrow 0$; $j < |Splits|-1$; $j$\texttt{++}}{\label{alg:glyphgraph:split-start}
 					$p_1 \leftarrow Splits[j]$\;
 					$p_2 \leftarrow Splits[j+1]$\;
 					
 					$d \leftarrow dist(p_1, p_2)$\;
-					$t \leftarrow trace\_dist(S, p_{start}, p_{end}, p_1, p_2)$\;
+					$t \leftarrow p\_dist(S, p_{start}, p_{end}, dir_{start}, p_1, p_2)$\;
 					
 					$V \leftarrow V \cup \lbrace p_1, p_2\rbrace$\;
 					\uIf{$curve\_thres * d < t$}{
@@ -547,18 +548,23 @@ In particular, I choose to examine character and handwriting analysis---where th
 					}
 					\Else{$label \leftarrow$ \texttt{LINE}\;}
 					
-					$E.append((p_1, p_2, label))$\;
+					$E.append((p_1, p_2, label))$\;\label{alg:glyphgraph:split-end}
 				}
 			}
 		}
 	
-		$zero \leftarrow (0,0)$\;
+		$zero \leftarrow (0,0)$\;\label{alg:glyphgraph:orient-start}
 		$north \leftarrow null$\;
-		\ForEach{$v \in V$}{\If{$north = null \lor dist(v, zero) < dist(north, zero)$}{$north \leftarrow v$}}
-		$V \leftarrow V \cup {zero}$\;
-		\If{$north \ne null$}{$E.append(zero, north,\texttt{NORTH})$}
+		\ForEach{$(x,y,l) \in Keyps \cup Ends$}{
+			$v\leftarrow(x,y)$\;
+			\If{$north = null \lor dist(v, zero) < dist(north, zero)$}{$north \leftarrow v$}
+		}
+		\If{$north \ne null$}{
+			$V \leftarrow V \cup \lbrace zero, north\rbrace$\;
+			$E.append(zero, north,\texttt{NORTH})$\;
+		}\label{alg:glyphgraph:orient-end}
 		
-		\For{$i\leftarrow 1$; $i \le n_{components}$; $i$\texttt{++}}{
+		\For{$i\leftarrow 1$; $i \le n_{components}$; $i$\texttt{++}}{ \label{alg:glyphgraph:topology-start}
 			$eps \leftarrow [(x,y,l) \in Ends : l=i]$\;
 			\lIf{$|eps| = 0$}{$eps \leftarrow [(x,y,l) \in Keyps : l=i]$}
 			\lIf{$|eps| = 0$}{$eps \leftarrow [start_i]$}
@@ -571,7 +577,10 @@ In particular, I choose to examine character and handwriting analysis---where th
 					$v\leftarrow(x', y')$\;
 					\If{$best = null \lor dist(v, p) < dist(best, p)$}{$best \leftarrow v$}
 				}
-				\If{$best \ne null$}{$E.append(p, best,\texttt{NEIGHBOUR})$}
+				\If{$best \ne null$}{
+					$V \leftarrow V \cup \lbrace p, best\rbrace$\;
+					$E.append(p, best,\texttt{NEIGHBOUR})$\; \label{alg:glyphgraph:topology-end}
+				}
 			}
 		}
 	
@@ -580,8 +589,8 @@ In particular, I choose to examine character and handwriting analysis---where th
 \end{algorithm}
 \begin{algorithm}
 	\DontPrintSemicolon
-	\caption{Supplemental functions}
-	\texttt{FindKeypoints}(Image $C$, Image $S$)\;
+	\caption{Supplemental functions for \cref{alg:glyphgraph}\label{alg:supplement}}
+	\texttt{FindKeypoints}(Image $C$, Image $S$)\;\label{alg:supplement:keyp-start}
 	\Begin{
 		$Keyps, Ends \leftarrow \lbrace\rbrace$\;
 		\ForEach{$label_{x,y} \in C$}{
@@ -592,20 +601,117 @@ In particular, I choose to examine character and handwriting analysis---where th
 			\uIf{$degree = 1$}{
 				$Ends \leftarrow Endps \cup \lbrace(x,y,label_{x,y})\rbrace$
 			}
-			\ElseIf{$degree > 1$}{
+			\ElseIf{$degree > 2$}{
 				$Keyps \leftarrow Keyps \cup \lbrace(x,y,label_{x,y})\rbrace$
 			}	
 		}
-		\Return Keyps, Ends\;
+		\Return Keyps, Ends\;\label{alg:supplement:keyp-end}
 	}
 \end{algorithm}
 
-?? Graph gen algo -- kinda explain this guy's path splitting algo \cite{PathCurvature}
+\begin{figure}
+	\def\endpgrid{
+		{0,0,0},
+		{0,1,0},
+		{2,2,0}%
+	}
+	\def\regpgrid{
+		{0,3,0},
+		{0,1,0},
+		{2,2,2}%
+	}
+	\def\keypgrid{
+		{0,4,0},
+		{2,1,3},
+		{0,0,0}%
+	}
 
-?? High-level diagram, walkthrough (like the example in the proposal)
+%	\definecolor{graphc1}{RGB}{150,227,240}
+%	\definecolor{graphc2}{RGB}{250,71,37}
+%	\definecolor{graphc3}{RGB}{253,161,77}
+%	\definecolor{graphc4}{RGB}{141,246,135}
+	\definecolor{pixel 0}{HTML}{FFFFFF}
+	\definecolor{pixel 1}{HTML}{000000}
+	\definecolor{pixel 2}{RGB}{150,227,240}%{HTML}{ff0000}
+	\definecolor{pixel 3}{RGB}{250,71,37}%{HTML}{00ff00}
+	\definecolor{pixel 4}{RGB}{253,161,77}%{HTML}{0000ff}
+	\centering
+	
+	\begin{subfigure}[b]{0.25\linewidth}
+		\resizebox{\linewidth}{!}{
+		\begin{tikzpicture}
+			\foreach \line [count=\y] in \endpgrid {
+				\foreach \pix [count=\x] in \line {
+					\draw[fill=pixel \pix] (\x,-\y) rectangle +(1,1);
+				}
+			}
+		\end{tikzpicture}
+		}
+		\caption{Endpoint}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.25\linewidth}
+		\resizebox{\linewidth}{!}{
+			\begin{tikzpicture}
+			\foreach \line [count=\y] in \regpgrid {
+				\foreach \pix [count=\x] in \line {
+					\draw[fill=pixel \pix] (\x,-\y) rectangle +(1,1);
+				}
+			}
+			\end{tikzpicture}
+		}
+		\caption{Regular}
+	\end{subfigure}
+	~
+	\begin{subfigure}[b]{0.25\linewidth}
+		\resizebox{\linewidth}{!}{
+			\begin{tikzpicture}
+			\foreach \line [count=\y] in \keypgrid {
+				\foreach \pix [count=\x] in \line {
+					\draw[fill=pixel \pix] (\x,-\y) rectangle +(1,1);
+				}
+			}
+			\end{tikzpicture}
+		}
+		\caption{Keypoint}
+	\end{subfigure}
+	
+	\vspace{0.5em}
+	
+	\caption{Endpoint and keypoint visualisation.\label{fig:endp-reg-keyp}}
+\end{figure}
 
+\paragraph{Details of \cref{alg:glyphgraph}}
+For this task, I pose \texttt{GlyphGraph} as a solution.
+An input pixel image is first preprocessed by padding, greyscale conversion, thresholding and binarisation.
+It is then \emph{skeletonised} to convert the image into a set of 1-pixel-thick paths, assigning disconnected paths with different labels (lines \ref{alg:glyphgraph:start-proc}--\ref{alg:glyphgraph:end-proc}).
+A preliminary set of interest points is extracted from the image, split into two categories: \emph{endpoints} are pixels in the image skeleton with just one contiguous component in their neighbourhood, while \emph{keypoints} are junctions with at least 3 such components (\cref{alg:supplement} lines \ref{alg:supplement:keyp-start}--\labelcpageref{alg:supplement:keyp-end}, \cref{fig:endp-reg-keyp}).
+
+Per component, a depth-first traversal is performed to discover the paths between all constituent interest points (\cref{alg:glyphgraph:dft}); this traversal prioritises moves to regular pixels over interest points, allowing interest points to be revisited since a path may start and end at the same point.
+In \cref{alg:glyphgraph:ipan}, these paths are then subdivided using \citeauthor{PathCurvature}'s IPAN algorithm \cite{PathCurvature} to detect locations of high curvature using the default parameters provided in the paper.
+This is a two-pass approach, first testing each point $p$ along a path for the existence of an \emph{admissible} triangle built from $p$, one point preceding $p$, and one point succeeding $p$ in the path---these points must be within a distance range from $p$, and the internal angle $\alpha$ at $p$ must be sufficiently small.
+If such a triangle exists, $p$ is marked as high-curvature and its \emph{sharpness} $\pi - |\alpha|$ is recorded.
+These locations are then refined by performing non-maximal suppression with the observed sharpness values, leaving only the local maxima marked as splitting points.
+
+Lines \ref{alg:glyphgraph:split-start}--\ref{alg:glyphgraph:split-end} then classify each path segment: if, for a path segment length $t$ and the distance $d$ between that segment's start and end points, $d * curve\_thres < t$ then we label it as a \texttt{CURVE}, otherwise it is labelled as a \texttt{LINE}.
+I consider $curve\_thres = 1.5$ as the default value.
+An edge is then added to the graph between these two points, with the given label---modelling path curvature features as desired.
+
+To establish and model orientation, lines \ref{alg:glyphgraph:orient-start}--\ref{alg:glyphgraph:orient-end} insert a new vertex at $(0,0)$, and place an edge between this vertex and the closest interest point found in the image with a unique \texttt{NORTH} label.
+Lines \ref{alg:glyphgraph:topology-start}--\ref{alg:glyphgraph:topology-end} then capture the topological relationship between components.
+Per-component, $eps$ is chosen to be either the set of that component's endpoints, keypoints or its sole start point (in decreasing order of preference).
+An edge, labelled \texttt{NEIGHBOUR}, is then placed between each point in $eps$ and the nearest interest point in another component.
+Note that when outputting the final graph, vertex position data is discarded with the goal of providing scale-invariance.
+
+%?? Graph gen algo -- kinda explain this guy's path splitting algo \cite{PathCurvature}
+
+\paragraph{An example walkthrough}
+?? High-level diagram, walkthrough (like the example in the proposal) -- do theta instead?
+
+\paragraph{``Indistinct'' characters}
 ?? Give example of (and explain) Z, H, K isomorphism in this scheme
 
+\paragraph{An algorithm using path direction}
 ?? introduce the ``dual'' representation (frame it like ``the graph models allowed me to learn \emph{why} these characters weren't distinct, and modify the algorithm to include path angle dynamics'')
 
 %====================================================
@@ -624,7 +730,7 @@ In particular, I choose to examine character and handwriting analysis---where th
 ?? Per-node of search, look at $s$-neighbourhoods
 
 %====================================================
-\section{Empirical Evaluation and Discussion}
+\section{Empirical Evaluation \& Discussion}
 \label{sec:evaluation}
 %====================================================
 
@@ -660,6 +766,8 @@ In particular, I choose to examine character and handwriting analysis---where th
 ?? Draw conclusions here---sum up paper.
 
 ?? Future work? Approximate GED metrics? Investigation of path-based supplemental graphs?
+
+?? MCS/GED bad fit? i.e. p,q,b,d have small GED since all that moves is the north relation.
 
 %====================================================
 \noindent
