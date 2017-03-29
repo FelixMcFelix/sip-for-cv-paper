@@ -19,6 +19,7 @@
 
 \usepackage[labelfont=bf,textfont={bf,it}]{caption}
 \usepackage{subcaption}
+\captionsetup[subfigure]{justification=centering}
 \usepackage{cleveref}
 
 \usepackage{enumitem}
@@ -52,8 +53,11 @@
 \definecolor{graphc3}{RGB}{253,161,77}
 \definecolor{graphc4}{RGB}{141,246,135}
 
+% Custom headings, sweet!
 \newcommand{\subparagraph}{}
 \usepackage[uppercase,tiny,noindentafter]{titlesec}
+\titleformat{\subsection}{\normalfont\bfseries}{\thesubsection.}{1em}{}
+\titleformat{\subsubsection}{\normalfont\bfseries}{\thesubsubsection.}{1em}{}
 \titlelabel{\thetitle.\quad}
 \titleformat{\paragraph}[runin]{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
 
@@ -706,13 +710,180 @@ Note that when outputting the final graph, vertex position data is discarded wit
 %?? Graph gen algo -- kinda explain this guy's path splitting algo \cite{PathCurvature}
 
 \paragraph{An example walkthrough}
-?? High-level diagram, walkthrough (like the example in the proposal) -- do theta instead?
+%?? High-level diagram, walkthrough (like the example in the proposal) -- do theta instead?
+Consider a rough visual example aided by \cref{fig:walkthrough}---the transformation of an image of the character ``$\Theta$'' into a graph.
+Firstly, our image (\cref{fig:walkthrough:glyph}) undergoes preprocessing and skeletonisation to capture the glyph's paths (\cref{fig:walkthrough:skel}).
+This binary skeleton then undergoes connected component labelling, and the algorithm  identifies two main components present in the image: an outer oval component (orange), and an inner line component (red) (\cref{fig:walkthrough:comp}).
+
+Each pixel is then examined and is classified as either an endpoint, keypoint or regular pixel according to its neighbourhood (\cref{fig:walkthrough:interest}).
+The line component here features two endpoints, which are detected from their neighbourhood.
+In the oval component, every pixel has two contiguous blocks within its $3\times3$ neighbourhood, and so every pixel in this component is deemed to be ``regular''.
+
+Paths between keypoints within each component are then traced out labelled to produce the first set of edges (\cref{fig:walkthrough:traversal}).
+The inner component is traversed simply, starting at any endpoint and ending at the other---the path is not split any further, and is classified as a \texttt{LINE}.
+As the outer component has no interest points, traversal begins at the leftmost point on its top row, before moving clockwise.
+Once the procedure reaches the start-point again the IPAN algorithm is run on the traced path, which identifies a location of high curvature on the underside of the oval: creating a new vertex and two path segments.
+As the path length for each segment is sufficiently greater than the distance between its endpoints, each path segment is classified as a \texttt{CURVE}.
+
+The final graph (\cref{fig:walkthrough:graph}) is produced by considering how these components relate to one another.
+To capture the glyph's orientation, a purely logical vertex at $(0,0)$ is defined with no connection to any image component: a new edge is then placed between the logical vertex and the vertex on the top-side of the oval, its nearest neighbour, labelled as a \texttt{NORTH} relation.
+Finally, we consider topological relationships: the endpoints of the inner component connect to their closest neighbour in the outer component with a \texttt{NEIGHBOUR} relation.
+The reverse also occurs from the vertices in the outer component towards the inner, but such edges are not duplicated.
+
+\begin{figure}
+	\def\pixels{
+		{0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,1,1,1,0,0,0,0},
+		{0,0,0,1,0,0,0,1,0,0,0},
+		{0,0,1,0,0,0,0,0,1,0,0},
+		{0,0,1,0,0,0,0,0,1,0,0},
+		{0,0,1,0,1,1,1,0,1,0,0},
+		{0,0,1,0,0,0,0,0,1,0,0},
+		{0,0,1,0,0,0,0,0,1,0,0},
+		{0,0,0,1,0,0,0,1,0,0,0},
+		{0,0,0,0,1,1,1,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0}%
+	}
+	\def\comps{
+		{0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,2,2,2,0,0,0,0},
+		{0,0,0,2,0,0,0,2,0,0,0},
+		{0,0,2,0,0,0,0,0,2,0,0},
+		{0,0,2,0,0,0,0,0,2,0,0},
+		{0,0,2,0,3,3,3,0,2,0,0},
+		{0,0,2,0,0,0,0,0,2,0,0},
+		{0,0,2,0,0,0,0,0,2,0,0},
+		{0,0,0,2,0,0,0,2,0,0,0},
+		{0,0,0,0,2,2,2,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0}%
+	}
+	\definecolor{pixel 0}{HTML}{FFFFFF}
+	\definecolor{pixel 1}{HTML}{000000}
+	\definecolor{pixel 4}{RGB}{150,227,240}%{HTML}{ff0000}
+	\definecolor{pixel 3}{RGB}{250,71,37}%{HTML}{00ff00}
+	\definecolor{pixel 2}{RGB}{253,161,77}%{HTML}{0000ff}
+	\centering
+	\begin{subfigure}[t]{0.3\linewidth}
+		\resizebox{\linewidth}{!}{
+		\begin{tikzpicture}
+			\node[font=\fontsize{120}{120}\selectfont, draw] at (0,0) (Letter) {$\Theta$};
+		\end{tikzpicture}
+		}
+		\caption{Glyph Image\label{fig:walkthrough:glyph}}
+	\end{subfigure}
+	~
+	\begin{subfigure}[t]{0.3\linewidth}
+		\resizebox{\linewidth}{!}{
+		\begin{tikzpicture}
+			\foreach \line [count=\y] in \pixels {
+				\foreach \pix [count=\x] in \line {
+					\draw[fill=pixel \pix] (\x,-\y) rectangle +(1,1);
+				}
+			}
+		\end{tikzpicture}
+		}
+		\caption{Skeleton Image\label{fig:walkthrough:skel}}
+	\end{subfigure}
+	~
+	\begin{subfigure}[t]{0.3\linewidth}
+		\resizebox{\linewidth}{!}{
+		\begin{tikzpicture}
+			\foreach \line [count=\y] in \comps {
+				\foreach \pix [count=\x] in \line {
+					\draw[fill=pixel \pix] (\x,-\y) rectangle +(1,1);
+				}
+			}
+		\end{tikzpicture}
+		}
+		\caption{Labelled Components\label{fig:walkthrough:comp}}
+	\end{subfigure}
+	~
+	\begin{subfigure}[t]{0.3\linewidth}
+		\centering
+		\resizebox{\linewidth}{!}{
+			\begin{tikzpicture}
+			\foreach \line [count=\y] in \comps {
+				\foreach \pix [count=\x] in \line {
+					\draw[fill=pixel \pix!40!white] (\x,-\y) rectangle +(1,1);
+				}
+			}
+			
+			\node[draw, circle, color=black, fill=pixel 3, inner sep=0pt, minimum size=1.5cm, ultra thick] (n2) at (5.5,-5.5) {};
+			\node[draw, circle, color=black, fill=pixel 3, inner sep=0pt, minimum size=1.5cm, ultra thick] (n3) at (7.5,-5.5) {};
+			\end{tikzpicture}
+		}
+		\caption{Interest Points\label{fig:walkthrough:interest}}
+	\end{subfigure}
+	~
+	\begin{subfigure}[t]{0.3\linewidth}
+		\centering
+		\resizebox{\linewidth}{!}{
+			\large
+			\begin{tikzpicture}[scale=0.5]
+%			\foreach \line [count=\y] in \comps {
+%				\foreach \pix [count=\x] in \line {
+%					\draw[fill=pixel \pix!40!white] (\x,-\y) rectangle +(1,1);
+%				}
+%			}
+		
+			\node[draw, circle, color=black, fill=pixel 2] (n0) at (5.5,-1.5) {};
+			\node[draw, circle, color=black, fill=pixel 2] (n1) at (6.5,-9.5) {};
+			
+			\node[draw, circle, color=black, fill=pixel 3] (n2) at (4.5,-5.5) {};
+			\node[draw, circle, color=black, fill=pixel 3] (n3) at (7.5,-5.5) {};
+			
+			\draw[-, ultra thick] (n0) to [bend right=90] node [midway, fill=white] {2} (n1);
+			\draw[-, ultra thick] (n0) to [bend left=90] node [midway, fill=white] {2} (n1);
+			
+			\draw[-, ultra thick] (n2) to node [midway, fill=white] {1} (n3);
+			\end{tikzpicture}
+		}
+		\caption{Path Traversal and Splitting\label{fig:walkthrough:traversal}}
+	\end{subfigure}
+	~
+	\begin{subfigure}[t]{0.3\linewidth}
+		\resizebox{\linewidth}{!}{
+		\large
+		\begin{tikzpicture}[scale=0.5]
+		%			\foreach \line [count=\y] in \comps {
+		%				\foreach \pix [count=\x] in \line {
+		%					\draw[fill=pixel \pix!40!white] (\x,-\y) rectangle +(1,1);
+		%				}
+		%			}
+		
+		\node[draw, circle, color=black, fill=white] (north) at (3,-1) {};
+		\node[draw, circle, color=black, fill=pixel 2] (n0) at (5.5,-1.5) {};
+		\node[draw, circle, color=black, fill=pixel 2] (n1) at (6.5,-9.5) {};
+		
+		\node[draw, circle, color=black, fill=pixel 3] (n2) at (4.5,-5.5) {};
+		\node[draw, circle, color=black, fill=pixel 3] (n3) at (7.5,-5.5) {};
+		
+		\draw[-, ultra thick] (n0) to [bend right=90] node [midway, fill=white] {2} (n1);
+		\draw[-, ultra thick] (n0) to [bend left=90] node [midway, fill=white] {2} (n1);
+		
+		\draw[-, ultra thick] (n2) to node [midway, fill=white] {1} (n3);
+		
+		\draw[-, ultra thick] (north) to node [midway, fill=white] {4} (n0);
+		
+		\draw[-, ultra thick] (n0) to node [midway, fill=white] {3} (n2);
+		\draw[-, ultra thick] (n3) to node [midway, fill=white] {3} (n1);
+		\end{tikzpicture}
+		}
+		\caption{Final Graph\label{fig:walkthrough:graph}}
+	\end{subfigure}
+
+	\vspace{0.5em}
+
+	\caption{Walkthrough of $\Theta$'s image$\rightarrow$graph transformation by \texttt{GlyphGraph}. Labels have been simplified: $\mathtt{LINE}=1$, $\mathtt{CURVE}=2$, $\mathtt{NEIGHBOUR}=3$, $\mathtt{NORTH}=4$. \label{fig:walkthrough}}
+\end{figure}
 
 \paragraph{``Indistinct'' characters}
 ?? Give example of (and explain) Z, H, K isomorphism in this scheme
 
 \paragraph{An algorithm using path direction}
 ?? introduce the ``dual'' representation (frame it like ``the graph models allowed me to learn \emph{why} these characters weren't distinct, and modify the algorithm to include path angle dynamics'')
+
+?? changes core model -- MCS is now effectively ``edge-maximising'' relative to our prior model.
 
 %====================================================
 \section{Modifications to k-Down}
