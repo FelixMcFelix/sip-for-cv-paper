@@ -5,7 +5,7 @@
 \documentclass{mpaper}
 
 \usepackage{tikz}
-\usetikzlibrary{fit, arrows.meta}
+\usetikzlibrary{fit, arrows.meta, calc}
 
 \usepackage{lipsum}
 
@@ -692,12 +692,12 @@ It is then \emph{skeletonised} to convert the image into a set of 1-pixel-thick 
 A preliminary set of interest points is extracted from the image, split into two categories: \emph{endpoints} are pixels in the image skeleton with just one contiguous component in their neighbourhood, while \emph{keypoints} are junctions with at least 3 such components (\cref{alg:supplement} lines \ref{alg:supplement:keyp-start}--\labelcpageref{alg:supplement:keyp-end}, \cref{fig:endp-reg-keyp}).
 
 Per component, a depth-first traversal is performed to discover the paths between all constituent interest points (\cref{alg:glyphgraph:dft}); this traversal prioritises moves to regular pixels over interest points, allowing interest points to be revisited since a path may start and end at the same point.
-In \cref{alg:glyphgraph:ipan}, these paths are then subdivided using \citeauthor{PathCurvature}'s IPAN algorithm \cite{PathCurvature} to detect locations of high curvature using the default parameters provided in the paper.
+In \cref{alg:glyphgraph:ipan}, these paths are then subdivided using \citeauthor{PathCurvature}'s IPAN algorithm \cite{PathCurvature} to detect locations of high curvature (using the default parameters provided in the paper).
 This is a two-pass approach, first testing each point $p$ along a path for the existence of an \emph{admissible} triangle built from $p$, one point preceding $p$, and one point succeeding $p$ in the path---these points must be within a distance range from $p$, and the internal angle $\alpha$ at $p$ must be sufficiently small.
-If such a triangle exists, $p$ is marked as high-curvature and its \emph{sharpness} $\pi - |\alpha|$ is recorded.
+If such a triangle exists, $p$ is marked as \emph{high-curvature} and its \emph{sharpness} $\pi - |\alpha|$ is recorded.
 These locations are then refined by performing non-maximal suppression with the observed sharpness values, leaving only the local maxima marked as splitting points.
 
-Lines \ref{alg:glyphgraph:split-start}--\ref{alg:glyphgraph:split-end} then classify each path segment: if, for a path segment length $t$ and the distance $d$ between that segment's start and end points, $d * curve\_thres < t$ then we label it as a \texttt{CURVE}, otherwise it is labelled as a \texttt{LINE}.
+Lines \ref{alg:glyphgraph:split-start}--\ref{alg:glyphgraph:split-end} then classify each path segment: if for a path segment with length $t$ and distance $d$ between that segment's endpoints $d * curve\_thres < t$, then we label it as a \texttt{CURVE}, otherwise it is labelled as a \texttt{LINE}.
 I consider $curve\_thres = 1.5$ as the default value.
 An edge is then added to the graph between these two points, with the given label---modelling path curvature features as desired.
 
@@ -716,19 +716,19 @@ Firstly, our image (\cref{fig:walkthrough:glyph}) undergoes preprocessing and sk
 This binary skeleton then undergoes connected component labelling, and the algorithm  identifies two main components present in the image: an outer oval component (orange), and an inner line component (red) (\cref{fig:walkthrough:comp}).
 
 Each pixel is then examined and is classified as either an endpoint, keypoint or regular pixel according to its neighbourhood (\cref{fig:walkthrough:interest}).
-The line component here features two endpoints, which are detected from their neighbourhood.
-In the oval component, every pixel has two contiguous blocks within its $3\times3$ neighbourhood, and so every pixel in this component is deemed to be ``regular''.
+The line component here features two endpoints, which are detected from their neighbourhoods.
+In contrast, within the oval component every pixel has two contiguous blocks within its $3\times3$ neighbourhood, and so all are deemed to be ``regular''.
 
 Paths between keypoints within each component are then traced out labelled to produce the first set of edges (\cref{fig:walkthrough:traversal}).
-The inner component is traversed simply, starting at any endpoint and ending at the other---the path is not split any further, and is classified as a \texttt{LINE}.
+The inner component is traversed simply, starting at the left endpoint and ending at the right---the path is not split any further, and is classified as a \texttt{LINE}.
 As the outer component has no interest points, traversal begins at the leftmost point on its top row, before moving clockwise.
-Once the procedure reaches the start-point again the IPAN algorithm is run on the traced path, which identifies a location of high curvature on the underside of the oval: creating a new vertex and two path segments.
-As the path length for each segment is sufficiently greater than the distance between its endpoints, each path segment is classified as a \texttt{CURVE}.
+Once the procedure returns to the start-point the IPAN algorithm is run on the traced path, which identifies a location of high curvature on the underside of the oval: creating a new vertex and two path segments.
+As the path length for each segment is sufficiently larger than the distance between its endpoints, each is classified as a \texttt{CURVE}.
 
 The final graph (\cref{fig:walkthrough:graph}) is produced by considering how these components relate to one another.
 To capture the glyph's orientation, a purely logical vertex at $(0,0)$ is defined with no connection to any image component: a new edge is then placed between the logical vertex and the vertex on the top-side of the oval, its nearest neighbour, labelled as a \texttt{NORTH} relation.
 Finally, we consider topological relationships: the endpoints of the inner component connect to their closest neighbour in the outer component with a \texttt{NEIGHBOUR} relation.
-The reverse also occurs from the vertices in the outer component towards the inner, but such edges are not duplicated.
+The reverse also occurs from the vertices in the outer component towards the inner, but duplicate \texttt{NEIGHBOUR} relationships are not stored.
 
 \begin{figure}
 	\def\pixels{
@@ -878,7 +878,55 @@ The reverse also occurs from the vertices in the outer component towards the inn
 \end{figure}
 
 \paragraph{``Indistinct'' characters}
-?? Give example of (and explain) Z, H, K isomorphism in this scheme
+%?? Give example of (and explain) Z, H, K isomorphism in this scheme
+When working with character images derived from fonts, \texttt{GlyphGraph} produces isomorphic graphs for characters which humans would instantly describe as distinct.
+As shown by \cref{fig:badisomorphism} for the DejaVu Sans font, due to unexpected ``tails'' and conjunctions within the binary skeletons the letters `Z', `H' and `K' are jointly isomorphic.
+What additional information exists within the structure of these characters that can be used to make their graphs more distinct?
+By looking at the skeletonised forms alongside the output graph, the current modelling technique allows us to see features of glyph paths which might be used---in particular, we might wish to include positional data or the relative angle between lines and curves at interest points.
+The first of these options likely comes at the cost of skew- or scale-invariance, but adapting \cref{alg:glyphgraph} to capture the latter class of features seems a worthwhile approach.
+
+\begin{figure}
+	\definecolor{node}{RGB}{250,71,37}
+	\centering
+	\resizebox{0.8\linewidth}{!}{
+		\Large
+	\begin{tikzpicture}
+		\node[draw](h0) at (0,0) {\includegraphics[width=.2\linewidth]{../imgs/dejavu-sans/H-Up}};
+		\node[draw](k0) at (0,-3.5) {\includegraphics[width=.2\linewidth]{../imgs/dejavu-sans/K-Up}};
+		\node[draw, label=below:{Glyphs}](z0) at (0,-7) {\includegraphics[width=.2\linewidth]{../imgs/dejavu-sans/Z-Up}};
+		
+		\node[draw](h1) at (4,0) {\includegraphics[width=.2\linewidth]{images/h-skel-inv}};
+		\node[draw](k1) at (4,-3.5) {\includegraphics[width=.2\linewidth]{images/k-skel-inv}};
+		\node[draw, label=below:{Skeletons}](z1) at (4,-7) {\includegraphics[width=.2\linewidth]{images/z-skel-inv}};
+		
+		\node[draw, circle, color=black, fill=white] (north) at (7,0) {};
+		\node[draw, circle, color=black, fill=node] (n0) at (8,-2) {};
+		\node[draw, circle, color=black, fill=node] (n1) at (8,-4) {};
+		\node[draw, circle, color=black, fill=node] (n2) at (8,-6) {};
+		\node[draw, circle, color=black, fill=node] (n3) at (10,-2) {};
+		\node[draw, circle, color=black, fill=node] (n4) at (10,-4) {};
+		\node[draw, circle, color=black, fill=node] (n5) at (10,-6) {};
+		
+		\draw[-, ultra thick] (north) to node [midway, fill=white] {4} (n0);
+		\draw[-, ultra thick] (n1) to node [midway, fill=white] {1} (n0);
+		\draw[-, ultra thick] (n1) to node [midway, fill=white] {1} (n2);
+		\draw[-, ultra thick] (n1) to node [midway, fill=white] {1} (n4);
+		\draw[-, ultra thick] (n4) to node [midway, fill=white] {1} (n3);
+		\draw[-, ultra thick] (n4) to node [midway, fill=white] {1} (n5);
+		
+		\draw[->, ultra thick] (h0.east) to (h1.west);
+		\draw[->, ultra thick] (k0.east) to (k1.west);
+		\draw[->, ultra thick] (z0.east) to (z1.west);
+		
+		\draw[->, ultra thick] (h1.east) to ($(h1.east) + (1.5,-1)$);
+		\draw[->, ultra thick] (k1.east) to ($(k1.east) + (1.5,0)$);
+		\draw[->, ultra thick] (z1.east) to ($(z1.east) + (1.5,1)$);
+		
+		\node at (9,-7) {Output Graph};
+	\end{tikzpicture}
+	}
+	\caption{Characters with isomorphic structure, which are thus ``identical'' \texttt{GlyphGraph} models.\label{fig:badisomorphism}}
+\end{figure}
 
 \paragraph{An algorithm using path direction}
 ?? introduce the ``dual'' representation (frame it like ``the graph models allowed me to learn \emph{why} these characters weren't distinct, and modify the algorithm to include path angle dynamics'')
