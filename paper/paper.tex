@@ -4,6 +4,8 @@
 
 \documentclass{mpaper}
 
+\usepackage{mathtools}
+
 \usepackage{tikz}
 \usetikzlibrary{fit, arrows.meta, calc}
 
@@ -52,6 +54,8 @@
 \definecolor{graphc2}{RGB}{250,71,37}
 \definecolor{graphc3}{RGB}{253,161,77}
 \definecolor{graphc4}{RGB}{141,246,135}
+
+\newcommand{\lesspreceq}[1]{\prescript{}{#1}{\preceq}\ }
 
 % Custom headings, sweet!
 \newcommand{\subparagraph}{}
@@ -189,6 +193,7 @@ By investigating these questions, this paper contributes:
 %?? Graph definitions etc
 First, we must define graphs more precisely.
 An undirected graph $\mathcal{G}$ may be written $\mathcal{G} = (V,E)$ for a vertex set $V$ and an edge set $E \subseteq \lbrace \lbrace u,v \rbrace : u,v \in V \rbrace $, i.e.\ each edge $e \in E$ is a set of two vertices from $V$.
+To access these sets, I define the functions $GetV(\mathcal{G})=V$ and $GetE(\mathcal{G})=E$ to retrieve the vertex and edge set respectively.
 For some $u,v \in V$, we may write $u \sim_\mathcal{G} v$ to mean $u$ and $v$ are adjacent vertices in $\mathcal{G}$ ($\lbrace u,v \rbrace \in E$), and use $N_\mathcal{G}(u)$ to refer to $u$'s \emph{neighbourhood}---the set of all vertices in $V \backslash \lbrace u \rbrace$ adjacent to $u$ in $\mathcal{G}$.
 This definition allows loops, e.g.\ $u \sim_\mathcal{G} u$ with the caveat that $u \notin N_\mathcal{G}(u)$.
 Additionally, the \emph{order} of $\mathcal{G}$ refers to the count of $\mathcal{G}$'s vertices ($O(\mathcal{G})=|V|$), and the \emph{size} of $\mathcal{G}$ refers to the count of $\mathcal{G}$'s edges ($S(\mathcal{G})=|E|$).
@@ -199,9 +204,10 @@ Given domains $L_v, L_e$ for vertex and edge labels respectively, we redefine $\
 %For any vertex $v \in V$, its label in $\mathcal{G}$ is given as $l_\mathcal{G}(v)$.
 We can succinctly describe the edges between any $u, v \in V$ with a sorted (non-decreasing) sequence of labels, $seq_\mathcal{G}(u, v)$.
 This allows us to define basic adjacency, and thus the basic neighbourhood: $u \sim_\mathcal{G} v \iff |seq_\mathcal{G}(u,v)| \ge 1$.
-For matching such graphs, we require two new neighbourhood definitions.
+For matching such graphs, we require three new neighbourhood definitions.
 Given a sorted label sequence $s$, we may define the \emph{exact neighbourhood} $N^{=}_{s,\mathcal{G}}(u)$ as the set of all $v \in N_\mathcal{G}(u)$ such that $seq_\mathcal{G}(u,v)=s$.
 The \emph{sufficient neighbourhood} $N^{\succcurlyeq}_{s,\mathcal{G}}(u)$ is the set of all $v \in N_\mathcal{G}(u)$ where we may map each label in $s$ to a distinct label of equal value in $seq_\mathcal{G}(u,v)$---we say that $s \preccurlyeq seq_\mathcal{G}(u,v)$ if such a mapping exists.
+Finally, the \emph{overlap neighbourhood} $N^{\circ}_{s,\mathcal{G}}(u)$ is the set of all $v \in N_\mathcal{G}(u)$ where at least one label in $s$ may be mapped to a label of equal value in $seq_\mathcal{G}(u,v)$.
 %=\lbrace v \in V \backslash \lbrace u \rbrace: seq_\mathcal{G}(u,v)=s\rbrace$
 For simplicity, I shall define the core search and similarity problems using undirected graphs.
 
@@ -685,8 +691,9 @@ Ideally, this should capture feature locations and relationships in a somewhat \
 	\caption{Endpoint and keypoint visualisation.\label{fig:endp-reg-keyp}}
 \end{figure}
 
-\paragraph{Details of \cref{alg:glyphgraph}}
-For this task, I pose \texttt{GlyphGraph} as a solution.
+%\paragraph{Details of \cref{alg:glyphgraph}}
+\subsection{Graphs from path curvature}
+For this task, I pose \texttt{GlyphGraph} (\cref{alg:glyphgraph}) as a solution.
 An input pixel image is first preprocessed by padding, greyscale conversion, thresholding and binarisation.
 It is then \emph{skeletonised} to convert the image into a set of 1-pixel-thick paths, assigning disconnected paths with different labels (lines \ref{alg:glyphgraph:start-proc}--\ref{alg:glyphgraph:end-proc}).
 A preliminary set of interest points is extracted from the image, split into two categories: \emph{endpoints} are pixels in the image skeleton with just one contiguous component in their neighbourhood, while \emph{keypoints} are junctions with at least 3 such components (\cref{alg:supplement} lines \ref{alg:supplement:keyp-start}--\labelcpageref{alg:supplement:keyp-end}, \cref{fig:endp-reg-keyp}).
@@ -925,28 +932,106 @@ The first of these options likely comes at the cost of skew- or scale-invariance
 		\node at (9,-7) {Output Graph};
 	\end{tikzpicture}
 	}
+	
+	\vspace{0.5em}
+	
 	\caption{Characters with isomorphic structure, which are thus ``identical'' \texttt{GlyphGraph} models.\label{fig:badisomorphism}}
 \end{figure}
 
-\paragraph{An algorithm using path direction}
-?? introduce the ``dual'' representation (frame it like ``the graph models allowed me to learn \emph{why} these characters weren't distinct, and modify the algorithm to include path angle dynamics'')
+%\paragraph{An algorithm using path direction}
+\subsection{A ``dual'' representation with path direction}
+%?? introduce the ``dual'' representation (frame it like ``the graph models allowed me to learn \emph{why} these characters weren't distinct, and modify the algorithm to include path angle dynamics'')
+In the framework established, it is difficult to capture the relationship between paths since they are modelled by edges.
+To rework the model and enable these relationships to be captured, I start with a \emph{dual graph}-like conversion: edges in the prior model are converted into identically labelled vertices, placing an edge between these new vertices for each time their corresponding prior edges meet at the same vertex.
+While this decision appears sensible since these labels \emph{are} the features recognised, to measure (and record) relative path angles it is insufficient to consider this transformation alone---\cref{alg:glyphgraph} measures and uses the start and end direction of each path segment, but these are not output.
+A modification of the initial algorithm is thus required.
 
-?? changes core model -- MCS is now effectively ``edge-maximising'' relative to our prior model.
+First we must divide our labellings into two classes: \emph{standard} features (lines and paths) which have well-defined directions at either end, and \emph{special} features (neighbourhood, north) which do not.
+In the dual representation, edges between special$\leftrightarrow$regular edges are simply labelled `8' and special$\leftrightarrow$special edges are labelled `0'; the directional information becomes useful when considering regular$\leftrightarrow$regular relationships.
+These directions are an integer in the range 0--7, numbering the neighbourhood pixels around a path's endpoint clockwise from north, and are assigned based on the location of the first point adjacent to that endpoint.
+If two paths meet at a vertex, having directions $d$ and $d'$ at that point respectively, then their relationship is labelled $|d-d'|$.
+Quite usefully, we \emph{can} return to the initial class of model from this new representation: each dual-vertex is transformed to an edge between two unknown vertices, which may be gradually inferred by iterating over the set of edges in the dual graph.
+
+%?? changes core model -- MCS is now effectively ``edge-maximising'' relative to our prior model.
+Theoretically, this new approach should increase matching performance.
+The MCS procedure as I have defined it maximises the order of the produced common subgraph, yet the features in my first model lie on the edges.
+Running this procedure on a dual graph-like transformation is then equivalent to the \emph{maximum common edge subgraph} of the regular model, matching in a way that maximises the count of features between a pair of graphs.
+
+%?? old model is recoverable from new.
 
 %====================================================
 \section{Modifications to k-Down}
 \label{sec:k-down-mods}
 %====================================================
 
-?? Discuss/introduce $s$-adjacency (Already added $N^{=}_{s},N^{\succcurlyeq}_{s}$ to graph definitions section), and 3 levels of filtering (induced, edge-count-increasing, barely overlapping)
+%?? Why? Attributed multi-graphs
+Having seen that both of the proposed models take the form of attributed multigraphs, \citeauthor{Between-MCS-SIP}'s $k\downarrow$ requires adaptation to accommodate graphs as I have defined them.
+%?? Discuss/introduce $s$-adjacency (Already added $N^{=}_{s},N^{\succcurlyeq}_{s}$ to graph definitions section), and 3 levels of filtering (induced, edge-count-increasing, barely overlapping)
+The first step in matching these graphs is to determine which sequence-aware neighbourhood (and thus adjacency operator) will be used to impose the constraints arising from edge labels.
+Each corresponds to a different level of filtering:
+\begin{itemize}
+	\item the exact neighbourhood $N^{=}_{s,\mathcal{G}}$ is necessary in the \emph{induced} variant of MCS, so that a pair of pattern and target vertex pairs may only map to one another if they have identical edge sequences;
+	
+	\item the overlap neighbourhood $N^{\circ}_{s,\mathcal{G}}$ provides the bare-minimum level of filtering needed when considering the \emph{non-induced} variant of MCS, allowing a pair of pattern and target vertex pairs to map to one another if there is any overlap in the edge sequences;
+	
+	\item the sufficient neighbourhood $N^{\succcurlyeq}_{s,\mathcal{G}}$, which allows a pattern vertex pair to be mapped to a target vertex pair if every edge in the former can be mapped to an edge of equal value in the latter, offering an oddly asymmetrical mapping when used in MCS---I define this (in the context of SIP) as building an \emph{edge-count-increasing subgraph isomorphism}.
+\end{itemize}
 
-?? Keep standard filtering from supplemental graphs (adjacency matrix operates on at least 1-adjacency, exact matches are provided)
+\Cref{alg:k-down-search} then defines the necessary modifications to $k\downarrow$ to compute the MCS in each case.
+%?? Filtering at top of search---modify loop constraints, vertex label matching
+At the top of search, the matching procedure must enforce that vertices of $\mathcal{P}$ can only be mapped to vertices of $\mathcal{T}$ with equal labels.
+Additionally, any vertices featuring loops must meet the selected sequence-adjacency criterion (lines \ref{alg:k-down-search:top-start}--\ref{alg:k-down-search:top-end}).
+%?? Per-node of search, look at $s$-neighbourhoods
+Per node of constraint propagation, domains are pruned using the chosen sequence-aware neighbourhood---if $v$ is mapped to $v'$ and $v$ and $w$ are adjacent with edge sequence $s$ in $\mathcal{P}$, then $w$ may only be assigned to vertices in the $s$-neighbourhood of $v'$ (lines \ref{alg:k-down-search:node-start}--\ref{alg:k-down-search:node-end}).
 
-?? Could use path-based inference for new supplemental graphs, but probably way too much work for graphs of this order (i.e.\ very small)
+%?? Keep standard filtering from supplemental graphs (adjacency matrix operates on at least 1-adjacency, exact matches are provided)
+The rest of the algorithm is unaffected by these additions; by providing both multigraph and simple graph notions of neighbourhood and adjacency, the existing filtering provided by supplemental graphs is maintained.
+%?? Could use path-based inference for new supplemental graphs, but probably way too much work for graphs of this order (i.e.\ very small)
+Admittedly, further supplemental graphs could be added, filtering on commonly seen label patterns in paths; although with the relatively low-order graphs produced by the examined models such optimisations would be largely unnecessary for this study.
 
-?? Filtering at top of search---modify loop constraints, vertex label matching
-
-?? Per-node of search, look at $s$-neighbourhoods
+\begin{algorithm}[t]
+	\DontPrintSemicolon
+	\caption{Modifications for k$\downarrow$ \cite{Between-MCS-SIP} for attributed multigraphs, given (for a graph $\mathcal{G}$) a vertex labelling function $l_\mathcal{G}$, a chosen multigraph neighbourhood function $\mathcal{N}_{s,\mathcal{G}}$ and its associated adjacency operator ``$\sim_{s,\mathcal{G}}$''. \label{alg:k-down-search}}
+	\tcp{replacement for lines 5--9\\
+		top-of-search filtering with sequences on loop constraints}
+	\ForEach{$v \in GetV(\mathcal{P})$}{
+		$D_v \leftarrow GetV(\mathcal{T})$\;
+		\ForEach{$(P,T)\in L$}{
+			$D_v \leftarrow \{ w \in D_v : v \sim_P v \Rightarrow w \sim_t w \land S_P(v) \lesspreceq{k} S_T(w) \}$
+		}
+	
+		\BlankLine
+		$s \leftarrow seq_{\mathcal{P}}(v,v)$\;\label{alg:k-down-search:top-start}
+%		$Valids \leftarrow \{\}$\;
+%		\ForEach{$w \in GetV(\mathcal{T})$}{
+%			\If{$v \sim_{\mathcal{P}} v \Rightarrow w \sim_{s,\mathcal{T}} w \land l_\mathcal{P}(v) = l_\mathcal{T}(w)$}{
+%				$Valids \leftarrow Loops \cup \{w\}$
+%			}
+%		}
+		$D_v \leftarrow \{ w \in D_v : l_\mathcal{P}(v) = l_\mathcal{T}(w) \land v \sim_P v \Rightarrow w \sim_{s,\mathcal{T}} w \}$\;\label{alg:k-down-search:top-end}
+		$D_v \leftarrow D_v \cup k$ distinct wildcard vertices\;
+	}
+	
+	\BlankLine
+	\BlankLine
+	\tcp{replacement for lines 35--40\\
+	filtering with sequences during propagation}
+	\ForEach{$D_w \in D\backslash\lbrace D_v\rbrace$}{
+		$D_w \leftarrow D_w \backslash \lbrace v'\rbrace$\;
+		\ForEach{$(P, T) \in L$}{
+			\If{$v \sim_P w$}{
+				$D_w \leftarrow D_w \cap (N_T(v') \cup wildcards )$
+			}
+		}
+		\BlankLine
+		$(P_0, T_0) \leftarrow L[0] $\;\label{alg:k-down-search:node-start}
+		\If{$v \sim_{P_0} w$}{
+			$s \leftarrow seq_{P_0}(v,w)$\;
+			$D_w \leftarrow D_w \cap (\mathcal{N}_{s,T_0}(v') \cup wildcards )$\;\label{alg:k-down-search:node-end}
+		}
+		\If{$D_w = \emptyset$}{\Return{\textbf{false}}}
+	}
+\end{algorithm}
 
 %====================================================
 \section{Empirical Evaluation \& Discussion}
