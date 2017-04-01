@@ -27,6 +27,7 @@
 \usepackage{enumitem}
 %\setlist{nosep}
 
+\usepackage{booktabs}
 \usepackage{microtype}
 
 \usepackage[backend=bibtex,maxnames=3,maxbibnames=99,style=trad-abbrv]{biblatex}
@@ -54,6 +55,30 @@
 \definecolor{graphc2}{RGB}{250,71,37}
 \definecolor{graphc3}{RGB}{253,161,77}
 \definecolor{graphc4}{RGB}{141,246,135}
+
+% Official colours!
+
+\definecolor{uofguniversityblue}{rgb}{0, 0.219608, 0.396078}
+
+\definecolor{uofgheather}{rgb}{0.356863, 0.32549, 0.490196}
+\definecolor{uofgaquamarine}{rgb}{0.603922, 0.72549, 0.678431}
+\definecolor{uofgslate}{rgb}{0.309804, 0.34902, 0.380392}
+\definecolor{uofgrose}{rgb}{0.823529, 0.470588, 0.709804}
+\definecolor{uofgmocha}{rgb}{0.709804, 0.564706, 0.47451}
+
+\definecolor{uofglawn}{rgb}{0.517647, 0.741176, 0}
+\definecolor{uofgcobalt}{rgb}{0, 0.615686, 0.92549}
+\definecolor{uofgturquoise}{rgb}{0, 0.709804, 0.819608}
+\definecolor{uofgsunshine}{rgb}{1.0, 0.862745, 0.211765}
+\definecolor{uofgpumpkin}{rgb}{1.0, 0.72549, 0.282353}
+\definecolor{uofgthistle}{rgb}{0.584314, 0.070588, 0.447059}
+\definecolor{uofgpillarbox}{rgb}{0.701961, 0.047059, 0}
+\definecolor{uofglavendar}{rgb}{0.356863, 0.301961, 0.580392}
+
+\definecolor{uofgsandstone}{rgb}{0.321569, 0.278431, 0.231373}
+\definecolor{uofgforest}{rgb}{0, 0.317647, 0.2}
+\definecolor{uofgburgundy}{rgb}{0.490196, 0.133333, 0.223529}
+\definecolor{uofgrust}{rgb}{0.603922, 0.227451, 0.023529}
 
 \newcommand{\lesspreceq}[1]{\prescript{}{#1}{\preceq}\ }
 
@@ -193,22 +218,22 @@ By investigating these questions, this paper contributes:
 %?? Graph definitions etc
 First, we must define graphs more precisely.
 An undirected graph $\mathcal{G}$ may be written $\mathcal{G} = (V,E)$ for a vertex set $V$ and an edge set $E \subseteq \lbrace \lbrace u,v \rbrace : u,v \in V \rbrace $, i.e.\ each edge $e \in E$ is a set of two vertices from $V$.
-To access these sets, I define the functions $GetV(\mathcal{G})=V$ and $GetE(\mathcal{G})=E$ to retrieve the vertex and edge set respectively.
+To access these sets, I define the functions $\operatorname{V}(\mathcal{G})=V$ and $\operatorname{E}(\mathcal{G})=E$ to retrieve the vertex and edge set respectively.
 For some $u,v \in V$, we may write $u \sim_\mathcal{G} v$ to mean $u$ and $v$ are adjacent vertices in $\mathcal{G}$ ($\lbrace u,v \rbrace \in E$), and use $N_\mathcal{G}(u)$ to refer to $u$'s \emph{neighbourhood}---the set of all vertices in $V \backslash \lbrace u \rbrace$ adjacent to $u$ in $\mathcal{G}$.
 This definition allows loops, e.g.\ $u \sim_\mathcal{G} u$ with the caveat that $u \notin N_\mathcal{G}(u)$.
-Additionally, the \emph{order} of $\mathcal{G}$ refers to the count of $\mathcal{G}$'s vertices ($O(\mathcal{G})=|V|$), and the \emph{size} of $\mathcal{G}$ refers to the count of $\mathcal{G}$'s edges ($S(\mathcal{G})=|E|$).
+Additionally, the \emph{order} of $\mathcal{G}$ refers to the count of $\mathcal{G}$'s vertices ($\operatorname{Ord}(\mathcal{G})=|V|$), and the \emph{size} of $\mathcal{G}$ refers to the count of $\mathcal{G}$'s edges ($\operatorname{Sz}(\mathcal{G})=|E|$).
 Where $\mathcal{G}$ is clear from context, the relevant subscripts will be elided.
 
 The graphs produced by the techniques I outline are \emph{attributed undirected multigraphs}: vertices and edges may have labels, and each pair of vertices may share multiple edges.
-Given domains $L_v, L_e$ for vertex and edge labels respectively, we redefine $\mathcal{G} = (V,E,l_v,l_e)$ for a vertex set $V$, an edge set $E$, a vertex label mapping $l_v: V \rightarrow L_v$ and an edge mapping $l_e: E \rightarrow \lbrace(\lbrace u,v \rbrace, l): u,v \in V, l \in L_e\rbrace$.
+Given domains $L_v, L_e$ for vertex and edge labels respectively, we redefine $\mathcal{G} = (V,E,\ell_v,\ell_e)$ for a vertex set $V$, an edge set $E$, a vertex label mapping $\ell_v: V \rightarrow L_v$ and an edge mapping $\ell_e: E \rightarrow \lbrace(\lbrace u,v \rbrace, l): u,v \in V, l \in L_e\rbrace$.
 %For any vertex $v \in V$, its label in $\mathcal{G}$ is given as $l_\mathcal{G}(v)$.
-We can succinctly describe the edges between any $u, v \in V$ with a sorted (non-decreasing) sequence of labels, $seq_\mathcal{G}(u, v)$.
-This allows us to define basic adjacency, and thus the basic neighbourhood: $u \sim_\mathcal{G} v \iff |seq_\mathcal{G}(u,v)| \ge 1$.
+We can succinctly describe the edges between any $u, v \in V$ with a sorted (non-decreasing) sequence of labels, $\operatorname{seq}_\mathcal{G}(u, v)$.
+This allows us to define basic adjacency, and thus the basic neighbourhood: $u \sim_\mathcal{G} v \iff |\operatorname{seq}_\mathcal{G}(u,v)| \ge 1$.
 For matching such graphs, we require three new neighbourhood definitions.
-Given a sorted label sequence $s$, we may define the \emph{exact neighbourhood} $N^{=}_{s,\mathcal{G}}(u)$ as the set of all $v \in N_\mathcal{G}(u)$ such that $seq_\mathcal{G}(u,v)=s$.
-The \emph{sufficient neighbourhood} $N^{\succcurlyeq}_{s,\mathcal{G}}(u)$ is the set of all $v \in N_\mathcal{G}(u)$ where we may map each label in $s$ to a distinct label of equal value in $seq_\mathcal{G}(u,v)$---we say that $s \preccurlyeq seq_\mathcal{G}(u,v)$ if such a mapping exists.
-Finally, the \emph{overlap neighbourhood} $N^{\circ}_{s,\mathcal{G}}(u)$ is the set of all $v \in N_\mathcal{G}(u)$ where at least one label in $s$ may be mapped to a label of equal value in $seq_\mathcal{G}(u,v)$.
-%=\lbrace v \in V \backslash \lbrace u \rbrace: seq_\mathcal{G}(u,v)=s\rbrace$
+Given a sorted label sequence $s$, we may define the \emph{exact neighbourhood} $N^{=}_{s,\mathcal{G}}(u)$ as the set of all $v \in N_\mathcal{G}(u)$ such that $\operatorname{seq}_\mathcal{G}(u,v)=s$.
+The \emph{sufficient neighbourhood} $N^{\succcurlyeq}_{s,\mathcal{G}}(u)$ is the set of all $v \in N_\mathcal{G}(u)$ where we may map each label in $s$ to a distinct label of equal value in $\operatorname{seq}_\mathcal{G}(u,v)$---we say that $s \preccurlyeq \operatorname{seq}_\mathcal{G}(u,v)$ if such a mapping exists.
+Finally, the \emph{overlap neighbourhood} $N^{\circ}_{s,\mathcal{G}}(u)$ is the set of all $v \in N_\mathcal{G}(u)$ where at least one label in $s$ may be mapped to a label of equal value in $\operatorname{seq}_\mathcal{G}(u,v)$.
+%=\lbrace v \in V \backslash \lbrace u \rbrace: \operatorname{seq}_\mathcal{G}(u,v)=s\rbrace$
 For simplicity, I shall define the core search and similarity problems using undirected graphs.
 
 Transformation from an image to a graph will create a graph whose structure corresponds to the image's content and invariants.
@@ -228,10 +253,12 @@ Trends in recent work have focused on increasing performance for larger instance
 	
 	\node[label=below:{$\mathcal{P}$}] (p) at (0,0){
 		\begin{tikzpicture}[scale=1]
+		\begin{scope}[auto, every node/.style={draw,circle,minimum size=2em,inner sep=1},node distance=2cm]
 		\node[draw, circle] (n1) at (0,0) {a};
 		\node[draw, circle] (n2) at (0,-1) {c};
 		\node[draw, circle] (n3) at (1,0) {b};
 		\node[draw, circle] (n4) at (1,-1) {d};
+		\end{scope}
 		
 		\draw[-] (n1) -- (n3);
 		\draw[-] (n2) -- (n4);
@@ -243,6 +270,7 @@ Trends in recent work have focused on increasing performance for larger instance
 	
 	\node[label=below:{$\mathcal{T}$}] (t) at (4,0){
 		\begin{tikzpicture}[scale=1]
+		\begin{scope}[auto, every node/.style={draw,circle,minimum size=2em,inner sep=1},node distance=2cm]
 		\node[draw, circle] (n1) at (2,0) {2};
 		\node[draw, circle] (n2) at (0,-1) {4};
 		\node[draw, circle] (n3) at (1,0) {1};
@@ -250,6 +278,7 @@ Trends in recent work have focused on increasing performance for larger instance
 		
 		\node[draw, circle] (n5) at (2,-1) {6};
 		\node[draw, circle] (n6) at (3,0) {3};
+		\end{scope}
 		
 		\draw[-] (n1) -- (n3);
 		\draw[-] (n2) -- (n4);
@@ -265,19 +294,21 @@ Trends in recent work have focused on increasing performance for larger instance
 	
 	\node[label=below:{Embedding}] (em) at (9,0){
 		\begin{tikzpicture}[scale=1]
-		\node[draw, circle, fill=graphc3] (n1) at (2,0) {2};
-		\node[draw, circle, fill=graphc3] (n2) at (0,-1) {4};
-		\node[draw, circle, fill=graphc3] (n3) at (1,0) {1};
-		\node[draw, circle, fill=graphc3] (n4) at (1,-1) {5};
+		\begin{scope}[auto, every node/.style={draw,circle,minimum size=2em,inner sep=1},node distance=2cm]
+		\node[draw, circle, fill=uofgpumpkin] (n1) at (2,0) {2};
+		\node[draw, circle, fill=uofgpumpkin] (n2) at (0,-1) {4};
+		\node[draw, circle, fill=uofgpumpkin] (n3) at (1,0) {1};
+		\node[draw, circle, fill=uofgpumpkin] (n4) at (1,-1) {5};
 		
 		\node[draw, circle] (n5) at (2,-1) {6};
 		\node[draw, circle] (n6) at (3,0) {3};
+		\end{scope}
 		
-		\draw[-, color=orange] (n1) -- (n3);
-		\draw[-, color=orange] (n2) -- (n4);
-		\draw[-, color=orange] (n1) -- (n4);
-		\draw[-, color=orange] (n2) -- (n3);
-		\draw[-, color=orange] (n3) -- (n4);
+		\draw[-, color=uofgpumpkin] (n1) -- (n3);
+		\draw[-, color=uofgpumpkin] (n2) -- (n4);
+		\draw[-, color=uofgpumpkin] (n1) -- (n4);
+		\draw[-, color=uofgpumpkin] (n2) -- (n3);
+		\draw[-, color=uofgpumpkin] (n3) -- (n4);
 		
 		\draw[-] (n5) -- (n6);
 		\draw[-] (n1) -- (n6);
@@ -311,15 +342,16 @@ By computing similar structures between any two graphs as above, we may then qua
 This is in turn a key part of establishing how \emph{dissimilar} a pair of graphs are, and given that MCS order does not take into account the sizes of $\mathcal{P}$ or $\mathcal{T}$ such a metric is more desirable for global classification.
 We may then use the MCS to compute the number of discrete changes needed to transform $\mathcal{P}$ into $\mathcal{T}$---the \emph{graph edit distance} (GED) \cite{GraphEditDist-MCS}.
 For classification purposes, I consider a simplified expression which disregards edge costs:
-$$ GED(\mathcal{P}, \mathcal{T}) = O(\mathcal{P}) + O(\mathcal{T}) - 2 O(MCS(\mathcal{P}, \mathcal{T})) $$
+$$ \operatorname{GED}(\mathcal{P}, \mathcal{T}) = \operatorname{Ord}(\mathcal{P}) + \operatorname{Ord}(\mathcal{T}) - 2 \operatorname{Ord}(\operatorname{MCS}(\mathcal{P}, \mathcal{T})) $$
 
 \begin{figure}
 	\centering
-	\resizebox{\columnwidth}{!}{
+	\resizebox{0.8\columnwidth}{!}{
 	\begin{tikzpicture}
 	
 	\node[label=below:{$\mathcal{P}$}] (p) at (0,0){
 		\begin{tikzpicture}[scale=1]
+		\begin{scope}[auto, every node/.style={minimum size=2em,inner sep=1},node distance=2cm]
 		\node[draw, circle] (n1) at (0,0) {a};
 		\node[draw, circle] (n2) at (0,-1) {c};
 		\node[draw, circle] (n3) at (1,0) {b};
@@ -330,16 +362,18 @@ $$ GED(\mathcal{P}, \mathcal{T}) = O(\mathcal{P}) + O(\mathcal{T}) - 2 O(MCS(\ma
 		\draw[-] (n1) -- (n4);
 		\draw[-] (n2) -- (n3);
 		\draw[-] (n3) -- (n4);
+		\end{scope}
 		\end{tikzpicture}
 	};
 	
 	\node[label=below:{$\mathcal{T}$}] (t) at (3,0){
 		\begin{tikzpicture}[scale=1]
+		\begin{scope}[auto, every node/.style={draw,circle,minimum size=2em,inner sep=1},node distance=2cm]
 		\node[draw, circle] (n1) at (0,0) {1};
 		\node[draw, circle] (n2) at (0,-1) {3};
 		\node[draw, circle] (n3) at (1,0) {2};
 		\node[draw, circle] (n4) at (1,-1) {4};
-		
+		\end{scope}
 		
 		\draw[-] (n1) -- (n3);
 		\draw[-] (n2) -- (n4);
@@ -352,29 +386,30 @@ $$ GED(\mathcal{P}, \mathcal{T}) = O(\mathcal{P}) + O(\mathcal{T}) - 2 O(MCS(\ma
 	
 	\node[label=below:{Embedding}] (em) at (7,0){
 		\begin{tikzpicture}[scale=1]
+		\begin{scope}[auto, every node/.style={draw,circle,minimum size=2em,inner sep=1},node distance=2cm]
 		\node[draw, circle] (n1) at (0,0) {a};
-		\node[draw, circle, fill=graphc3] (n2) at (0,-1) {c};
-		\node[draw, circle, fill=graphc3] (n3) at (1,0) {b};
-		\node[draw, circle, fill=graphc3] (n4) at (1,-1) {d};
+		\node[draw, circle, fill=uofgpumpkin] (n2) at (0,-1) {c};
+		\node[draw, circle, fill=uofgpumpkin] (n3) at (1,0) {b};
+		\node[draw, circle, fill=uofgpumpkin] (n4) at (1,-1) {d};
 		
 		\draw[-] (n1) -- (n3);
-		\draw[-, color=orange] (n2) -- (n4);
+		\draw[-, color=uofgpumpkin] (n2) -- (n4);
 		\draw[-] (n1) -- (n4);
-		\draw[-, color=orange] (n2) -- (n3);
-		\draw[-, color=orange] (n3) -- (n4);
+		\draw[-, color=uofgpumpkin] (n2) -- (n3);
+		\draw[-, color=uofgpumpkin] (n3) -- (n4);
 		
 		\node[draw, circle] (n1') at (2,0) {1};
-		\node[draw, circle, fill=graphc3] (n2') at (2,-1) {3};
-		\node[draw, circle, fill=graphc3] (n3') at (3,0) {2};
-		\node[draw, circle, fill=graphc3] (n4') at (3,-1) {4};
+		\node[draw, circle, fill=uofgpumpkin] (n2') at (2,-1) {3};
+		\node[draw, circle, fill=uofgpumpkin] (n3') at (3,0) {2};
+		\node[draw, circle, fill=uofgpumpkin] (n4') at (3,-1) {4};
 		
 		
 		\draw[-] (n1') -- (n3');
-		\draw[-, color=orange] (n2') -- (n4');
+		\draw[-, color=uofgpumpkin] (n2') -- (n4');
 		\draw[-] (n1') -- (n2');
-		\draw[-, color=orange] (n2') -- (n3');
-		\draw[-, color=orange] (n3') -- (n4');
-		
+		\draw[-, color=uofgpumpkin] (n2') -- (n3');
+		\draw[-, color=uofgpumpkin] (n3') -- (n4');
+		\end{scope}
 		\end{tikzpicture}
 	};
 	
@@ -496,12 +531,12 @@ After 5 days runtime, the graph order was not exactly identified in either case,
 
 \begin{table}[h]
 \centering
-\begin{tabular}{|c|c|c|c|}
-	\hline
-	Experiment & Except-$k$ & $O(MCS)$ & Overlap (\si{\percent}) \\ \hline
+\begin{tabular}{cccc}
+	\toprule
+	Experiment & Except-$k$ & $\operatorname{Ord}(MCS)$ & Overlap (\si{\percent}) \\ \midrule
 	1 & $[61, 111]$ & $[134, 184]$ & 54.6--72.2 \\
 	2 & $[38, 217]$ & $[47, 226]$ & 18.1--86.9 \\
-	\hline
+	\bottomrule
 \end{tabular}
 \end{table}
 
@@ -520,76 +555,76 @@ Most pressingly, this shows that the current work is wholly inappropriate for th
 
 There is a clear mismatch between current models for broad matching and the capabilities of modern algorithms.
 To investigate the value of MCS in image graph matching we must consider a smaller problem domain where instances have a few clear features.
-In particular, I choose to examine character and handwriting analysis---where the flow and form of glyphs can be captured by measuring the \emph{topological relationships} between disconnected components, \emph{path curvature} between keypoints and some sense of \emph{orientation}.
+To this end, I choose to examine character and handwriting analysis---where the flow and form of glyphs can be captured by measuring the \emph{topological relationships} between disconnected components, \emph{path curvature} between keypoints and some sense of \emph{orientation}.
 Ideally, this should capture feature locations and relationships in a somewhat \emph{scale-invariant} manner.
 
 \begin{algorithm}
 	\DontPrintSemicolon
 %	\KwData{An input image $I$.}
 %	\KwResult{An attributed multigraph $\mathcal{G}=...$}
-	\caption{An algorithm for graph modelling of glyphs\label{alg:glyphgraph}}
-	\texttt{GlyphGraph}(Image $I$, Float $curve\_thres$)\;
+	\caption{Graph modelling of glyphs\label{alg:glyphgraph}}
+	\texttt{GlyphGraph}(Image $I$, Float $\mathit{curve\_thres}$)\;
 	\Begin{
 		$V \leftarrow \lbrace\rbrace$, $E \leftarrow []$\;
 		$B \leftarrow I$ after padding, thresholding and binarisation\;\label{alg:glyphgraph:start-proc}
 		$S \leftarrow B$ after skeletonisation\;
 		$C \leftarrow S$ after connected component labelling\;
-		$n_{components} = max(C)$\;\label{alg:glyphgraph:end-proc}
-		$Keyps, Ends \leftarrow$ \texttt{FindKeypoints}($C$, $S$)\;
+		$n_{\mathit{components}} = \operatorname{max}(C)$\;\label{alg:glyphgraph:end-proc}
+		$\mathit{Keyps}, \mathit{Ends} \leftarrow \mathtt{FindKeypoints}(C, S)$\;
 		
-		\For{$i\leftarrow 1$; $i \le n_{components}$; $i$\texttt{++}}{
-			$PathPoints = \lbrace(x,y,l) \in Keyps \cup Ends : l = i\rbrace$\; 
-			\uIf{$|PathPoints| > 1$}{$start_i \leftarrow$ any $p \in PathPoints$}
-			\Else{$start \leftarrow$ topmost, leftmost $(x,y,l)$ with $l=C[x,y]=i$}
+		\For{$i\leftarrow 1$; $i \le n_{\mathit{components}}$; $i$\texttt{++}}{
+			$\mathit{PathPoints} = \lbrace(x,y,l) \in \mathit{Keyps} \cup \mathit{Ends} : l = i\rbrace$\; 
+			\uIf{$|\mathit{PathPoints}| > 1$}{$\mathit{start}_i \leftarrow$ any $p \in \mathit{PathPoints}$}
+			\Else{$\mathit{start}_i \leftarrow$ topmost, leftmost $(x,y,l)$ with $l=C[x,y]=i$}
 			
-			$Paths \leftarrow$ \texttt{Traverse}($start, PathPoints, S$)\;\label{alg:glyphgraph:dft}
-			\ForEach{$(p_{start}, p_{end}, dir_{start}, dir_{end}) \in Paths$}{
-				$Splits \leftarrow$ \texttt{IPAN}($S, p_{start}, p_{end}$)\;\label{alg:glyphgraph:ipan}
-				\For{$j \leftarrow 0$; $j < |Splits|-1$; $j$\texttt{++}}{\label{alg:glyphgraph:split-start}
-					$p_1 \leftarrow Splits[j]$\;
-					$p_2 \leftarrow Splits[j+1]$\;
+			$\mathit{Paths} \leftarrow$ \texttt{Traverse}($\mathit{start}_i, \mathit{PathPoints}, S$)\;\label{alg:glyphgraph:dft}
+			\ForEach{$(p_{\mathit{start}}, p_{\mathit{end}}, \mathit{dir}_{\mathit{start}}, \mathit{dir}_{\mathit{end}}) \in \mathit{Paths}$}{
+				$\mathit{Splits} \leftarrow$ \texttt{IPAN}($S, p_{\mathit{start}}, p_{\mathit{end}}$)\;\label{alg:glyphgraph:ipan}
+				\For{$j \leftarrow 0$; $j < |\mathit{Splits}|-1$; $j$\texttt{++}}{\label{alg:glyphgraph:split-start}
+					$p_1 \leftarrow \mathit{Splits}[j]$\;
+					$p_2 \leftarrow \mathit{Splits}[j+1]$\;
 					
-					$d \leftarrow dist(p_1, p_2)$\;
-					$t \leftarrow p\_dist(S, p_{start}, p_{end}, dir_{start}, p_1, p_2)$\;
+					$d \leftarrow \operatorname{dist}(p_1, p_2)$\;
+					$t \leftarrow \operatorname{p\_dist}(S, p_{\mathit{start}}, p_{\mathit{end}}, \mathit{dir}_{\mathit{start}}, p_1, p_2)$\;
 					
 					$V \leftarrow V \cup \lbrace p_1, p_2\rbrace$\;
-					\uIf{$curve\_thres * d < t$}{
-						$label \leftarrow$ \texttt{CURVE}\;
+					\uIf{$\mathit{curve\_thres} * d < t$}{
+						$\mathit{label} \leftarrow$ \texttt{CURVE}\;
 					}
-					\Else{$label \leftarrow$ \texttt{LINE}\;}
+					\Else{$\mathit{label} \leftarrow$ \texttt{LINE}\;}
 					
-					$E.append((p_1, p_2, label))$\;\label{alg:glyphgraph:split-end}
+					$E.\operatorname{append}((p_1, p_2, \mathit{label}))$\;\label{alg:glyphgraph:split-end}
 				}
 			}
 		}
 	
-		$zero \leftarrow (0,0)$\;\label{alg:glyphgraph:orient-start}
-		$north \leftarrow null$\;
-		\ForEach{$(x,y,l) \in Keyps \cup Ends$}{
+		$\mathit{zero} \leftarrow (0,0)$\;\label{alg:glyphgraph:orient-start}
+		$\mathit{north} \leftarrow \mathit{null}$\;
+		\ForEach{$(x,y,l) \in \mathit{Keyps} \cup \mathit{Ends}$}{
 			$v\leftarrow(x,y)$\;
-			\If{$north = null \lor dist(v, zero) < dist(north, zero)$}{$north \leftarrow v$}
+			\If{$\mathit{north} = \mathit{null} \lor \operatorname{dist}(v, \mathit{zero}) < \operatorname{dist}(\mathit{north}, \mathit{zero})$}{$\mathit{north} \leftarrow v$}
 		}
-		\If{$north \ne null$}{
-			$V \leftarrow V \cup \lbrace zero, north\rbrace$\;
-			$E.append(zero, north,\texttt{NORTH})$\;
+		\If{$\mathit{north} \ne \mathit{null}$}{
+			$V \leftarrow V \cup \lbrace \mathit{zero}, \mathit{north}\rbrace$\;
+			$E.append(\mathit{zero}, \mathit{north},\texttt{NORTH})$\;
 		}\label{alg:glyphgraph:orient-end}
 		
-		\For{$i\leftarrow 1$; $i \le n_{components}$; $i$\texttt{++}}{ \label{alg:glyphgraph:topology-start}
-			$eps \leftarrow [(x,y,l) \in Ends : l=i]$\;
-			\lIf{$|eps| = 0$}{$eps \leftarrow [(x,y,l) \in Keyps : l=i]$}
-			\lIf{$|eps| = 0$}{$eps \leftarrow [start_i]$}
-			\ForEach{$(x,y,l) \in eps$}{
+		\For{$i\leftarrow 1$; $i \le n_{\mathit{components}}$; $i$\texttt{++}}{ \label{alg:glyphgraph:topology-start}
+			$\mathit{eps} \leftarrow [(x,y,l) \in \mathit{Ends} : l=i]$\;
+			\lIf{$|\mathit{eps}| = 0$}{$\mathit{eps} \leftarrow [(x,y,l) \in \mathit{Keyps} : l=i]$}
+			\lIf{$|\mathit{eps}| = 0$}{$\mathit{eps} \leftarrow [\mathit{start}_i]$}
+			\ForEach{$(x,y,l) \in \mathit{eps}$}{
 				$p \leftarrow (x,y)$\;
-				$best \leftarrow null$\;
+				$\mathit{best} \leftarrow \mathit{null}$\;
 				\ForEach{
-					$\lbrace (x', y', l') \in Keyps \cup Ends : l' \ne i\rbrace$
+					$\lbrace (x', y', l') \in \mathit{Keyps} \cup \mathit{Ends} : l' \ne i\rbrace$
 				}{
 					$v\leftarrow(x', y')$\;
-					\If{$best = null \lor dist(v, p) < dist(best, p)$}{$best \leftarrow v$}
+					\If{$\mathit{best} = \mathit{null} \lor \operatorname{dist}(v, p) < \operatorname{dist}(\mathit{best}, p)$}{$\mathit{best} \leftarrow v$}
 				}
-				\If{$best \ne null$}{
-					$V \leftarrow V \cup \lbrace p, best\rbrace$\;
-					$E.append(p, best,\texttt{NEIGHBOUR})$\; \label{alg:glyphgraph:topology-end}
+				\If{$\mathit{best} \ne \mathit{null}$}{
+					$V \leftarrow V \cup \lbrace p, \mathit{best}\rbrace$\;
+					$E.\operatorname{append}((p, \mathit{best},\texttt{NEIGHBOUR}))$\; \label{alg:glyphgraph:topology-end}
 				}
 			}
 		}
@@ -602,20 +637,20 @@ Ideally, this should capture feature locations and relationships in a somewhat \
 	\caption{Supplemental functions for \cref{alg:glyphgraph}\label{alg:supplement}}
 	\texttt{FindKeypoints}(Image $C$, Image $S$)\;\label{alg:supplement:keyp-start}
 	\Begin{
-		$Keyps, Ends \leftarrow \lbrace\rbrace$\;
-		\ForEach{$label_{x,y} \in C$}{
-			\If{$label_{x,y} < 1$}{
-				continue
+		$\mathit{Keyps}, \mathit{Ends} \leftarrow \lbrace\rbrace$\;
+		\ForEach{$\mathit{label}_{x,y} \in C$}{
+			\If{$\mathit{label}_{x,y} < 1$}{
+				\textbf{continue}
 			}
-			$degree \leftarrow$ n\si{\degree} contiguous blocks in $Nhood_{S}(x,y)$\;
-			\uIf{$degree = 1$}{
-				$Ends \leftarrow Endps \cup \lbrace(x,y,label_{x,y})\rbrace$
+			$\mathit{degree} \leftarrow$ n\si{\degree} contiguous blocks in $\operatorname{Nhood}_{S}(x,y)$\;
+			\uIf{$\mathit{degree} = 1$}{
+				$\mathit{Ends} \leftarrow \mathit{Ends} \cup \lbrace(x,y,label_{x,y})\rbrace$
 			}
-			\ElseIf{$degree > 2$}{
-				$Keyps \leftarrow Keyps \cup \lbrace(x,y,label_{x,y})\rbrace$
+			\ElseIf{$\mathit{degree} > 2$}{
+				$\mathit{Keyps} \leftarrow \mathit{Keyps} \cup \lbrace(x,y,\mathit{label}_{x,y})\rbrace$
 			}	
 		}
-		\Return Keyps, Ends\;\label{alg:supplement:keyp-end}
+		\Return $\mathit{Keyps}, Ends$\;\label{alg:supplement:keyp-end}
 	}
 \end{algorithm}
 
@@ -631,8 +666,8 @@ Ideally, this should capture feature locations and relationships in a somewhat \
 		{2,2,2}%
 	}
 	\def\keypgrid{
-		{0,4,0},
-		{2,1,3},
+		{0,3,0},
+		{2,1,4},
 		{0,0,0}%
 	}
 
@@ -642,9 +677,15 @@ Ideally, this should capture feature locations and relationships in a somewhat \
 %	\definecolor{graphc4}{RGB}{141,246,135}
 	\definecolor{pixel 0}{HTML}{FFFFFF}
 	\definecolor{pixel 1}{HTML}{000000}
-	\definecolor{pixel 2}{RGB}{150,227,240}%{HTML}{ff0000}
-	\definecolor{pixel 3}{RGB}{250,71,37}%{HTML}{00ff00}
-	\definecolor{pixel 4}{RGB}{253,161,77}%{HTML}{0000ff}
+%	\definecolor{pixel 2}{RGB}{150,227,240}%{HTML}{ff0000}
+%	\definecolor{pixel 3}{RGB}{250,71,37}%{HTML}{00ff00}
+%	\definecolor{pixel 4}{RGB}{253,161,77}%{HTML}{0000ff}
+	\colorlet{pixel 2}{graphc1}
+	\colorlet{pixel 4}{graphc2}
+	\colorlet{pixel 3}{graphc3}
+%	\colorlet{pixel 4}{graphc1}
+%	\colorlet{pixel 3}{uofglavendar}
+%	\colorlet{pixel 2}{uofgsunshine}
 	\centering
 	
 	\begin{subfigure}[b]{0.25\linewidth}
@@ -704,14 +745,14 @@ This is a two-pass approach, first testing each point $p$ along a path for the e
 If such a triangle exists, $p$ is marked as \emph{high-curvature} and its \emph{sharpness} $\pi - |\alpha|$ is recorded.
 These locations are then refined by performing non-maximal suppression with the observed sharpness values, leaving only the local maxima marked as splitting points.
 
-Lines \ref{alg:glyphgraph:split-start}--\ref{alg:glyphgraph:split-end} then classify each path segment: if for a path segment with length $t$ and distance $d$ between that segment's endpoints $d * curve\_thres < t$, then we label it as a \texttt{CURVE}, otherwise it is labelled as a \texttt{LINE}.
-I consider $curve\_thres = 1.5$ as the default value.
+Lines \ref{alg:glyphgraph:split-start}--\ref{alg:glyphgraph:split-end} then classify each path segment: if for a path segment with length $t$ and distance $d$ between that segment's endpoints $d * \mathit{curve\_thres} < t$, then we label it as a \texttt{CURVE}, otherwise it is labelled as a \texttt{LINE}.
+I consider $\mathit{curve\_thres} = 1.5$ as the default value.
 An edge is then added to the graph between these two points, with the given label---modelling path curvature features as desired.
 
 To establish and model orientation, lines \ref{alg:glyphgraph:orient-start}--\ref{alg:glyphgraph:orient-end} insert a new vertex at $(0,0)$, and place an edge between this vertex and the closest interest point found in the image with a unique \texttt{NORTH} label.
 Lines \ref{alg:glyphgraph:topology-start}--\ref{alg:glyphgraph:topology-end} then capture the topological relationship between components.
-Per-component, $eps$ is chosen to be either the set of that component's endpoints, keypoints or its sole start point (in decreasing order of preference).
-An edge, labelled \texttt{NEIGHBOUR}, is then placed between each point in $eps$ and the nearest interest point in another component.
+Per-component, $\mathit{eps}$ is chosen to be either the set of that component's endpoints, keypoints or its sole start point (in decreasing order of preference).
+An edge, labelled \texttt{NEIGHBOUR}, is then placed between each point in $\mathit{eps}$ and the nearest interest point in another component.
 Note that when outputting the final graph, vertex position data is discarded with the goal of providing scale-invariance.
 
 %?? Graph gen algo -- kinda explain this guy's path splitting algo \cite{PathCurvature}
@@ -767,8 +808,10 @@ The reverse also occurs from the vertices in the outer component towards the inn
 	\definecolor{pixel 0}{HTML}{FFFFFF}
 	\definecolor{pixel 1}{HTML}{000000}
 	\definecolor{pixel 4}{RGB}{150,227,240}%{HTML}{ff0000}
-	\definecolor{pixel 3}{RGB}{250,71,37}%{HTML}{00ff00}
-	\definecolor{pixel 2}{RGB}{253,161,77}%{HTML}{0000ff}
+%	\definecolor{pixel 3}{RGB}{250,71,37}%{HTML}{00ff00}
+	\colorlet{pixel 3}{uofglavendar}
+%	\definecolor{pixel 2}{RGB}{253,161,77}%{HTML}{0000ff}
+	\colorlet{pixel 2}{uofgpumpkin}%sunshine}
 	\centering
 	\begin{subfigure}[t]{0.3\linewidth}
 		\resizebox{\linewidth}{!}{
@@ -865,12 +908,13 @@ The reverse also occurs from the vertices in the outer component towards the inn
 		\node[draw, circle, color=black, fill=pixel 3] (n2) at (4.5,-5.5) {};
 		\node[draw, circle, color=black, fill=pixel 3] (n3) at (7.5,-5.5) {};
 		
+		\draw[-, ultra thick] (north) to node [midway, fill=white] {4} (n0);
+		
 		\draw[-, ultra thick] (n0) to [bend right=90] node [midway, fill=white] {2} (n1);
 		\draw[-, ultra thick] (n0) to [bend left=90] node [midway, fill=white] {2} (n1);
 		
 		\draw[-, ultra thick] (n2) to node [midway, fill=white] {1} (n3);
 		
-		\draw[-, ultra thick] (north) to node [midway, fill=white] {4} (n0);
 		
 		\draw[-, ultra thick] (n0) to node [midway, fill=white] {3} (n2);
 		\draw[-, ultra thick] (n3) to node [midway, fill=white] {3} (n1);
@@ -893,7 +937,8 @@ By looking at the skeletonised forms alongside the output graph, the current mod
 The first of these options likely comes at the cost of skew- or scale-invariance, but adapting \cref{alg:glyphgraph} to capture the latter class of features seems a worthwhile approach.
 
 \begin{figure}
-	\definecolor{node}{RGB}{250,71,37}
+%	\definecolor{node}{RGB}{250,71,37}
+	\colorlet{node}{uofgpumpkin}
 	\centering
 	\resizebox{0.8\linewidth}{!}{
 		\Large
@@ -955,7 +1000,7 @@ Quite usefully, we \emph{can} return to the initial class of model from this new
 %?? changes core model -- MCS is now effectively ``edge-maximising'' relative to our prior model.
 Theoretically, this new approach should increase matching performance.
 The MCS procedure as I have defined it maximises the order of the produced common subgraph, yet the features in my first model lie on the edges.
-Running this procedure on a dual graph-like transformation is then equivalent to the \emph{maximum common edge subgraph} of the regular model, matching in a way that maximises the count of features between a pair of graphs.
+Running this procedure on a dual graph-like transformation gives similar results to the \emph{maximum common edge subgraph} of the regular model, matching in a way that puts more emphasis on the count of features between a pair of graphs.
 
 %?? old model is recoverable from new.
 
@@ -991,30 +1036,32 @@ Admittedly, further supplemental graphs could be added, filtering on commonly se
 
 \begin{algorithm}[t]
 	\DontPrintSemicolon
-	\caption{Modifications for k$\downarrow$ \cite{Between-MCS-SIP} for attributed multigraphs, given (for a graph $\mathcal{G}$) a vertex labelling function $l_\mathcal{G}$, a chosen multigraph neighbourhood function $\mathcal{N}_{s,\mathcal{G}}$ and its associated adjacency operator ``$\sim_{s,\mathcal{G}}$''. \label{alg:k-down-search}}
-	\tcp{replacement for lines 5--9\\
+	\caption{Modifications for k$\downarrow$ \cite{Between-MCS-SIP} for attributed multigraphs, given (for a graph $\mathcal{G}$) a vertex labelling function $\ell_\mathcal{G}$, a chosen multigraph neighbourhood function $\mathcal{N}_{s,\mathcal{G}}$ and its associated adjacency operator ``$\sim_{s,\mathcal{G}}$''. \label{alg:k-down-search}}
+	\tcp{
+%		replacement for lines 5--9\\
 		top-of-search filtering with sequences on loop constraints}
-	\ForEach{$v \in GetV(\mathcal{P})$}{
-		$D_v \leftarrow GetV(\mathcal{T})$\;
+	\ForEach{$v \in \operatorname{V}(\mathcal{P})$}{
+		$D_v \leftarrow \operatorname{V}(\mathcal{T})$\;
 		\ForEach{$(P,T)\in L$}{
 			$D_v \leftarrow \{ w \in D_v : v \sim_P v \Rightarrow w \sim_t w \land S_P(v) \lesspreceq{k} S_T(w) \}$
 		}
 	
 		\BlankLine
-		$s \leftarrow seq_{\mathcal{P}}(v,v)$\;\label{alg:k-down-search:top-start}
+		$s \leftarrow \operatorname{seq}_{\mathcal{P}}(v,v)$\;\label{alg:k-down-search:top-start}
 %		$Valids \leftarrow \{\}$\;
-%		\ForEach{$w \in GetV(\mathcal{T})$}{
+%		\ForEach{$w \in \operatorname{V}(\mathcal{T})$}{
 %			\If{$v \sim_{\mathcal{P}} v \Rightarrow w \sim_{s,\mathcal{T}} w \land l_\mathcal{P}(v) = l_\mathcal{T}(w)$}{
 %				$Valids \leftarrow Loops \cup \{w\}$
 %			}
 %		}
-		$D_v \leftarrow \{ w \in D_v : l_\mathcal{P}(v) = l_\mathcal{T}(w) \land v \sim_P v \Rightarrow w \sim_{s,\mathcal{T}} w \}$\;\label{alg:k-down-search:top-end}
+		$D_v \leftarrow \{ w \in D_v : \ell_\mathcal{P}(v) = \ell_\mathcal{T}(w) \land v \sim_P v \Rightarrow w \sim_{s,\mathcal{T}} w \}$\;\label{alg:k-down-search:top-end}
 		$D_v \leftarrow D_v \cup k$ distinct wildcard vertices\;
 	}
 	
 	\BlankLine
 	\BlankLine
-	\tcp{replacement for lines 35--40\\
+	\tcp{
+%		replacement for lines 35--40\\
 	filtering with sequences during propagation}
 	\ForEach{$D_w \in D\backslash\lbrace D_v\rbrace$}{
 		$D_w \leftarrow D_w \backslash \lbrace v'\rbrace$\;
@@ -1026,7 +1073,7 @@ Admittedly, further supplemental graphs could be added, filtering on commonly se
 		\BlankLine
 		$(P_0, T_0) \leftarrow L[0] $\;\label{alg:k-down-search:node-start}
 		\If{$v \sim_{P_0} w$}{
-			$s \leftarrow seq_{P_0}(v,w)$\;
+			$s \leftarrow \operatorname{seq}_{P_0}(v,w)$\;
 			$D_w \leftarrow D_w \cap (\mathcal{N}_{s,T_0}(v') \cup wildcards )$\;\label{alg:k-down-search:node-end}
 		}
 		\If{$D_w = \emptyset$}{\Return{\textbf{false}}}
