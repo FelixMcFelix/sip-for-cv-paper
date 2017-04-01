@@ -606,7 +606,7 @@ Ideally, this should capture feature locations and relationships in a somewhat \
 		}
 		\If{$\mathit{north} \ne \mathit{null}$}{
 			$V \leftarrow V \cup \lbrace \mathit{zero}, \mathit{north}\rbrace$\;
-			$E.append(\mathit{zero}, \mathit{north},\texttt{NORTH})$\;
+			$E.\operatorname{append}((\mathit{zero}, \mathit{north},\texttt{NORTH}))$\;
 		}\label{alg:glyphgraph:orient-end}
 		
 		\For{$i\leftarrow 1$; $i \le n_{\mathit{components}}$; $i$\texttt{++}}{ \label{alg:glyphgraph:topology-start}
@@ -1067,14 +1067,14 @@ Admittedly, further supplemental graphs could be added, filtering on commonly se
 		$D_w \leftarrow D_w \backslash \lbrace v'\rbrace$\;
 		\ForEach{$(P, T) \in L$}{
 			\If{$v \sim_P w$}{
-				$D_w \leftarrow D_w \cap (N_T(v') \cup wildcards )$
+				$D_w \leftarrow D_w \cap (N_T(v') \cup \mathit{wildcards} )$
 			}
 		}
 		\BlankLine
 		$(P_0, T_0) \leftarrow L[0] $\;\label{alg:k-down-search:node-start}
 		\If{$v \sim_{P_0} w$}{
 			$s \leftarrow \operatorname{seq}_{P_0}(v,w)$\;
-			$D_w \leftarrow D_w \cap (\mathcal{N}_{s,T_0}(v') \cup wildcards )$\;\label{alg:k-down-search:node-end}
+			$D_w \leftarrow D_w \cap (\mathcal{N}_{s,T_0}(v') \cup \mathit{wildcards} )$\;\label{alg:k-down-search:node-end}
 		}
 		\If{$D_w = \emptyset$}{\Return{\textbf{false}}}
 	}
