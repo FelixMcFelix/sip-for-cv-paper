@@ -33,6 +33,20 @@ splits    = [
 	"train"
 ]
 
+curve_thr = [
+	1.2,
+	1.35,
+	1.5,
+	1.65
+	# 1.7
+]
+
+dsets_inf = [
+	# font name, split names, automated split names, size?, curve_thres?, seperate folders?
+	("hwrt", ["test", "train"], ["test", "train"], 2000, False, True),
+	("washington", ["test", "valid", "train"], ["valid", "train"], None, True, False)
+]
+
 dataset_sizes = [
 	500,
 	1000,
@@ -47,6 +61,7 @@ pen_to_start = {
 }
 
 timelimit = 300
+search_timelimit = 30
 num_cores = 8
 
 base = ".."
@@ -55,11 +70,15 @@ img_dir     = "../imgs/"
 graph_dir   = "../graphs/"
 gviz_dir    = "../graphviz/"
 dual_suffix = "dual/"
-results_dir = "../results/mcs/"
+results_dir = "../results/"
 tables_dir  = "../tables/"
 font_dir    = "../resources/"
-prog_name   = "sip-mcs/solve_subgraph_isomorphism"
-job_folder  = "jobs/mcs/"
+job_folder  = "jobs/"
+
+washington     = "washington/"
+washington_img = "Data/Word_Images_Binarised/01_Skew"
+washington_set = "Set/"
+washington_spl = "newset/"
 
 chars = list(string.lowercase) + [c + "-up" for c in string.uppercase]
 
@@ -75,3 +94,9 @@ def mkdirnotex(filename):
 	folder = os.path.dirname(filename)
 	if not os.path.exists(folder):
 		os.makedirs(folder)
+
+def nix(string):
+	return string.replace("\\", "/")
+
+def liney(arr):
+	return [x + "\n" for x in arr]

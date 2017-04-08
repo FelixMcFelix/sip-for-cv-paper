@@ -1,0 +1,37 @@
+graph "" {
+"(63, 28)";
+"(54, 19)";
+"(59, 58)";
+"(0, 0)";
+"(50, 99)";
+"(49, 41)";
+"(55, 81)";
+"(53, 97)";
+"(57, 88)";
+"(55, 17)";
+"(52, 61)";
+"(53, 42)";
+"(58, 77)";
+"(60, 57)";
+"(52, 59)";
+"(63, 28)" -- "(54, 19)"  [color=blue, key=0, weight=3];
+"(63, 28)" -- "(53, 42)"  [color=red, key=0, weight=1];
+"(63, 28)" -- "(55, 17)"  [color=blue, key=0, weight=3];
+"(54, 19)" -- "(0, 0)"  [color=purple, key=0, weight=4];
+"(54, 19)" -- "(49, 41)"  [color=blue, key=0, weight=3];
+"(54, 19)" -- "(55, 17)"  [color=red, key=0, weight=1];
+"(59, 58)" -- "(58, 77)"  [color=red, key=0, weight=1];
+"(59, 58)" -- "(60, 57)"  [color=red, key=0, weight=1];
+"(59, 58)" -- "(52, 59)"  [color=red, key=0, weight=1];
+"(50, 99)" -- "(53, 97)"  [color=red, key=0, weight=1];
+"(50, 99)" -- "(58, 77)"  [color=blue, key=0, weight=3];
+"(49, 41)" -- "(53, 42)"  [color=red, key=0, weight=1];
+"(55, 81)" -- "(52, 61)"  [color=blue, key=0, weight=3];
+"(55, 81)" -- "(57, 88)"  [color=red, key=0, weight=1];
+"(55, 81)" -- "(60, 57)"  [color=blue, key=0, weight=3];
+"(55, 81)" -- "(58, 77)"  [color=blue, key=0, weight=3];
+"(53, 97)" -- "(57, 88)"  [color=red, key=0, weight=1];
+"(53, 97)" -- "(57, 88)"  [color=red, key=1, weight=1];
+"(52, 61)" -- "(52, 59)"  [color=red, key=0, weight=1];
+"(53, 42)" -- "(52, 59)"  [color=red, key=0, weight=1];
+}

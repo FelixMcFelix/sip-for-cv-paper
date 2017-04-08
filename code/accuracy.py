@@ -19,8 +19,6 @@ def get_accuracy(filename, print_ans=False):
 
 	return ans
 
-
-
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description="")
 	parser.add_argument("input",

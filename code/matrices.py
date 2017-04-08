@@ -17,7 +17,7 @@ for i, (label, char) in enumerate(zip(labels, chars)):
 # out[0, 1:] = labels
 # out[1:, 0] = labels.T
 
-def write_matrix(path, filename, matrix):
+def write_matrix(path, filename, matrix, negate=False):
 	outname = path + filename
 	mkdirnotex(outname)
 	with open(outname + ".csv", "wb") as f:
@@ -27,7 +27,8 @@ def write_matrix(path, filename, matrix):
 			out.writerow([label] + row.tolist())
 
 	outext = ".png"
-	call(["gnuplot", "-e", "filename='{0}.csv'; outpng='{0}{1}'; outtikz='{0}.tex'".format(outname, outext), "heatmap.gp"])
+	neg_var = "; ged='defined'" if negate else ""
+	call(["gnuplot", "-e", "filename='{0}.csv'; outpng='{0}{1}'; outtikz='{0}.tex'{2}".format(outname, outext, neg_var), "heatmap.gp"])
 
 def process_font(font, font2=None, path_append=""):
 	# find all graph sizes
@@ -55,7 +56,7 @@ def process_font(font, font2=None, path_append=""):
 		vals = np.zeros((w,w))
 		# Fill matrix with observed values
 		for p, t in ((p, t) for p in chars for t in chars):
-			path = "{}{}{}-{}/{}.{}".format(results_dir, path_append, font, param_name, p, t) if font2 is None else "{}{}{}-{}-{}/{}.{}".format(results_dir,  path_append, font, font2, param_name, p, t)
+			path = "{}mcs/{}{}-{}/{}.{}".format(results_dir, path_append, font, param_name, p, t) if font2 is None else "{}mcs/{}{}-{}-{}/{}.{}".format(results_dir,  path_append, font, font2, param_name, p, t)
 			with open(path) as f:
 				# print param_name, p, t
 				interm = f.readlines()[-1].strip().split("SIZE=")
@@ -74,9 +75,9 @@ def process_font(font, font2=None, path_append=""):
 
 		ged = np.abs(vals-ps)+np.abs(vals-ts)
 
-		write_matrix(tables_dir, "{}.conf-reg".format(out_p), vals.astype(np.int_))
-		write_matrix(tables_dir, "{}.conf-nrm".format(out_p), vals/nrms)
-		write_matrix(tables_dir, "{}.conf-ged".format(out_p), ged.astype(np.int_))
+		write_matrix(tables_dir, "{}-conf-reg".format(out_p), vals.astype(np.int_))
+		write_matrix(tables_dir, "{}-conf-nrm".format(out_p), vals/nrms)
+		write_matrix(tables_dir, "{}-conf-ged".format(out_p), ged.astype(np.int_), negate=True)
 
 for font in fonts:
 	process_font(font)

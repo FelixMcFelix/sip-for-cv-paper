@@ -1,17 +1,18 @@
-%% example.tex
-%% Jeremy Singer
-%% 16 Oct 12
-
 \documentclass{mpaper}
-
+\usepackage{xparse}
 \usepackage{mathtools}
 
 \usepackage{tikz}
+%\usepackage{pgfplots}
 \usetikzlibrary{fit, arrows.meta, calc}
+\usepackage{gnuplot-lua-tikz}
+%\usepgfplotslibrary{external} 
+%\tikzexternalize
+
+\usepackage[binary-units]{siunitx}
+\sisetup{range-phrase=--, range-units=single}
 
 \usepackage{lipsum}
-
-\usepackage{siunitx}
 \usepackage[basic]{complexity}
 \usepackage[super,negative]{nth}
 
@@ -23,10 +24,10 @@
 \usepackage{subcaption}
 \captionsetup[subfigure]{justification=centering}
 \usepackage{cleveref}
-
+\newcommand{\crefrangeconjunction}{--}
 \usepackage{enumitem}
 %\setlist{nosep}
-
+\usepackage[mode=buildmissing]{standalone}
 \usepackage{booktabs}
 \usepackage{microtype}
 
@@ -100,13 +101,13 @@
 %====================================================
 %====================================================
 \begin{abstract}
-%According to Simon Peyton Jones, an abstract should address
-%four key questions. First, what is the problem that this
-%paper tackles? Second, why is this an interesting problem?
-%Third, what is the solution this paper proposes?
-%Finally, why is the proposed solution a good one?
+According to Simon Peyton Jones, an abstract should address
+four key questions. First, what is the problem that this
+paper tackles? Second, why is this an interesting problem?
+Third, what is the solution this paper proposes?
+Finally, why is the proposed solution a good one?
 %Lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet
-\lipsum[1]
+%\lipsum[1]
 
 ?? Write me
 \end{abstract}
@@ -132,22 +133,7 @@ Recent work into \emph{adversarial images} \cite{AdversarialML} has affirmed thi
 
 %?? Adversarial examples in ML \cite{AdversarialML}
 
-Graph models, long-explored in discrete mathematics, provide a simpler way of visualising problems.
-Systems are broken down into \emph{vertices} and \emph{edges} between vertex pairs---capturing the relationships between objects or key features within a scene.
-For many domains, this is an intuitive and effective representation, encoding rich semantics in a very natural way which enjoys use in computational chemistry \cite{Graph-Molecules-2,Graph-Molecules-3,Graph-Molecules-1}, biology \cite{Graph-Biology-1}, and graph database analysis.
-Furthermore, exact graph search and similarity metrics (e.g.\ the \emph{subgraph isomorphism} and \emph{maximum common subgraph} problems, respectively) are well-understood and an area of continual research in the field of algorithms.
-%?? part of idea---need effective models to know that our similarity algorithms are a good fit?
-
-The main aim of this paper is to explore the hypothesis that, after suitable transformation, image similarity corresponds to graph similarity according to these known metrics; \cref{fig:intro-sim} gives a rough illustration of the concept.
-In particular, this work focuses on character analysis and recognition, considering both the performance of graph models within a domain alongside the usefulness of any chosen analytic techniques.
-By investigating these questions, this paper contributes:
-\begin{itemize}
-	\item A demonstration of the shortcomings of existing image graph work for generic matching (\Cref{sec:image-weakness}), by attempting similarity computation on graphs built using common techniques from the literature. %given that this also requires an investigation into the effectiveness of known graph similarity techniques, this motivates the development of new models.
-	This weakness motivates the development of new modelling strategies.
-	\item ?? Detail as paper written
-\end{itemize}
-
-\begin{figure}
+\begin{figure}[ht]
 	\centering
 	\resizebox{\columnwidth}{!}{
 		\Large
@@ -209,6 +195,23 @@ By investigating these questions, this paper contributes:
 }
 \caption{An example of the expected similarity between two views of the same scene. Similar objects and scenes should theoretically generate similar graphs after a suitable transformation, enabling recognition across images.\label{fig:intro-sim}}
 \end{figure}
+
+Graph models, long-explored in discrete mathematics, provide a simpler way of visualising problems.
+Systems are broken down into \emph{vertices} and \emph{edges} between vertex pairs---capturing the relationships between objects or key features within a scene.
+For many domains, this is an intuitive and effective representation, encoding rich semantics in a very natural way which enjoys use in computational chemistry \cite{Graph-Molecules-2,Graph-Molecules-3,Graph-Molecules-1}, biology \cite{Graph-Biology-1}, and graph database analysis.
+Furthermore, exact graph search and similarity metrics (e.g.\ the \emph{subgraph isomorphism} and \emph{maximum common subgraph} problems, respectively) are well-understood and an area of continual research in the field of algorithms.
+%?? part of idea---need effective models to know that our similarity algorithms are a good fit?
+
+The main aim of this paper is to explore the hypothesis that, after suitable transformation, image similarity corresponds to graph similarity according to these known metrics; \cref{fig:intro-sim} gives a rough illustration of the concept.
+In particular, this work focuses on character analysis and recognition, considering both the performance of graph models within a domain alongside the usefulness of any chosen analytic techniques.
+By investigating these questions, this paper contributes:
+\begin{itemize}
+	\item A demonstration of the shortcomings of existing image graph work for generic matching (\Cref{sec:image-weakness}), by attempting similarity computation on graphs built using common techniques from the literature. %given that this also requires an investigation into the effectiveness of known graph similarity techniques, this motivates the development of new models.
+	This weakness motivates the development of new modelling strategies.
+	\item Algorithms for decomposing textual images into a graph structured format, capturing elements of path curvature as the features for matching (\Cref{sec:algorithm}).
+	I demonstrate that the graph structure then allows the discovery of a supposed issue in the first algorithm, introducing path angle dynamics to make characters more distinct (\Cref{sec:algorithm:dual}).
+	\item ?? Detail as paper written
+\end{itemize}
 
 %====================================================
 \section{Graphs, Search and Similarity}
@@ -521,7 +524,7 @@ To investigate this, I implemented \citeauthor{Plane-Graphs-From-Images}'s algor
 Two experiments were performed:
 \begin{enumerate}
 	\item Establishing whether graphs of a test image from the Berkeley Segmentation Dataset \cite{BerkeleyDatabase} (\cref{fig:explor-bsd}) before and after \SI{180}{\degree} rotation were isomorphic, and measuring their similarity if not.
-	\item Measuring the similarity between two adjacent frames of Sergio Leone's \emph{The Good, the Bad and the Ugly} (\cref{fig:explor-ff1} and \subref{fig:explor-ff2}).
+	\item Measuring the similarity between two adjacent frames of Sergio Leone's \emph{The Good, the Bad and the Ugly} (\cref{fig:explor-ff1,fig:explor-ff2}).
 \end{enumerate}
 As the image graphs were expected to be high-order, vertices were labelled with their $(x,y)$ image locations to augment the $k\downarrow$ procedure with Euclidean distance filtering to make matching feasible---vertices could be mapped to one another if their distance was smaller than 1 for the first, or 5 for the second experiment.
 These distances were chosen due to the expected similarity in each case---while the first experiment governs essentially identical images (once positions have been corrected to negate the transform), in the second case mild variance is expected.
@@ -533,7 +536,7 @@ After 5 days runtime, the graph order was not exactly identified in either case,
 \centering
 \begin{tabular}{cccc}
 	\toprule
-	Experiment & Except-$k$ & $\operatorname{Ord}(MCS)$ & Overlap (\si{\percent}) \\ \midrule
+	Experiment & Except-$k$ & $\operatorname{Ord}(\mathit{MCS})$ & Overlap (\si{\percent}) \\ \midrule
 	1 & $[61, 111]$ & $[134, 184]$ & 54.6--72.2 \\
 	2 & $[38, 217]$ & $[47, 226]$ & 18.1--86.9 \\
 	\bottomrule
@@ -736,8 +739,8 @@ Ideally, this should capture feature locations and relationships in a somewhat \
 \subsection{Graphs from path curvature}
 For this task, I pose \texttt{GlyphGraph} (\cref{alg:glyphgraph}) as a solution.
 An input pixel image is first preprocessed by padding, greyscale conversion, thresholding and binarisation.
-It is then \emph{skeletonised} to convert the image into a set of 1-pixel-thick paths, assigning disconnected paths with different labels (lines \ref{alg:glyphgraph:start-proc}--\ref{alg:glyphgraph:end-proc}).
-A preliminary set of interest points is extracted from the image, split into two categories: \emph{endpoints} are pixels in the image skeleton with just one contiguous component in their neighbourhood, while \emph{keypoints} are junctions with at least 3 such components (\cref{alg:supplement} lines \ref{alg:supplement:keyp-start}--\labelcpageref{alg:supplement:keyp-end}, \cref{fig:endp-reg-keyp}).
+It is then \emph{skeletonised} to convert the image into a set of 1-pixel-thick paths, assigning disconnected paths with different labels (\crefrange{alg:glyphgraph:start-proc}{alg:glyphgraph:end-proc}).
+A preliminary set of interest points is extracted from the image, split into two categories: \emph{endpoints} are pixels in the image skeleton with just one contiguous component in their neighbourhood, while \emph{keypoints} are junctions with at least 3 such components (\cref{alg:supplement} \crefrange{alg:supplement:keyp-start}{alg:supplement:keyp-end}, \cref{fig:endp-reg-keyp}).
 
 Per component, a depth-first traversal is performed to discover the paths between all constituent interest points (\cref{alg:glyphgraph:dft}); this traversal prioritises moves to regular pixels over interest points, allowing interest points to be revisited since a path may start and end at the same point.
 In \cref{alg:glyphgraph:ipan}, these paths are then subdivided using \citeauthor{PathCurvature}'s IPAN algorithm \cite{PathCurvature} to detect locations of high curvature (using the default parameters provided in the paper).
@@ -745,12 +748,12 @@ This is a two-pass approach, first testing each point $p$ along a path for the e
 If such a triangle exists, $p$ is marked as \emph{high-curvature} and its \emph{sharpness} $\pi - |\alpha|$ is recorded.
 These locations are then refined by performing non-maximal suppression with the observed sharpness values, leaving only the local maxima marked as splitting points.
 
-Lines \ref{alg:glyphgraph:split-start}--\ref{alg:glyphgraph:split-end} then classify each path segment: if for a path segment with length $t$ and distance $d$ between that segment's endpoints $d * \mathit{curve\_thres} < t$, then we label it as a \texttt{CURVE}, otherwise it is labelled as a \texttt{LINE}.
+\Crefrange{alg:glyphgraph:split-start}{alg:glyphgraph:split-end} then classify each path segment: if for a path segment with length $t$ and distance $d$ between that segment's endpoints $d * \mathit{curve\_thres} < t$, then we label it as a \texttt{CURVE}, otherwise it is labelled as a \texttt{LINE}.
 I consider $\mathit{curve\_thres} = 1.5$ as the default value.
 An edge is then added to the graph between these two points, with the given label---modelling path curvature features as desired.
 
-To establish and model orientation, lines \ref{alg:glyphgraph:orient-start}--\ref{alg:glyphgraph:orient-end} insert a new vertex at $(0,0)$, and place an edge between this vertex and the closest interest point found in the image with a unique \texttt{NORTH} label.
-Lines \ref{alg:glyphgraph:topology-start}--\ref{alg:glyphgraph:topology-end} then capture the topological relationship between components.
+To establish and model orientation, \crefrange{alg:glyphgraph:orient-start}{alg:glyphgraph:orient-end} insert a new vertex at $(0,0)$, and place an edge between this vertex and the closest interest point found in the image with a unique \texttt{NORTH} label.
+\Crefrange{alg:glyphgraph:topology-start}{alg:glyphgraph:topology-end} then capture the topological relationship between components.
 Per-component, $\mathit{eps}$ is chosen to be either the set of that component's endpoints, keypoints or its sole start point (in decreasing order of preference).
 An edge, labelled \texttt{NEIGHBOUR}, is then placed between each point in $\mathit{eps}$ and the nearest interest point in another component.
 Note that when outputting the final graph, vertex position data is discarded with the goal of providing scale-invariance.
@@ -984,7 +987,7 @@ The first of these options likely comes at the cost of skew- or scale-invariance
 \end{figure}
 
 %\paragraph{An algorithm using path direction}
-\subsection{A ``dual'' representation with path direction}
+\subsection{A ``dual'' representation with path direction} \label{sec:algorithm:dual}
 %?? introduce the ``dual'' representation (frame it like ``the graph models allowed me to learn \emph{why} these characters weren't distinct, and modify the algorithm to include path angle dynamics'')
 In the framework established, it is difficult to capture the relationship between paths since they are modelled by edges.
 To rework the model and enable these relationships to be captured, I start with a \emph{dual graph}-like conversion: edges in the prior model are converted into identically labelled vertices, placing an edge between these new vertices for each time their corresponding prior edges meet at the same vertex.
@@ -1025,9 +1028,9 @@ Each corresponds to a different level of filtering:
 \Cref{alg:k-down-search} then defines the necessary modifications to $k\downarrow$ to compute the MCS in each case.
 %?? Filtering at top of search---modify loop constraints, vertex label matching
 At the top of search, the matching procedure must enforce that vertices of $\mathcal{P}$ can only be mapped to vertices of $\mathcal{T}$ with equal labels.
-Additionally, any vertices featuring loops must meet the selected sequence-adjacency criterion (lines \ref{alg:k-down-search:top-start}--\ref{alg:k-down-search:top-end}).
+Additionally, any vertices featuring loops must meet the selected sequence-adjacency criterion (\crefrange{alg:k-down-search:top-start}{alg:k-down-search:top-end}).
 %?? Per-node of search, look at $s$-neighbourhoods
-Per node of constraint propagation, domains are pruned using the chosen sequence-aware neighbourhood---if $v$ is mapped to $v'$ and $v$ and $w$ are adjacent with edge sequence $s$ in $\mathcal{P}$, then $w$ may only be assigned to vertices in the $s$-neighbourhood of $v'$ (lines \ref{alg:k-down-search:node-start}--\ref{alg:k-down-search:node-end}).
+Per node of constraint propagation, domains are pruned using the chosen sequence-aware neighbourhood---if $v$ is mapped to $v'$ and $v$ and $w$ are adjacent with edge sequence $s$ in $\mathcal{P}$, then $w$ may only be assigned to vertices in the $s$-neighbourhood of $v'$ (\crefrange{alg:k-down-search:node-start}{alg:k-down-search:node-end}).
 
 %?? Keep standard filtering from supplemental graphs (adjacency matrix operates on at least 1-adjacency, exact matches are provided)
 The rest of the algorithm is unaffected by these additions; by providing both multigraph and simple graph notions of neighbourhood and adjacency, the existing filtering provided by supplemental graphs is maintained.
@@ -1081,24 +1084,268 @@ Admittedly, further supplemental graphs could be added, filtering on commonly se
 \end{algorithm}
 
 %====================================================
-\section{Empirical Evaluation \& Discussion}
+\section{Experimental Evaluation} % \& Discussion}
 \label{sec:evaluation}
 %====================================================
 
-?? Machine statistics, find the code here\footnote{\url{https://github.com/FelixMcFelix/sip-for-cv-paper}}, roll up a nice VM for review?
+To test the effectiveness of these algorithms for character modelling and classification, three experiments were performed:
 
-?? Heatmaps per font -- examine size? font v font? sans vs serif? Dual vs regular? How do the different filtering levels affect character distinctness? Use the word ``curiously'' to describe relation between more distinct chars and reduced classifier performance.
+%?? Describe your experiments. What criteria makes them successful/a good outcome? MAKE THIS CLEAR.
 
-?? Matching effectiveness statistics with HWRT \cite{HwrtDatabase} (Discuss effects of pen thickness, filtering class, dual vs regular). kNN classifier ($k=5$ I think)
+%?? Explain methodology
 
-?? What else? Try it out on the george washington letters dataset for direct comparison with \cite{Graphs-Handwriting}? IF NOT DONE, PUT IN FUTURE WORK
+\begin{enumerate}
+	\item Construction of ``confusion matrices'' between all graphs of characters in the Latin alphabet from several fonts, both lower- and upper-case.
+	To this end, the order of the maximum common subgraph and graph edit distance are displayed via heat-maps to show character graph (dis-)similarity within and between fonts.
+	For this, I chose three fonts to investigate: \emph{DejaVu Sans}, \emph{Open Sans} (both sans-serif), and \emph{Alegreya} (serif).
+	The aim is to show that the generated graphs are reasonably distinct from one another within a human definition of similarity (i.e.\ we might expect 'o' and 'O' to produce identical graphs).
+	Furthermore, I investigate whether the modifications introduced in \cref{sec:algorithm:dual} create more distinct glyph models as hypothesised.
+	The experiment is judged to be a success if most characters are suitably dissimilar within a font, and ideally similar to the graph model of that same character from another font.
+	
+	\item Application of a \emph{$k$-Nearest Neighbours} ($k$NN) classifier to the HWRT database of online character data \cite{HwrtDatabase} (setting $k=5$ as in \cite{Graphs-Handwriting}).
+	Images (and graphs) were constructed from the online path data using a selection of pen-radii, for $r \in \{1,5,9\}$, to explore how different levels of connectivity would affect graph structure and matching accuracy.
+	Here, graph edit distance is the chosen metric, setting a timeout of \SI{30}{\second} per graph comparison.
+	Due to the vast size of the dataset I restrict the database to the set of upper-case Latin alphabet characters, using a total of 2000 randomly selected glyphs split into \emph{test} and \emph{training} data in the same proportion as the original database.
+	This experiment assesses whether the features captured within any glyph were consistent between similar images in a way that enabled optical character recognition---a sufficiently high accuracy ($\sim\SI{90}{\percent}$) would indicate success.
+	
+	\item Application of the same classifier to a subset of the George Washington Letters dataset\footnote{\url{http://histograph.ch}} made available by \citeauthor{Graphs-Handwriting} \cite{Graphs-Handwriting}.
+	I use the same parameters on the classifier ($k=5$, \SI{30}{\second} timeout).
+	Additionally, I attempt to explore how variation of the path curvature threshold during modelling affects classifier performance, examining $\mathit{curve\_thres} \in \{1.2, 1.35. 1.5, 1.65\}$.
+	This experiment allows me to directly compare the modelling efficiency of my graph models combined with the defined GED against \citeauthor{Graphs-Handwriting}'s existing modelling techniques.
+	As these graphs model whole words, graph order is likely to become an issue, harming classifier performance---made aware of this, I consider a lower classifier performance ($\sim\SI{80}{\percent}$) to be successful.
+\end{enumerate}
+
+\noindent
+All experiments were run on a Windows 10 Pro x64 machine using the Windows Subsystem for Linux, with a Core i7--920@\SI{2.67}{\GHz} and \SI{12}{\gibi\byte} RAM.
+All code used for these experiments is publicly accessible on GitHub\footnote{\url{https://github.com/FelixMcFelix/sip-for-cv-paper}}.
+In all cases, statistics on generated graph order and size were collected, allowing further commentary on suspected reasons behind matching performance.
+Similarly, each experiment was attempted at all levels of filtering defined in \cref{sec:k-down-mods} to determine the related effects of each on classifier performance.
+
+%?? Machine statistics, find the code here\footnote{\url{https://github.com/FelixMcFelix/sip-for-cv-paper}}, roll up a nice VM for review?
+
+?? SET UP VM!
+
+\subsection{Results and Discussion}
+
+% disable these diagrams temporarily
+%\renewcommand{\includestandalone}[3]{}%\includegraphics[width=\linewidth]{#1.png}}
+\DeclareDocumentCommand\includestandalone{oom}{\includegraphics[width=\linewidth]{#3.png}}
+
+\begin{figure*}
+	\centering
+	\begin{subfigure}[b]{0.3\linewidth}
+		\includestandalone[width=\linewidth]{../tables/dejavu-sans/induced-conf-nrm}
+		\caption{
+			Induced
+			\label{fig:heat:filter:induced}
+%			goop monster quest?
+		}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.3\linewidth}
+		\includestandalone[width=\linewidth]{../tables/dejavu-sans/edgecountinc-conf-nrm}
+		\caption{
+			Edge-count-increasing
+			\label{fig:heat:filter:eci}
+%			smile!
+		}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.3\linewidth}
+		\includestandalone[width=\linewidth]{../tables/dejavu-sans/edgecountdec-conf-nrm}
+		\caption{
+%			yes!
+			Non-Induced
+			\label{fig:heat:filter:non-ind}
+		}
+	\end{subfigure}
+
+\vspace{0.5em}
+\caption{
+	%goop monster quest? smile! yes!
+	Heatmaps displaying graph similarity (graph order of MCS) between glyph graphs in the DejaVu Sans typeface, normalised by the order of the largest graph in the comparison.
+	These plots show the effects of the different levels of filtering introduced in \cref{sec:k-down-mods}.
+	Warmer colours imply more similarity, where cream means isomorphism---an overall darker heatmap shows that characters are seen as more distinct when matching under the given filtering level.	
+	It can thus be seen that characters are perceived as being more distinct when computing the  induced MCS.
+	\label{fig:heat:filter}
+}
+\end{figure*}
+
+\begin{figure*}
+	\centering
+	\begin{subfigure}[b]{0.225\linewidth}
+		\includestandalone[width=\linewidth]{../tables/dejavu-sans/induced-conf-nrm}
+		\caption{MCS: Regular\label{fig:heat:dual:mcs-r}}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.225\linewidth}
+		\includestandalone[width=\linewidth]{../tables/dual-dejavu-sans/induced-conf-nrm}
+		\caption{MCS: Dual\label{fig:heat:dual:mcs-d}}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.225\linewidth}
+		\includestandalone[width=\linewidth]{../tables/dejavu-sans/induced-conf-ged}
+		\caption{GED: Regular\label{fig:heat:dual:ged-r}}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.225\linewidth}
+		\includestandalone[width=\linewidth]{../tables/dual-dejavu-sans/induced-conf-ged}
+		\caption{GED: Dual\label{fig:heat:dual:ged-d}}
+	\end{subfigure}
+	
+	\vspace{0.5em}
+	\caption{
+		Heatmaps displaying graph similarity (MCS) and dissimilarity (GED) in the DejaVu Sans typeface as in \cref{fig:heat:filter}, comparing the distinctiveness of character graphs from the `Regular' and `Dual' algorithm variants.
+		For GED, lighter colours again imply similarity, where cream implies isomorphism---characters are more distinct in one encoding if lower similarity is observed outside of the diagonal.
+		Crucially, we can see that the `Dual' encoding leads to more distinctive characters as expected.
+		\label{fig:heat:dual}
+	}
+\end{figure*}
+
+\begin{figure*}
+	\centering
+	\begin{subfigure}[b]{0.225\linewidth}
+		\includestandalone[width=\linewidth]{../tables/open-sans-dejavu-sans/induced-conf-nrm}
+		\caption{MCS: Regular\label{fig:heat:sans:mcs-r}}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.225\linewidth}
+		\includestandalone[width=\linewidth]{../tables/dual-open-sans-dejavu-sans/induced-conf-nrm}
+		\caption{MCS: Dual\label{fig:heat:sans:mcs-d}}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.225\linewidth}
+		\includestandalone[width=\linewidth]{../tables/open-sans-dejavu-sans/induced-conf-ged}
+		\caption{GED: Regular\label{fig:heat:sans:ged-r}}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.225\linewidth}
+		\includestandalone[width=\linewidth]{../tables/dual-open-sans-dejavu-sans/induced-conf-ged}
+		\caption{GED: Dual\label{fig:heat:sans:ged-d}}
+	\end{subfigure}
+	
+	\vspace{0.5em}
+	\caption{
+		Heatmaps displaying graph (dis-)similarity between the DejaVu Sans and Open Sans typefaces, conveyed as in \cref{fig:heat:dual}.
+		Ideally, matching characters are expected to be almost isomorphic---high MCS order and low GED are expected along the diagonal.
+		While some isomorphisms and general similarities per-character are preserved between fonts, many of these are lost.
+		\label{fig:heat:sans}
+	}
+\end{figure*}
+
+\begin{figure*}
+	\centering
+	\begin{subfigure}[b]{0.225\linewidth}
+		\includestandalone[width=\linewidth]{../tables/alegreya-dejavu-sans/induced-conf-nrm}
+		\caption{MCS: Regular\label{fig:heat:vs:mcs-r}}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.225\linewidth}
+		\includestandalone[width=\linewidth]{../tables/dual-alegreya-dejavu-sans/induced-conf-nrm}
+		\caption{MCS: Dual\label{fig:heat:vs:mcs-d}}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.225\linewidth}
+		\includestandalone[width=\linewidth]{../tables/alegreya-dejavu-sans/induced-conf-ged}
+		\caption{GED: Regular\label{fig:heat:vs:ged-r}}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.225\linewidth}
+		\includestandalone[width=\linewidth]{../tables/dual-alegreya-dejavu-sans/induced-conf-ged}
+		\caption{GED: Dual\label{fig:heat:vs:ged-d}}
+	\end{subfigure}
+	
+	\vspace{0.5em}
+	\caption{
+		Heatmaps displaying graph (dis-)similarity between the DejaVu Sans and Alegreya typefaces.
+		Serif characters (such as those of Alegreya) modify many characters at the end of paths---ideally, core elements of the letter forms should remain identical.
+		Criteria for analysis match those of \cref{fig:heat:sans}.
+		Aside from `o', `O' and `Q', neither the `Regular' nor `Dual' graphs reliably enable matching between two different typeface styles.
+		\label{fig:heat:vs}
+	}
+\end{figure*}
+
+%?? EXPLAIN WHAT THE GRAPHS/MAPS SHOW, Discuss graph order in both cases. (min, max, median, avg)
+
+%?? Heatmaps per font -- examine size? font v font? sans vs serif? Dual vs regular? How do the different filtering levels affect character distinctness? Use the word ``curiously'' to describe relation between more distinct chars and reduced classifier performance.
+%
+%?? Matching effectiveness statistics with HWRT \cite{HwrtDatabase} (Discuss effects of pen thickness, filtering class, dual vs regular). kNN classifier ($k=5$ I think) Have to reduce dataset size due to cost of evaluation -- full HWRT dataset means several billion graph comparisons. They're expensive!
+
+%?? How long did these experiments take? Anywhere between seconds and minutes per query graph dependant on size of graphs, training data size (fast on alphabet 30 mins, slow on words ~??).
+
+%?? What else? Try it out on the george washington letters dataset for direct comparison with \cite{Graphs-Handwriting}? IF NOT DONE, PUT IN FUTURE WORK\footnote{\url{http://histograph.ch}}
+
+\paragraph{Experiment 1}
+\Cref{fig:heat:filter} shows the effect of each level of $k\downarrow$ filtering upon character distinctness during matching.
+Few differences are noted between the edge-count-increasing and non-induced levels of filtering (\cref{fig:heat:filter:eci,fig:heat:filter:non-ind} respectively), likely as they both build on the use of the non-induced variant of MCS.
+The induced MCS (\cref{fig:heat:filter:induced}), on the other hand, finds the set of characters to be largely more distinct from one another due to its stronger filtering.
+A more thorough examination reveals that many sets of unexpected isomorphisms remain: \{Z, H, K\} as explained in \cref{fig:badisomorphism}, \{n, h\}, \{c, s, C, S\}, \{b, p\}, and \{q, d\} to name several.
+While many of these are expected due to identical upper- and lower-case forms, several of these suggest that the original model lacks discriminative power and captures too few features; chiefly, these appear to be path length, path angle dynamics and glyph size.
+Throughout all comparisons, it is clear that many of these graphs still exhibit high similarity to one another (\SIrange{60}{70}{\percent} in the induced case), implying that many of the character graphs share identical components.
+This may arise from the fact that the MCS is not \emph{connected}, i.e. I do not impose that there must be a path between every pair of vertices in the MCS; this allows the addition of extra vertices which have no paths to the main components during matching.
+For instance, in every graph an edge marked \texttt{NORTH} between a pair of vertices is guaranteed to exist, and during search may be added to the MCS ``for free'' if it is disconnected from the current incumbent.
+
+Having established the induced variant of MCS as the most discriminative, \cref{fig:heat:dual} then presents the effects of the dual encoding upon glyph similarity for this level of filtering.
+Broadly, \cref{fig:heat:dual:mcs-r,fig:heat:dual:mcs-d} show an overall reduction in similarity across the entire space of comparisons---showing that the dual graph representation is successful in making glyph models more distinct from one another.
+Many of the unexpected isomorphisms \emph{have} been removed by this modification to the algorithm, yet not all; note that \{H, K\}, \{n, h\}, \{b, p\}, and \{q, d\} remain isomorphic, alongside many of the prior letters with ``identical'' upper- and lower-case forms.
+While it is unsurprising that a few such isomorphisms remain (we have not yet modelled the phenomena which actually differentiate them), revisiting \cref{fig:badisomorphism} sheds some light on the case of `H' and `K'.
+Note that in `K', the skeleton paths form then right junction start vertically leading to identical path dynamics between the two glyphs, which of course suggests further modifications which could be made to account for \emph{overall} path direction.
+I do not consider further such modification here.
+
+\Cref{fig:heat:sans,fig:heat:vs} then demonstrate the observed similarity \emph{between} fonts of different classes, examining DejaVu Sans vs.\ Open Sans and Alegreya respectively.
+In the former case, while some portion of the expected isomorphisms were observed it is clear that the model was unable to capture 
+Somewhat interestingly, changing to the `Dual' encoding from \cref{fig:heat:sans:mcs-r} to \cref{fig:heat:sans:mcs-d} \emph{removed} some of these observed isomorphisms, indicating different curvature along the traversed paths.
+Indeed, curvature may well be the root of many of the other `missing' isomorphisms, as path-splitting using the IPAN algorithm is likely to have some sensitivity to what humans might appreciate as minor variation.
+In the latter case while some clear glyph isomorphisms are preserved between fonts (\{o, O\}, and `Q'), the font graphs exhibit startling dissimilarity.
+A considerable factor here is the difference in graph order of these font classes; serif fonts display far more variation and ornamentation, particularly on what letter path endpoints.
+This naturally leads to more paths between these points, leading to a rather different structure overall.
+Given the nature of how \texttt{NEIGHBOURHOOD} and \texttt{NORTH} relations are formed, the existence of serifs further complicates matching as these relations are more likely in practice to concern endpoints.
+This result does not bode well---it indicates that the modelling techniques and/or the similarity measures are not fit for purpose when comparing writing in different styles or even regular variation within a single style.
+
+?? Table with font graph stats
+
+On the specified machine, these experiments typically took around \SI{30}{\minute} each to execute all $52\times52$ graph comparisons
+
+\paragraph{Experiment 2}
+?? Accuracy statistics for Exp 2 ``Curiously, more distinct characters do not necessarily imply better matching performance''
+
+?? Table with Exp 2 graph stats
+
+\paragraph{Experiment 3}
+?? Accuracy statistics for Exp 3
+
+?? Table with Exp 3 graph stats
+
+%\subsection{Discussion}
+%
+%?? Discuss Exp 1
+%
+%?? Discuss Exp 2
+%
+%?? Discuss Exp 3
 
 %====================================================
 \section{Related Work}
 \label{sec:related}
 %====================================================
 
-?? Handwriting analysis w/ kNN \cite{Graphs-Handwriting}
+\paragraph{General image modelling}
+%?? GENERAL STUFF
+Historically, the \emph{Scale-Invariant Feature Transform} (SIFT) and similar approaches have been extremely popular vector-space models for image modelling and matching \cite{SIFT,Sift-Variants-Comparison}.
+These techniques typically operate by identifying locations of high variation within a multiscale representation of an image such as a \emph{Laplacian pyramid}.
+Feature vectors are then histograms of gradient neighbourhoods, subject to preprocessing to identify the dominant direction and correct for variation in luminance, capturing distinctive image regions at different scales.
+These typically find uses in image matching (using the Hough transform) and panorama stitching (using RANSAC \cite{SIFT-Panorama})---since these are high-dimensionality keypoints, such matching can be expensive, motivating the development of cheaper (but less discriminative) models such as SURF \cite{SURF}.
+Adding to this, SIFT vectors have been used within complete graph topologies for the task of facial recognition \cite{SIFT-Graph-Topology-Faces}.
+
+\emph{Convolutional neural networks} (CNNs) have been a sizeable area of focus recently, with approaches such as \citeauthor{ConvNet} \cite{ConvNet} proving able to accurately learn image labellings from large datasets.
+These models operate by statistically learning \emph{kernels} from a corpus of training data to perform image convolution, transforming an image several times to eventually provide an output classification.
+While complex networks can require a large volume of training data and have a costly training phase, CNNs achieve very high accuracy above and beyond existing vector-space models while having good performance on modern commodity hardware.
+Primarily, this is due to the introduction of fast convolution operations on graphics processing units.
+Notably, the cost of classification \emph{does not typically scale} with the size of the training data set.
+Recent advances by \citeauthor{MultilabelCNN} have extended such object classifiers with intelligent segmentation algorithms \cite{BING} to enable multiple labelling and accurate object location \cite{MultilabelCNN}.
+
+%?? HANDWRITING STUFF
+
+\paragraph{Graph modelling of handwriting}
+%?? Handwriting analysis w/ kNN \cite{Graphs-Handwriting}. How does their approach differ from mine? (Path curvature characteristics vs positional data)
+Several existing approaches towards graph modelling of handwritten text are provided by \citeauthor{Graphs-Handwriting} \cite{Graphs-Handwriting}.
+Their work focuses on analysis of the George Washington letters dataset by a $k$NN classifier using an approximate GED metric \cite{GED-Approx}.
+In all cases, vertices are labelled with normalised $(\hat{x}, \hat{y})$ coordinates with edges left unlabelled.
+The first of their approaches corresponds closely to my own---endpoints and junctions are identified within a skeletonised glyph image, and edges are placed by following paths and creating new vertices for every distance $d$ travelled.
+Other approaches focus on grid-based segmentation (with edges provided through various techniques) and adaptive segmentations combined with edges from path traversal.
+They find that the keypoint-based approach has \SI{77}{\percent} accuracy at the cost of very high graph order and size, while adaptive segmentations produce lower order graphs with higher ($\sim\SI{80}{\percent}$) accuracy.
+Interestingly, they note that the use of the Delaunay triangulation for such models results in reduced classifier performance ($\sim\SI{63}{\percent}$) with the highest graph sizes, supporting my earlier findings in \cref{sec:image-weakness}.
+
+%?? Discuss ML work on handwriting modelling and its effectiveness? Why is ML better here? Fixed execution time (irrespective of training set size), so benefits from extra training in a way 
 
 %====================================================
 \section{Further Applications}
@@ -1110,21 +1357,38 @@ Admittedly, further supplemental graphs could be added, filtering on commonly se
 ?? Examine graph order---too big? Can we run SIP on it? How are the results?
 
 %====================================================
-\section{Conclusions}
+\section{Conclusions and Future Work}
 \label{sec:conclusion}
 %====================================================
 
 ?? Draw conclusions here---sum up paper.
 
+?? WHY did it not work as planned? Growing execution time as training set sizes (since we are comparing against \emph{all} known entries) (choice of kNN as a classifier).
+
+?? Downsides of approach? graph models seemingly need to be designed specifically for the task at hand (need an explicit notion of things and relationships)---whereas existing ML models are effective because they are designed to learn features of arbitrary high-dimensional data by statistics (in the case of CNNs/NNs, by learning parameters)
+
+?? Final thought? needs total rework -- addition of more information/hacks appears good at first, then fails.
+
+?? Perhaps it could be effective, when used with approximate GED... \cite{GED-Approx}
+
 ?? Future work? Approximate GED metrics? Investigation of path-based supplemental graphs?
 
-?? MCS/GED bad fit? i.e. p,q,b,d have small GED since all that moves is the north relation.
+?? MCS/GED bad fit? i.e. p,q,b,d have small GED since all that moves is the north relation. At that point, are we really performing graph matching?
+
+?? Investigate more interesting side-constraints in search -- such as temporal subgraph ismoporhism \cite{TSIP-Long} (Explain briefly, then discuss why it might be useful? (patterns, not exact matching))
+
+?? Graph order of GW data inhibits matching effectiveness. Investigate effect of adapting McSplit algorithm for this purpose? (only induced matching, but this is the best so yeah)
+
+?? How might it handle fonts designed for OCR? font-sizes?
+
+?? More general techniques? Multiscale feature graphs? (lol)
 
 %====================================================
 \noindent
-{\bf Acknowledgments.}
+{\bf Acknowledgements.}
 %====================================================
-This is optional; it is a location for you to thank people ?? TODO
+I'd like to thank my supervisors Patrick Prosser, John Williamson and Ciaran McCreesh for their comments and guidance throughout the year.
+I'd also like to thank my girlfriend Vanessa Stevenson and my family for their continued support.
 
 %====================================================
 \section{References}

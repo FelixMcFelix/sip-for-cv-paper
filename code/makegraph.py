@@ -22,7 +22,7 @@ COLOR_CURVE = "green"
 COLOR_NEIGHBOUR = "blue"
 COLOR_NORTH = "purple"
 
-def makegraph(input, output=None, plot=False, dotfile=None, dual_output=None, dual_dotfile=None, pad=1):
+def makegraph(input, output=None, plot=False, dotfile=None, dual_output=None, dual_dotfile=None, pad=1, curve_thres=1.5):
 	G = nx.MultiGraph()
 	G2 = nx.MultiGraph()
 
@@ -187,9 +187,8 @@ def makegraph(input, output=None, plot=False, dotfile=None, dual_output=None, du
 
 						label = LINE
 						col = COLOR_LINE
-						thres = 1.5
 						# print pathlen, len_line, in_line
-						if thres * len_line < subpathlen:
+						if curve_thres * len_line < subpathlen:
 							label = CURVE
 							col = COLOR_CURVE
 						

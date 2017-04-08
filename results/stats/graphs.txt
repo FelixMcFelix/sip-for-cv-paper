@@ -1,0 +1,60 @@
+../graphs/alegreya/:
+	order min: 2 max: 26 median: 11.0 mean: 12.0769230769
+	size min: 2 max: 25 median: 11.0 mean: 11.7692307692
+../graphs/dejavu-sans/:
+	order min: 2 max: 14 median: 6.0 mean: 6.09615384615
+	size min: 2 max: 13 median: 6.0 mean: 5.51923076923
+../graphs/dual/alegreya/:
+	order min: 2 max: 25 median: 11.0 mean: 11.7692307692
+	size min: 3 max: 37 median: 14.5 mean: 15.9038461538
+../graphs/dual/dejavu-sans/:
+	order min: 2 max: 13 median: 6.0 mean: 5.51923076923
+	size min: 1 max: 14 median: 7.0 mean: 6.59615384615
+../graphs/dual/hwrt/r-1/:
+	order min: 0 max: 746 median: 7.0 mean: 8.72338148743
+	size min: 0 max: 1885 median: 10.0 mean: 14.1522204387
+../graphs/dual/hwrt/r-5/:
+	order min: 0 max: 377 median: 8.0 mean: 10.6078376876
+	size min: 0 max: 780 median: 10.0 mean: 18.2059477487
+../graphs/dual/hwrt/r-9/:
+	order min: 0 max: 268 median: 8.0 mean: 13.6967759867
+	size min: 0 max: 1274 median: 12.0 mean: 26.5202890495
+../graphs/dual/open-sans/:
+	order min: 2 max: 16 median: 6.0 mean: 6.01923076923
+	size min: 1 max: 18 median: 7.0 mean: 7.5
+../graphs/dual/washington-1.2/:
+	order min: 6 max: 93 median: 42.0 mean: 43.0546075085
+	size min: 6 max: 170 median: 75.0 mean: 76.5972696246
+../graphs/dual/washington-1.35/:
+	order min: 6 max: 93 median: 42.0 mean: 43.0546075085
+	size min: 6 max: 170 median: 75.0 mean: 76.5972696246
+../graphs/dual/washington-1.5/:
+	order min: 6 max: 93 median: 42.0 mean: 43.0546075085
+	size min: 6 max: 170 median: 75.0 mean: 76.5972696246
+../graphs/dual/washington-1.65/:
+	order min: 6 max: 93 median: 42.0 mean: 43.0546075085
+	size min: 6 max: 170 median: 75.0 mean: 76.5972696246
+../graphs/hwrt/r-1/:
+	order min: 0 max: 475 median: 7.0 mean: 8.21589085072
+	size min: 0 max: 746 median: 7.0 mean: 8.72338148743
+../graphs/hwrt/r-5/:
+	order min: 0 max: 262 median: 8.0 mean: 9.62117843246
+	size min: 0 max: 377 median: 8.0 mean: 10.6078376876
+../graphs/hwrt/r-9/:
+	order min: 0 max: 200 median: 9.0 mean: 11.9644246804
+	size min: 0 max: 268 median: 8.0 mean: 13.6967759867
+../graphs/open-sans/:
+	order min: 2 max: 17 median: 6.0 mean: 6.57692307692
+	size min: 2 max: 16 median: 6.0 mean: 6.01923076923
+../graphs/washington-1.2/:
+	order min: 7 max: 75 median: 33.0 mean: 34.4505119454
+	size min: 6 max: 93 median: 42.0 mean: 43.0546075085
+../graphs/washington-1.35/:
+	order min: 7 max: 75 median: 33.0 mean: 34.4505119454
+	size min: 6 max: 93 median: 42.0 mean: 43.0546075085
+../graphs/washington-1.5/:
+	order min: 7 max: 75 median: 33.0 mean: 34.4505119454
+	size min: 6 max: 93 median: 42.0 mean: 43.0546075085
+../graphs/washington-1.65/:
+	order min: 7 max: 75 median: 33.0 mean: 34.4505119454
+	size min: 6 max: 93 median: 42.0 mean: 43.0546075085

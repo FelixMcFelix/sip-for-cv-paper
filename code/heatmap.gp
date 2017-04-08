@@ -1,3 +1,7 @@
+load '../resources/gnuplot-palettes/magma.pal'
+
+if (exists("ged")) set palette negative
+
 set terminal pngcairo size 700,600 enhanced font 'Verdana,10'
 set output outpng
 
