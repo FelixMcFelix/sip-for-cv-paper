@@ -1,0 +1,22 @@
+graph "" {
+"(2, 134)";
+"(12, 14)";
+"(169, 15)";
+"(14, 4)";
+"(87, 2)";
+"(87, 9)";
+"(0, 0)";
+"(77, 95)";
+"(154, 148)";
+"(2, 134)" -- "(77, 95)"  [color=blue, key=0, weight=3];
+"(2, 134)" -- "(12, 14)"  [color=red, key=0, weight=1];
+"(2, 134)" -- "(154, 148)"  [color=blue, key=0, weight=3];
+"(12, 14)" -- "(14, 4)"  [color=blue, key=0, weight=3];
+"(12, 14)" -- "(87, 2)"  [color=blue, key=0, weight=3];
+"(169, 15)" -- "(154, 148)"  [color=red, key=0, weight=1];
+"(169, 15)" -- "(87, 9)"  [color=red, key=0, weight=1];
+"(14, 4)" -- "(0, 0)"  [color=purple, key=0, weight=4];
+"(14, 4)" -- "(87, 9)"  [color=red, key=0, weight=1];
+"(87, 2)" -- "(87, 9)"  [color=red, key=0, weight=1];
+"(87, 9)" -- "(77, 95)"  [color=red, key=0, weight=1];
+}

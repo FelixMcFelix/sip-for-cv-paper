@@ -1,0 +1,15 @@
+graph "" {
+"(0, 0)";
+"(9, 2)";
+"(2, 107)";
+"(92, 52)";
+"(99, 61)";
+"(241, 77)";
+"(0, 0)" -- "(9, 2)"  [color=purple, key=0, weight=4];
+"(9, 2)" -- "(92, 52)"  [color=red, key=0, weight=1];
+"(9, 2)" -- "(99, 61)"  [color=blue, key=0, weight=3];
+"(2, 107)" -- "(241, 77)"  [color=blue, key=0, weight=3];
+"(2, 107)" -- "(92, 52)"  [color=red, key=0, weight=1];
+"(2, 107)" -- "(99, 61)"  [color=blue, key=0, weight=3];
+"(99, 61)" -- "(241, 77)"  [color=red, key=0, weight=1];
+}

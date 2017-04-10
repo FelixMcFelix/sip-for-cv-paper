@@ -1,0 +1,10 @@
+graph "" {
+"(3, 26)";
+"(0, 0)";
+"(152, 3)";
+"(2, 26)";
+"(3, 26)" -- "(152, 3)"  [color=red, key=0, weight=1];
+"(3, 26)" -- "(2, 26)"  [color=red, key=0, weight=1];
+"(3, 26)" -- "(2, 26)"  [color=red, key=1, weight=1];
+"(0, 0)" -- "(2, 26)"  [color=purple, key=0, weight=4];
+}

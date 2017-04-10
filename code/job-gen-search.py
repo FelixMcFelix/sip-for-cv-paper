@@ -62,26 +62,27 @@ def job_gen_search():
 					tasks.append('{} "../{}" "../{}" "../{}" "../{}" --format umg_attr_lab --timeout {} {} > "../{}"'.format(prog_name, p_loc_d, p_csv, t_loc_d, t_csv, search_timelimit, param, out_d))
 			else:
 				csv_loc = "{}{}/".format(img_dir, font)
-				for p in pen_rads:
-					folder = "{}/r-{}/".format(font, p)
-					dual_f = dual_suffix + folder
+				for t in curve_thr:
+					for p in pen_rads:
+						folder = "{}-{}/r-{}/".format(font, t, p)
+						dual_f = dual_suffix + folder
 
-					# ./search_subgraph_isomorphism ../../graphs/dual/hwrt/r-1/test ../../imgs/hwrt/test-4000-smrt.csv ../../graphs/dual/hwrt/r-1/train ../../imgs/hwrt/train-4000-smrt.csv --format umg_attr_lab --induced --timeout 10 > test-r1-4000-dual-smrt.out &
-					# Add these jobs!
+						# ./search_subgraph_isomorphism ../../graphs/dual/hwrt/r-1/test ../../imgs/hwrt/test-4000-smrt.csv ../../graphs/dual/hwrt/r-1/train ../../imgs/hwrt/train-4000-smrt.csv --format umg_attr_lab --induced --timeout 10 > test-r1-4000-dual-smrt.out &
+						# Add these jobs!
 
-					p_csv = csv_loc + csv_p_name
-					p_loc = graph_dir + folder + pat_folder
-					p_loc_d = graph_dir + dual_f + pat_folder
+						p_csv = csv_loc + csv_p_name
+						p_loc = graph_dir + folder + pat_folder
+						p_loc_d = graph_dir + dual_f + pat_folder
 
-					t_csv = csv_loc + csv_t_name
-					t_loc = graph_dir + folder + targ_folder
-					t_loc_d = graph_dir + dual_f + targ_folder
+						t_csv = csv_loc + csv_t_name
+						t_loc = graph_dir + folder + targ_folder
+						t_loc_d = graph_dir + dual_f + targ_folder
 
-					out = "{}/r{}-{}.out".format(outdir, p, size)
-					out_d = "{}/r{}-{}.out".format(outdir_d, p, size)
+						out = "{}/t{}-r{}-{}.out".format(outdir, t, p, size)
+						out_d = "{}/t{}-r{}-{}.out".format(outdir_d, t, p, size)
 
-					tasks.append('{} "../{}" "../{}" "../{}" "../{}" --format umg_attr --timeout {} {} > "../{}"'.format(prog_name, p_loc, p_csv, t_loc, t_csv, search_timelimit, param, out))
-					tasks.append('{} "../{}" "../{}" "../{}" "../{}" --format umg_attr_lab --timeout {} {} > "../{}"'.format(prog_name, p_loc_d, p_csv, t_loc_d, t_csv, search_timelimit, param, out_d))
+						tasks.append('{} "../{}" "../{}" "../{}" "../{}" --format umg_attr --timeout {} {} > "../{}"'.format(prog_name, p_loc, p_csv, t_loc, t_csv, search_timelimit, param, out))
+						tasks.append('{} "../{}" "../{}" "../{}" "../{}" --format umg_attr_lab --timeout {} {} > "../{}"'.format(prog_name, p_loc_d, p_csv, t_loc_d, t_csv, search_timelimit, param, out_d))
 			# addjobs(font, param, param_name, tasks)
 			top_tasks.append("mkdir -p ../../{}".format(outdir))
 			top_tasks.append("mkdir -p ../../{}".format(outdir_d))
