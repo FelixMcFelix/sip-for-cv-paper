@@ -1,114 +1,114 @@
-../results/search/dual/hwrt-edgecountdec/r1-2000.out: 28.05%
-../results/search/dual/hwrt-edgecountdec/r5-2000.out: 23.08%
-../results/search/dual/hwrt-edgecountdec/r9-2000.out: 21.72%
-../results/search/dual/hwrt-edgecountdec/t1.2-r1-2000.out: 28.96%
-../results/search/dual/hwrt-edgecountdec/t1.2-r5-2000.out: 22.62%
-../results/search/dual/hwrt-edgecountdec/t1.2-r9-2000.out: 23.08%
-../results/search/dual/hwrt-edgecountdec/t1.35-r1-2000.out: 27.60%
-../results/search/dual/hwrt-edgecountdec/t1.35-r5-2000.out: 23.08%
-../results/search/dual/hwrt-edgecountdec/t1.35-r9-2000.out: 23.53%
-../results/search/dual/hwrt-edgecountdec/t1.5-r1-2000.out: 28.05%
-../results/search/dual/hwrt-edgecountdec/t1.5-r5-2000.out: 23.08%
-../results/search/dual/hwrt-edgecountdec/t1.5-r9-2000.out: 21.72%
-../results/search/dual/hwrt-edgecountdec/t1.65-r1-2000.out: 28.05%
-../results/search/dual/hwrt-edgecountdec/t1.65-r5-2000.out: 23.53%
-../results/search/dual/hwrt-edgecountdec/t1.65-r9-2000.out: 21.27%
-../results/search/dual/hwrt-edgecountinc/r1-2000.out: 26.24%
-../results/search/dual/hwrt-edgecountinc/r5-2000.out: 24.43%
-../results/search/dual/hwrt-edgecountinc/r9-2000.out: 21.27%
-../results/search/dual/hwrt-edgecountinc/t1.2-r1-2000.out: 26.70%
-../results/search/dual/hwrt-edgecountinc/t1.2-r5-2000.out: 23.53%
-../results/search/dual/hwrt-edgecountinc/t1.2-r9-2000.out: 23.08%
-../results/search/dual/hwrt-edgecountinc/t1.35-r1-2000.out: 25.79%
-../results/search/dual/hwrt-edgecountinc/t1.35-r5-2000.out: 24.43%
-../results/search/dual/hwrt-edgecountinc/t1.35-r9-2000.out: 22.17%
-../results/search/dual/hwrt-edgecountinc/t1.5-r1-2000.out: 26.24%
-../results/search/dual/hwrt-edgecountinc/t1.5-r5-2000.out: 24.43%
-../results/search/dual/hwrt-edgecountinc/t1.5-r9-2000.out: 21.27%
-../results/search/dual/hwrt-edgecountinc/t1.65-r1-2000.out: 26.24%
-../results/search/dual/hwrt-edgecountinc/t1.65-r5-2000.out: 23.98%
-../results/search/dual/hwrt-edgecountinc/t1.65-r9-2000.out: 21.27%
-../results/search/dual/hwrt-induced/r1-2000.out: 34.84%
-../results/search/dual/hwrt-induced/r5-2000.out: 27.15%
-../results/search/dual/hwrt-induced/r9-2000.out: 26.24%
-../results/search/dual/hwrt-induced/t1.2-r1-2000.out: 37.10%
-../results/search/dual/hwrt-induced/t1.2-r5-2000.out: 26.24%
-../results/search/dual/hwrt-induced/t1.2-r9-2000.out: 26.24%
-../results/search/dual/hwrt-induced/t1.35-r1-2000.out: 34.84%
-../results/search/dual/hwrt-induced/t1.35-r5-2000.out: 28.51%
-../results/search/dual/hwrt-induced/t1.35-r9-2000.out: 26.24%
-../results/search/dual/hwrt-induced/t1.5-r1-2000.out: 34.84%
-../results/search/dual/hwrt-induced/t1.5-r5-2000.out: 27.15%
-../results/search/dual/hwrt-induced/t1.5-r9-2000.out: 26.24%
-../results/search/dual/hwrt-induced/t1.65-r1-2000.out: 33.94%
-../results/search/dual/hwrt-induced/t1.65-r5-2000.out: 26.70%
-../results/search/dual/hwrt-induced/t1.65-r9-2000.out: 27.15%
-../results/search/dual/washington-edgecountdec/1.2-valid.out: 5.00%
-../results/search/dual/washington-edgecountdec/1.35-valid.out: 5.00%
-../results/search/dual/washington-edgecountdec/1.5-valid.out: 5.00%
-../results/search/dual/washington-edgecountdec/1.65-valid.out: 5.00%
-../results/search/dual/washington-edgecountinc/1.2-valid.out: 5.00%
-../results/search/dual/washington-edgecountinc/1.35-valid.out: 5.00%
-../results/search/dual/washington-edgecountinc/1.5-valid.out: 5.00%
-../results/search/dual/washington-edgecountinc/1.65-valid.out: 5.00%
-../results/search/dual/washington-induced/1.2-valid.out: 1.67%
-../results/search/dual/washington-induced/1.35-valid.out: 3.33%
-../results/search/dual/washington-induced/1.5-valid.out: 3.33%
-../results/search/dual/washington-induced/1.65-valid.out: 3.33%
-../results/search/hwrt-edgecountdec/r1-2000.out: 27.15%
-../results/search/hwrt-edgecountdec/r5-2000.out: 16.74%
-../results/search/hwrt-edgecountdec/r9-2000.out: 22.17%
-../results/search/hwrt-edgecountdec/t1.2-r1-2000.out: 30.32%
-../results/search/hwrt-edgecountdec/t1.2-r5-2000.out: 19.46%
-../results/search/hwrt-edgecountdec/t1.2-r9-2000.out: 24.43%
-../results/search/hwrt-edgecountdec/t1.35-r1-2000.out: 28.05%
-../results/search/hwrt-edgecountdec/t1.35-r5-2000.out: 18.55%
-../results/search/hwrt-edgecountdec/t1.35-r9-2000.out: 22.62%
-../results/search/hwrt-edgecountdec/t1.5-r1-2000.out: 27.15%
-../results/search/hwrt-edgecountdec/t1.5-r5-2000.out: 16.74%
-../results/search/hwrt-edgecountdec/t1.5-r9-2000.out: 22.17%
-../results/search/hwrt-edgecountdec/t1.65-r1-2000.out: 24.43%
-../results/search/hwrt-edgecountdec/t1.65-r5-2000.out: 16.74%
-../results/search/hwrt-edgecountdec/t1.65-r9-2000.out: 21.27%
-../results/search/hwrt-edgecountinc/r1-2000.out: 30.32%
-../results/search/hwrt-edgecountinc/r5-2000.out: 18.10%
-../results/search/hwrt-edgecountinc/r9-2000.out: 23.53%
-../results/search/hwrt-edgecountinc/t1.2-r1-2000.out: 32.58%
-../results/search/hwrt-edgecountinc/t1.2-r5-2000.out: 21.27%
-../results/search/hwrt-edgecountinc/t1.2-r9-2000.out: 23.98%
-../results/search/hwrt-edgecountinc/t1.35-r1-2000.out: 30.77%
-../results/search/hwrt-edgecountinc/t1.35-r5-2000.out: 19.46%
-../results/search/hwrt-edgecountinc/t1.35-r9-2000.out: 23.98%
-../results/search/hwrt-edgecountinc/t1.5-r1-2000.out: 30.32%
-../results/search/hwrt-edgecountinc/t1.5-r5-2000.out: 18.10%
-../results/search/hwrt-edgecountinc/t1.5-r9-2000.out: 23.53%
-../results/search/hwrt-edgecountinc/t1.65-r1-2000.out: 27.15%
-../results/search/hwrt-edgecountinc/t1.65-r5-2000.out: 18.10%
-../results/search/hwrt-edgecountinc/t1.65-r9-2000.out: 22.62%
-../results/search/hwrt-induced/r1-2000.out: 38.46%
-../results/search/hwrt-induced/r5-2000.out: 29.86%
-../results/search/hwrt-induced/r9-2000.out: 30.77%
-../results/search/hwrt-induced/t1.2-r1-2000.out: 40.72%
-../results/search/hwrt-induced/t1.2-r5-2000.out: 29.86%
-../results/search/hwrt-induced/t1.2-r9-2000.out: 31.22%
-../results/search/hwrt-induced/t1.35-r1-2000.out: 38.46%
-../results/search/hwrt-induced/t1.35-r5-2000.out: 28.05%
-../results/search/hwrt-induced/t1.35-r9-2000.out: 29.86%
-../results/search/hwrt-induced/t1.5-r1-2000.out: 38.46%
-../results/search/hwrt-induced/t1.5-r5-2000.out: 29.86%
-../results/search/hwrt-induced/t1.5-r9-2000.out: 30.77%
-../results/search/hwrt-induced/t1.65-r1-2000.out: 35.75%
-../results/search/hwrt-induced/t1.65-r5-2000.out: 29.41%
-../results/search/hwrt-induced/t1.65-r9-2000.out: 30.32%
-../results/search/washington-edgecountdec/1.2-valid.out: 6.67%
-../results/search/washington-edgecountdec/1.35-valid.out: 8.33%
-../results/search/washington-edgecountdec/1.5-valid.out: 11.67%
-../results/search/washington-edgecountdec/1.65-valid.out: 11.67%
-../results/search/washington-edgecountinc/1.2-valid.out: 6.67%
-../results/search/washington-edgecountinc/1.35-valid.out: 8.33%
-../results/search/washington-edgecountinc/1.5-valid.out: 10.00%
-../results/search/washington-edgecountinc/1.65-valid.out: 10.00%
-../results/search/washington-induced/1.2-valid.out: 10.00%
-../results/search/washington-induced/1.35-valid.out: 10.00%
-../results/search/washington-induced/1.5-valid.out: 8.33%
-../results/search/washington-induced/1.65-valid.out: 8.33%
+../results/search/dual/hwrt-edgecountdec/r1-2000.out: 28.05%, k=0.2346
+../results/search/dual/hwrt-edgecountdec/r5-2000.out: 23.08%, k=0.1802
+../results/search/dual/hwrt-edgecountdec/r9-2000.out: 21.72%, k=0.1657
+../results/search/dual/hwrt-edgecountdec/t1.2-r1-2000.out: 28.96%, k=0.2425
+../results/search/dual/hwrt-edgecountdec/t1.2-r5-2000.out: 22.62%, k=0.1774
+../results/search/dual/hwrt-edgecountdec/t1.2-r9-2000.out: 23.08%, k=0.1806
+../results/search/dual/hwrt-edgecountdec/t1.35-r1-2000.out: 27.60%, k=0.2291
+../results/search/dual/hwrt-edgecountdec/t1.35-r5-2000.out: 23.08%, k=0.1804
+../results/search/dual/hwrt-edgecountdec/t1.35-r9-2000.out: 23.53%, k=0.1852
+../results/search/dual/hwrt-edgecountdec/t1.5-r1-2000.out: 28.05%, k=0.2346
+../results/search/dual/hwrt-edgecountdec/t1.5-r5-2000.out: 23.08%, k=0.1802
+../results/search/dual/hwrt-edgecountdec/t1.5-r9-2000.out: 21.72%, k=0.1657
+../results/search/dual/hwrt-edgecountdec/t1.65-r1-2000.out: 28.05%, k=0.2343
+../results/search/dual/hwrt-edgecountdec/t1.65-r5-2000.out: 23.53%, k=0.1857
+../results/search/dual/hwrt-edgecountdec/t1.65-r9-2000.out: 21.27%, k=0.1601
+../results/search/dual/hwrt-edgecountinc/r1-2000.out: 26.24%, k=0.2134
+../results/search/dual/hwrt-edgecountinc/r5-2000.out: 24.43%, k=0.1958
+../results/search/dual/hwrt-edgecountinc/r9-2000.out: 21.27%, k=0.1605
+../results/search/dual/hwrt-edgecountinc/t1.2-r1-2000.out: 26.70%, k=0.2180
+../results/search/dual/hwrt-edgecountinc/t1.2-r5-2000.out: 23.53%, k=0.1869
+../results/search/dual/hwrt-edgecountinc/t1.2-r9-2000.out: 23.08%, k=0.1799
+../results/search/dual/hwrt-edgecountinc/t1.35-r1-2000.out: 25.79%, k=0.2092
+../results/search/dual/hwrt-edgecountinc/t1.35-r5-2000.out: 24.43%, k=0.1954
+../results/search/dual/hwrt-edgecountinc/t1.35-r9-2000.out: 22.17%, k=0.1696
+../results/search/dual/hwrt-edgecountinc/t1.5-r1-2000.out: 26.24%, k=0.2134
+../results/search/dual/hwrt-edgecountinc/t1.5-r5-2000.out: 24.43%, k=0.1958
+../results/search/dual/hwrt-edgecountinc/t1.5-r9-2000.out: 21.27%, k=0.1605
+../results/search/dual/hwrt-edgecountinc/t1.65-r1-2000.out: 26.24%, k=0.2129
+../results/search/dual/hwrt-edgecountinc/t1.65-r5-2000.out: 23.98%, k=0.1906
+../results/search/dual/hwrt-edgecountinc/t1.65-r9-2000.out: 21.27%, k=0.1594
+../results/search/dual/hwrt-induced/r1-2000.out: 34.84%, k=0.3116
+../results/search/dual/hwrt-induced/r5-2000.out: 27.15%, k=0.2325
+../results/search/dual/hwrt-induced/r9-2000.out: 26.24%, k=0.2220
+../results/search/dual/hwrt-induced/t1.2-r1-2000.out: 37.10%, k=0.3356
+../results/search/dual/hwrt-induced/t1.2-r5-2000.out: 26.24%, k=0.2242
+../results/search/dual/hwrt-induced/t1.2-r9-2000.out: 26.24%, k=0.2221
+../results/search/dual/hwrt-induced/t1.35-r1-2000.out: 34.84%, k=0.3116
+../results/search/dual/hwrt-induced/t1.35-r5-2000.out: 28.51%, k=0.2471
+../results/search/dual/hwrt-induced/t1.35-r9-2000.out: 26.24%, k=0.2217
+../results/search/dual/hwrt-induced/t1.5-r1-2000.out: 34.84%, k=0.3116
+../results/search/dual/hwrt-induced/t1.5-r5-2000.out: 27.15%, k=0.2326
+../results/search/dual/hwrt-induced/t1.5-r9-2000.out: 26.24%, k=0.2220
+../results/search/dual/hwrt-induced/t1.65-r1-2000.out: 33.94%, k=0.3015
+../results/search/dual/hwrt-induced/t1.65-r5-2000.out: 26.70%, k=0.2275
+../results/search/dual/hwrt-induced/t1.65-r9-2000.out: 27.15%, k=0.2316
+../results/search/dual/washington-edgecountdec/1.2-valid.out: 5.00%, k=0.0172
+../results/search/dual/washington-edgecountdec/1.35-valid.out: 5.00%, k=0.0172
+../results/search/dual/washington-edgecountdec/1.5-valid.out: 5.00%, k=0.0172
+../results/search/dual/washington-edgecountdec/1.65-valid.out: 5.00%, k=0.0172
+../results/search/dual/washington-edgecountinc/1.2-valid.out: 5.00%, k=0.0172
+../results/search/dual/washington-edgecountinc/1.35-valid.out: 5.00%, k=0.0172
+../results/search/dual/washington-edgecountinc/1.5-valid.out: 5.00%, k=0.0172
+../results/search/dual/washington-edgecountinc/1.65-valid.out: 5.00%, k=0.0172
+../results/search/dual/washington-induced/1.2-valid.out: 1.67%, k=-0.0172
+../results/search/dual/washington-induced/1.35-valid.out: 3.33%, k=0.0000
+../results/search/dual/washington-induced/1.5-valid.out: 3.33%, k=0.0000
+../results/search/dual/washington-induced/1.65-valid.out: 3.33%, k=0.0000
+../results/search/hwrt-edgecountdec/r1-2000.out: 27.15%, k=0.2195
+../results/search/hwrt-edgecountdec/r5-2000.out: 16.74%, k=0.1064
+../results/search/hwrt-edgecountdec/r9-2000.out: 22.17%, k=0.1597
+../results/search/hwrt-edgecountdec/t1.2-r1-2000.out: 30.32%, k=0.2536
+../results/search/hwrt-edgecountdec/t1.2-r5-2000.out: 19.46%, k=0.1373
+../results/search/hwrt-edgecountdec/t1.2-r9-2000.out: 24.43%, k=0.1877
+../results/search/hwrt-edgecountdec/t1.35-r1-2000.out: 28.05%, k=0.2293
+../results/search/hwrt-edgecountdec/t1.35-r5-2000.out: 18.55%, k=0.1270
+../results/search/hwrt-edgecountdec/t1.35-r9-2000.out: 22.62%, k=0.1649
+../results/search/hwrt-edgecountdec/t1.5-r1-2000.out: 27.15%, k=0.2195
+../results/search/hwrt-edgecountdec/t1.5-r5-2000.out: 16.74%, k=0.1064
+../results/search/hwrt-edgecountdec/t1.5-r9-2000.out: 22.17%, k=0.1597
+../results/search/hwrt-edgecountdec/t1.65-r1-2000.out: 24.43%, k=0.1904
+../results/search/hwrt-edgecountdec/t1.65-r5-2000.out: 16.74%, k=0.1036
+../results/search/hwrt-edgecountdec/t1.65-r9-2000.out: 21.27%, k=0.1496
+../results/search/hwrt-edgecountinc/r1-2000.out: 30.32%, k=0.2532
+../results/search/hwrt-edgecountinc/r5-2000.out: 18.10%, k=0.1221
+../results/search/hwrt-edgecountinc/r9-2000.out: 23.53%, k=0.1750
+../results/search/hwrt-edgecountinc/t1.2-r1-2000.out: 32.58%, k=0.2769
+../results/search/hwrt-edgecountinc/t1.2-r5-2000.out: 21.27%, k=0.1569
+../results/search/hwrt-edgecountinc/t1.2-r9-2000.out: 23.98%, k=0.1829
+../results/search/hwrt-edgecountinc/t1.35-r1-2000.out: 30.77%, k=0.2574
+../results/search/hwrt-edgecountinc/t1.35-r5-2000.out: 19.46%, k=0.1365
+../results/search/hwrt-edgecountinc/t1.35-r9-2000.out: 23.98%, k=0.1802
+../results/search/hwrt-edgecountinc/t1.5-r1-2000.out: 30.32%, k=0.2532
+../results/search/hwrt-edgecountinc/t1.5-r5-2000.out: 18.10%, k=0.1221
+../results/search/hwrt-edgecountinc/t1.5-r9-2000.out: 23.53%, k=0.1750
+../results/search/hwrt-edgecountinc/t1.65-r1-2000.out: 27.15%, k=0.2187
+../results/search/hwrt-edgecountinc/t1.65-r5-2000.out: 18.10%, k=0.1197
+../results/search/hwrt-edgecountinc/t1.65-r9-2000.out: 22.62%, k=0.1648
+../results/search/hwrt-induced/r1-2000.out: 38.46%, k=0.3467
+../results/search/hwrt-induced/r5-2000.out: 29.86%, k=0.2561
+../results/search/hwrt-induced/r9-2000.out: 30.77%, k=0.2711
+../results/search/hwrt-induced/t1.2-r1-2000.out: 40.72%, k=0.3725
+../results/search/hwrt-induced/t1.2-r5-2000.out: 29.86%, k=0.2543
+../results/search/hwrt-induced/t1.2-r9-2000.out: 31.22%, k=0.2759
+../results/search/hwrt-induced/t1.35-r1-2000.out: 38.46%, k=0.3465
+../results/search/hwrt-induced/t1.35-r5-2000.out: 28.05%, k=0.2364
+../results/search/hwrt-induced/t1.35-r9-2000.out: 29.86%, k=0.2622
+../results/search/hwrt-induced/t1.5-r1-2000.out: 38.46%, k=0.3467
+../results/search/hwrt-induced/t1.5-r5-2000.out: 29.86%, k=0.2561
+../results/search/hwrt-induced/t1.5-r9-2000.out: 30.77%, k=0.2711
+../results/search/hwrt-induced/t1.65-r1-2000.out: 35.75%, k=0.3181
+../results/search/hwrt-induced/t1.65-r5-2000.out: 29.41%, k=0.2504
+../results/search/hwrt-induced/t1.65-r9-2000.out: 30.32%, k=0.2663
+../results/search/washington-edgecountdec/1.2-valid.out: 6.67%, k=0.0345
+../results/search/washington-edgecountdec/1.35-valid.out: 8.33%, k=0.0517
+../results/search/washington-edgecountdec/1.5-valid.out: 11.67%, k=0.0862
+../results/search/washington-edgecountdec/1.65-valid.out: 11.67%, k=0.0862
+../results/search/washington-edgecountinc/1.2-valid.out: 6.67%, k=0.0345
+../results/search/washington-edgecountinc/1.35-valid.out: 8.33%, k=0.0517
+../results/search/washington-edgecountinc/1.5-valid.out: 10.00%, k=0.0690
+../results/search/washington-edgecountinc/1.65-valid.out: 10.00%, k=0.0690
+../results/search/washington-induced/1.2-valid.out: 10.00%, k=0.0690
+../results/search/washington-induced/1.35-valid.out: 10.00%, k=0.0690
+../results/search/washington-induced/1.5-valid.out: 8.33%, k=0.0517
+../results/search/washington-induced/1.65-valid.out: 8.33%, k=0.0517

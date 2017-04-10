@@ -10,7 +10,8 @@ def massaccuracy(dir):
 		if path.isdir(curr):
 			massaccuracy(curr+"/")
 		else:
-			print "{0}: {1:.2f}%".format(curr, get_accuracy(curr) * 100)
+			(acc, kappa) = get_accuracy(curr)
+			print "{0}: {1:.2f}%, k={2:.4f}".format(curr, acc * 100, kappa)
 
 
 if __name__ == '__main__':
