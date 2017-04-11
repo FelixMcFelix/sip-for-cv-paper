@@ -72,6 +72,7 @@ gviz_dir    = "../graphviz/"
 dual_suffix = "dual/"
 results_dir = "../results/"
 tables_dir  = "../tables/"
+plots_dir   = "../plots/"
 font_dir    = "../resources/"
 job_folder  = "jobs/"
 

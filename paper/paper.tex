@@ -1455,8 +1455,12 @@ Overall on the specified machine, these experiments typically took around \SI{30
 \paragraph{Experiment 2}
 ?? Accuracy statistics for Exp 2 ``Curiously, more distinct characters do not necessarily imply better matching performance''
 
+?? Times?
+
 \paragraph{Experiment 3}
 ?? Accuracy statistics for Exp 3
+
+Due to the vastly larger median graph order in the Washington dataset, runs of these tests took far longer than the prior experiments, coming in at around \SIrange{24}{36}{\hour} dependant on filtering level and the chosen representation.
 
 %\subsection{Discussion}
 %
@@ -1473,7 +1477,7 @@ Overall on the specified machine, these experiments typically took around \SI{30
 
 \paragraph{General image modelling}
 %?? GENERAL STUFF
-Historically, the \emph{Scale-Invariant Feature Transform} (SIFT) and similar approaches have been extremely popular vector-space models for image modelling and matching \cite{SIFT,Sift-Variants-Comparison}.
+The \emph{Scale-Invariant Feature Transform} (SIFT) and similar approaches have historically been extremely popular vector-space models for image modelling and matching \cite{SIFT,Sift-Variants-Comparison}.
 These techniques typically operate by identifying locations of high variation within a multiscale representation of an image such as a \emph{Laplacian pyramid}, capturing high-dimensional gradient neighbourhoods of these points as features.
 %Feature vectors are then histograms of gradient neighbourhoods, subject to preprocessing to identify the dominant direction and correct for variation in luminance, capturing distinctive image regions at different scales.
 %These typically find uses in image matching (using the Hough transform) and panorama stitching (using RANSAC \cite{SIFT-Panorama})---since these are high-dimensionality keypoints, such matching can be expensive, motivating the development of cheaper (but less discriminative) models such as SURF \cite{SURF}.
