@@ -39,7 +39,8 @@
 % Also remove doi, url since unnecessary
 \DeclareFieldFormat{addendum}{}
 %\DeclareFieldFormat{url}{}
-%\DeclareFieldFormat{doi}{}
+\DeclareFieldFormat[inproceedings]{doi}{}
+\DeclareFieldFormat[article]{doi}{}
 \DeclareFieldFormat*{url}{}
 \DeclareFieldFormat[online]{url}{\mkbibacro{URL}\addcolon\space\url{#1}}
 %\DeclareFieldFormat*{urldate}{}
@@ -1620,13 +1621,18 @@ Induced & 1 & 38.46 & 0.347 \\
 \end{table}
 
 \paragraph{Experiment 3}
-?? Accuracy statistics for Exp 3 fsdkjfhjksdbfksdbf dfn lkjf fbdsjkskbfj se 
+%?? Accuracy statistics for Exp 3 fsdkjfhjksdbfksdbf dfn lkjf fbdsjkskbfj se 
+%?? Repeated `0' classifications due to time-out.
+From \cref{tab:exp3}, we can see that the results on the Washington dataset are far from satisfactory, and have $\kappa$ scores so low that they are little different from random chance.
+%?? Compare graph sizes to \citeauthor{Graphs-Handwriting}
+A key factor in this lies in the graph statistics of \cref{tab:graphstats}: the regular model has a median graph order of 33, which is pushing close to the limit, keeping in mind that half of all graphs in this dataset will be \emph{larger} than this it quickly becomes clear that many of the individual GED computations timed out.
+While the median graph order is lower than the most successful approaches of \citeauthor{Graphs-Handwriting}, many of these graphs likely exceed the capabilities of $k\downarrow$ within a \SI{30}{\second} time window.
+Noting that the classifier returns a default `0' label for unclassified graphs, the disturbingly high incidence of this classification confirms that time-outs during computation are the root cause of the problem.
 
-?? Repeated `0' classifications due to time-out.
-
-?? Compare graph sizes to \citeauthor{Graphs-Handwriting}
-
-Due to the vastly larger median graph order of the Washington dataset (\cref{tab:graphstats}), runs of these tests took far longer than the prior experiments, coming in at around \SIrange{24}{36}{\hour} dependant on filtering level and the chosen representation.
+Ultimately, results on the actual effectiveness of this dataset are inconclusive for these reasons---mandating further investigation with a cheaper, approximate GED metric to establish the proposed models' true effectiveness.
+Furthermore, this issue may have silently influenced the eresults of Experiment 2.
+Given the relatively small dataset size (and the low accuracy), it as not deemed worthwhile or meaningful to attempt to identify the affects of different \texttt{curve\_thres} on classification performance.
+Considering run-times, the vastly larger median graph order of the Washington dataset (\cref{tab:graphstats}) ensured that runs of these tests took far longer than the prior experiments, coming in at around \SIrange{24}{36}{\hour} dependant on filtering level and the chosen representation.
 
 \begin{table}
 	\centering
@@ -1637,13 +1643,13 @@ Due to the vastly larger median graph order of the Washington dataset (\cref{tab
 		\midrule
 		
 		Non-Induced & Regular & 11.67 & 0.086 \\
-		& Dual & 5 & 0.017 \\
+		& Dual & 5.00 & 0.017 \\
 		
-		ECI & Regular & 10 & 0.069 \\
-		& Dual & 5 & 0.017 \\
+		ECI & Regular & 10.00 & 0.069 \\
+		& Dual & 5.00 & 0.017 \\
 		
 		Induced & Regular & 8.33 & 0.052 \\
-		& Dual & 3.33 & 0 \\
+		& Dual & 3.33 & 0.000 \\
 		
 		\bottomrule
 	\end{tabular}
