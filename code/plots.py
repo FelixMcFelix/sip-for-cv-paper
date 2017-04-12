@@ -34,6 +34,15 @@ def makeplots():
 					outdir_d
 					)
 
+	out_dir = plots_dir + "ct/"
+	dat_file = out_dir + "vals.csv"
+
+	call(["gnuplot", "-e",
+			"filename='{0}'; outpng='{3}{2}{1}'; outtikz='{3}{2}.tex'".format(
+				dat_file, ".png", "ct", out_dir
+			),
+			"plot_thres.gp"])
+
 def make_plot_csv(split_files, graph_folders, result_file, out_folder):
 	label_stats = {}
 	label_counts = {}
@@ -83,7 +92,7 @@ def make_plot_csv(split_files, graph_folders, result_file, out_folder):
 			stats = np.array(label_stats[str(label)])
 
 			# take mean over each column
-			wrt.writerow([label, acc] + list(stats.mean(axis=0)))
+			wrt.writerow([label, acc] + list(stats.median(axis=0)))
 
 	# Okay, now worry about plots eventually...
 	return out_path

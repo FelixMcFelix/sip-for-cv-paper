@@ -19,6 +19,7 @@
 \usepackage[linesnumbered,vlined,ruled,commentsnumbered]{algorithm2e}
 \SetNlSty{}{}{}
 \SetAlgoNlRelativeSize{-3}
+\SetAlFnt{\small}
 
 \usepackage[labelfont=bf,textfont={bf,it}]{caption}
 \usepackage{subcaption}
@@ -90,6 +91,11 @@
 \titleformat{\subsubsection}{\normalfont\bfseries}{\thesubsubsection.}{1em}{}
 \titlelabel{\thetitle.\quad}
 \titleformat{\paragraph}[runin]{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+
+\pdfinfo{
+	/Title (Graph Models and Maximum Common Subgraph for Character Analysis)
+	/Author (Kyle A. Simpson)
+}
 
 \begin{document}
 
@@ -1142,7 +1148,7 @@ Each corresponds to a different level of filtering:
 	
 	\item the overlap neighbourhood $N^{\circ}_{s,\mathcal{G}}$ provides the bare-minimum level of filtering needed when considering the \emph{non-induced} variant of MCS, allowing a pair of pattern and target vertex pairs to map to one another if there is any overlap in the edge sequences;
 	
-	\item the sufficient neighbourhood $N^{\succcurlyeq}_{s,\mathcal{G}}$, which allows a pattern vertex pair to be mapped to a target vertex pair if every edge in the former can be mapped to an edge of equal value in the latter, offering an oddly asymmetrical mapping when used in MCS---I define this (in the context of SIP) as building an \emph{edge-count-increasing subgraph isomorphism}.
+	\item the sufficient neighbourhood $N^{\succcurlyeq}_{s,\mathcal{G}}$, which allows a pattern vertex pair to be mapped to a target vertex pair if every edge in the former can be mapped to an edge of equal value in the latter, offering an oddly asymmetrical mapping when used in MCS---I define this (in the context of SIP) as building an \emph{edge-count-increasing \emph{(ECI)} subgraph isomorphism}.
 \end{itemize}
 
 \Cref{alg:k-down-search} then defines the necessary modifications to $k\downarrow$ to compute the MCS in each case.
@@ -1227,15 +1233,17 @@ To test the effectiveness of these algorithms for character modelling and classi
 	\item To determine how well these models capture core character features between different styles of writing, I apply a \emph{$k$-Nearest Neighbours} ($k$NN) classifier to the HWRT database of online handwritten character data \cite{HwrtDatabase} (setting $k=5$ as in \cite{Graphs-Handwriting}).
 	Images (and graphs) were constructed from the online path data using a selection of pen-radii, for $r \in \{1,5,9\}$, to explore how different levels of connectivity would affect graph structure and matching accuracy.
 	Specifically, this online data decomposes paths into positions on a canvas with attached timestamps: images were reconstructed by applying Bresenham's line algorithm between these path points, generating a list of locations to place a circle of thickness $r$.
+	This method recreates glyph images at the scale at which they were drawn.
+	Additionally, I attempt to explore how variation of the path curvature threshold during modelling affects classifier performance, examining $\mathit{curve\_thres} \in \{1.2, 1.35. 1.5, 1.65\}$.
 	For this classifier graph edit distance is the chosen metric, setting a timeout of \SI{30}{\second} per graph comparison.
-	Due to the vast size of the dataset I restrict the database to the set of upper-case Latin alphabet characters, using a total of 2000 randomly selected glyphs split into \emph{test} and \emph{training} data
+	Due to the vast size of the dataset I restrict the database to the set of upper-case Latin alphabet characters, using a total of 2000 randomly selected glyphs split into \emph{test} and \emph{training} data.
 	As the database is already divided into a test and training set, I take subsets of each maintaining the existing proportion.
 	This experiment assesses whether the features captured within any glyph were consistent between similar images in a way that enabled optical character recognition---a sufficiently high accuracy ($\sim\SI{90}{\percent}$) would indicate success.
+	Additionally, I assess effectiveness using the \emph{Cohen's Kappa} metric, which takes ground truth classification counts into consideration for effectiveness: a value $\kappa\le0$ means that decisions are equal to or worse than random chance, and $\kappa=1$ indicates perfect agreement with the ground truth.
 	
 	\item Finally, it is important to position this work in relation to existing graph models which have been applied to handwritten word recognition.
 	For this task, I apply the same classifier to a subset of the George Washington Letters dataset\footnote{\url{http://histograph.ch}} made available by \citeauthor{Graphs-Handwriting} \cite{Graphs-Handwriting}.
-	I use the same parameters on the classifier ($k=5$, \SI{30}{\second} timeout).
-	Additionally, I attempt to explore how variation of the path curvature threshold during modelling affects classifier performance, examining $\mathit{curve\_thres} \in \{1.2, 1.35. 1.5, 1.65\}$.
+	I use the same parameters on the classifier ($k=5$, \SI{30}{\second} timeout), also varying \texttt{curve\_thres} as in experiment 2.
 	This experiment allows me to directly compare the modelling efficiency of my graph models combined with the defined GED against \citeauthor{Graphs-Handwriting}'s existing modelling techniques.
 	As these graphs model whole words, graph order is likely to become an issue, harming classifier performance---made aware of this, I consider a lower classifier performance ($\sim\SI{80}{\percent}$, roughly the result of \citeauthor{Graphs-Handwriting}) to be successful.
 \end{enumerate}
@@ -1278,7 +1286,7 @@ Similarly, each experiment was attempted at all levels of filtering defined in \
 		\includestandalone[width=\linewidth]{../tables/dejavu-sans/edgecountdec-conf-nrm}
 		\caption{
 %			yes!
-			Non-Induced
+			Non-induced
 			\label{fig:heat:filter:non-ind}
 		}
 	\end{subfigure}
@@ -1453,14 +1461,201 @@ While successful within a font, the overall results do not bode well---they indi
 Overall on the specified machine, these experiments typically took around \SI{30}{\minute} each to execute all $52\times52$ graph comparisons.
 
 \paragraph{Experiment 2}
-?? Accuracy statistics for Exp 2 ``Curiously, more distinct characters do not necessarily imply better matching performance''
+%?? Accuracy statistics for Exp 2 ``Curiously, more distinct characters do not necessarily imply better matching performance''
+\Cref{tab:exp2-reg,tab:exp2-dual} show matching effectiveness for the `regular' and `dual' graph models respectively, as pen width and filtering level are varied.
+Some clear trends are visible from this data: we can observe that accuracy due to filtering level follows the same trend as character distinctiveness in Experiment 1, that stricter matching conditions (specifically, the induced variant) lead to greater classifier accuracy.
 
-?? Times?
+Curiously, more distinctive character modelling approaches \emph{do not} lead to greater classifier performance.
+In most cases, excluding non-induced filtering and edge-count-increasing for $r=5$, the `regular` graph model outperforms its `dual` model competitor; while the prior results indicate that stricter matching and modelling should aid classification accuracy, the dual model might be overly sensitive to the angle variations and dynamics which are most likely to appear in handwritten text.
+In this sense, the dual models are \emph{overfitting} to glyphs extracted from fonts.
+The increased matching performance for non-induced filtering on the dual models can be rather roughly justified---the matching procedure has more ``leeway'' to match these overfit glyph models against one another, as non-adjacent vertices may be mapped to one another and the lax sequence overlap rules allow many conflicting edge labels to be disregarded.
+This does not, however, cancel out the fact that induced filtering is unilaterally the best option.
+
+In all cases, it can be observed that a choice of $r=1$ leads to the greatest matching accuracy---that is, I find that it is better to use forms closest to the online data rather than attempting to enhance path connection features with a larger stroke thickness.
+This result is somewhat striking, given the related rows of \cref{tab:graphstats}.
+While median graph order remains roughly consistent over all $r$, we can see that $r=1$ has the largest outlier graphs and so we might expect it to actually have the \emph{worst} performance as graph comparisons would be more likely to time-out.
+%?? ELABORATE
+Larger pen radii, while potentially enhancing the models of glyphs with unintended gaps, run the risk of destroying the separateness of components which were never intended to connect.
+Interestingly, the contributed change to accuracy relies strongly upon the chosen model: accuracy decreases proportionally with $r$ in the dual encoding, yet consistently sees an increase in accuracy after $r=5$ in the regular model, although it is difficult to offer commentary on \emph{why} this behaviour is observed.
+%?? WHY?
+
+\Cref{tab:exp2-thres} explores the effect of varying \texttt{curve\_thres} upon accuracy, building upon the best seen classifier parameters (induced, $r=1$, regular).
+A lower threshold value means that the algorithm is more likely to label path segments as curves rather than lines, whereas a high threshold will make curve detection less sensitive overall; extremal values in either direction will essentially remove the line-curve distinction.
+In the given examples, the statistics suggest that a more sensitive curve detector is correlated with higher matching performance (likely to some undiscovered lower bound).
+Indeed, this trend repeats throughout all tested parameter choices.
+%Why? Sensitivity to variation again?
+Why might we observe this?
+Natural variation in the handwritten samples after path splitting might leave many curves undetected---in this case, a lower curve threshold means this variation is accounted for, and so the model is less sensitive overall to minor curvature variations.
+
+%Why might we see these trends? Why are they not as good as expected?
+
+%?? Looked at variation in accuracy per class wrt graph order, size, degree, line/curve ratio---no correlation found.
+Within each combination of parameters, I examined whether the accuracy for each label had any correlation with mean graph order, size, degree, or line-to-curve ratio.
+While it might be expected that these observed features might be a useful indicator of difficulty within a label class, plotting these features revealed no overly distinct correlations with labelling accuracy.
+
+Unfortunately, the more accurate parameter choices come at the cost of execution time.
+\Cref{tab:ex2-times} contains a guideline set of typical execution times estimated from the filesystem for this experiment, showing that these times grow for more stringent filtering levels, and typically decrease as $r$ increases.
+This presents a relatively clear accuracy/time trade-off, as the induced level of filtering in particular imposes stricter requirements on a solution.
+Overall, these did not appreciably vary according to the choice of \texttt{curve\_thres}, with the exception of the settings (induced, $r=9$, dual), where an increased threshold .
+
+%?? Thoughts on this approach? Failure?
+While the best observed $\kappa$ indicates a ``fair'' degree of progress above the random baseline, these results are far outmatched by the current state-of-the-art in both graph modelling of glyphs and standard recognition approaches.
+Furthermore, the costly matching time imposed by the use of exact MCS makes the combined use of this classifier and these models very undesirable in practice, even though the graphs are typically of a suitable order.
+In these regards, this experiment is deemed a failure.
+
+\begin{table}
+\centering
+
+\begin{tabular}{lccc}
+\toprule
+\multicolumn{1}{c}{Filtering} & $r$ (px) & Accuracy (\si{\percent}) & $\kappa$ \\
+\midrule
+Non-induced & 1 & 27.15 & 0.220 \\
+& 5 & 16.74 & 0.106 \\
+& 9 & 22.17 & 0.160 \\
+
+ECI & 1 & 30.32 & 0.253 \\
+& 5 & 18.10 & 0.122 \\
+& 9 & 23.53 & 0.175 \\
+
+Induced & 1 & 38.46 & 0.347 \\
+& 5 & 29.86 & 0.256 \\
+& 9 & 30.77 & 0.271 \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.5em}
+\caption{
+	Classifier accuracy and Cohen's kappa ($\kappa$) for the `regular' model against the HWRT dataset when varying pen-thickness ($r$) and filtering class.
+	Here, I use the default $\mathtt{curve\_thres}=1.5$.
+	A higher accuracy and $\kappa$ both imply better classifier performance.%, where $\kappa$ considers ground truth label counts.
+	\label{tab:exp2-reg}
+}
+\end{table}
+
+\begin{table}
+	\centering
+	
+	\begin{tabular}{lccc}
+		\toprule
+		\multicolumn{1}{c}{Filtering} & $r$ (px) & Accuracy (\si{\percent}) & $\kappa$ \\
+		\midrule
+		Non-induced & 1 & 28.05 & 0.235 \\
+		& 5 & 23.08 & 0.180 \\
+		& 9 & 21.72 & 0.166 \\
+		
+		ECI & 1 & 26.24 & 0.213 \\
+		& 5 & 24.43 & 0.200 \\
+		& 9 & 21.27 & 0.161 \\
+		
+		Induced & 1 & 34.84 & 0.312 \\
+		& 5 & 27.15 & 0.233 \\
+		& 9 & 26.24 & 0.222 \\
+		\bottomrule
+	\end{tabular}
+	
+	\vspace{0.5em}
+	\caption{
+		Classifier accuracy and Cohen's kappa ($\kappa$) for the `dual model' on HWRT data, as in \cref{tab:exp2-reg}.
+		\label{tab:exp2-dual}
+	}
+\end{table}
+
+\begin{table}
+	\centering
+	
+	\begin{tabular}{ccc}
+		\toprule
+		\texttt{curve\_thres} & Accuracy (\si{\percent}) & $\kappa$ \\
+		\midrule
+		1.2 & 40.72 & 0.373 \\
+		1.35 & 38.46 & 0.347 \\
+		1.5 & 38.46 & 0.347 \\
+		1.65 & 35.75 & 0.318 \\
+		\bottomrule
+	\end{tabular}
+	
+	\vspace{0.5em}
+	\caption{
+		Classifier accuracy and Cohen's kappa ($\kappa$) for the `regular' model against HWRT data as \texttt{curve\_thres} is varied, with induced filtering and $r=1$.
+		A lower \texttt{curve\_thres} means that edges are more likely to be labelled as curves, and this corresponds to better classification performance.
+		This trend is observed throughout all other examined parameter settings.
+		\label{tab:exp2-thres}
+	}
+\end{table}
+
+%\begin{figure}
+%	\centering
+%	\includestandalone[width=0.5\linewidth]{../plots/ct/ct}
+%	
+%	\vspace{0.5em}
+%	\caption{Yup!}
+%\end{figure}
+
+\begin{table}
+
+\centering
+\begin{tabular}{llccc}
+	\toprule
+	\multicolumn{1}{c}{Filtering} & \multicolumn{1}{c}{Model} & $t_{r=1}$ (\si{\hour}) & $t_{r=5}$ (\si{\hour}) & $t_{r=9}$ (\si{\hour}) \\
+	\midrule
+	
+	Non-Induced & Regular & 0.5 & 0.25 & 0.25 \\
+	& Dual & 2 & 1 & 0.5 \\
+	
+	ECI & Regular & 1 & 0.25 & 0.25 \\
+	& Dual & 2 & 1 & 0.5 \\
+	
+	Induced & Regular & 6 & 2 & 1 \\
+	& Dual & 4 & 1 & 0.5--1 \\
+	
+	\bottomrule
+\end{tabular}
+	
+\vspace{0.5em}
+\caption{
+	Rough timing statistics for Experiment 2.
+	\label{tab:ex2-times}
+}
+\end{table}
 
 \paragraph{Experiment 3}
-?? Accuracy statistics for Exp 3
+?? Accuracy statistics for Exp 3 fsdkjfhjksdbfksdbf dfn lkjf fbdsjkskbfj se 
 
-Due to the vastly larger median graph order in the Washington dataset, runs of these tests took far longer than the prior experiments, coming in at around \SIrange{24}{36}{\hour} dependant on filtering level and the chosen representation.
+?? Repeated `0' classifications due to time-out.
+
+?? Compare graph sizes to \citeauthor{Graphs-Handwriting}
+
+Due to the vastly larger median graph order of the Washington dataset (\cref{tab:graphstats}), runs of these tests took far longer than the prior experiments, coming in at around \SIrange{24}{36}{\hour} dependant on filtering level and the chosen representation.
+
+\begin{table}
+	\centering
+
+	\begin{tabular}{llcc}
+		\toprule
+		\multicolumn{1}{c}{Filtering} & \multicolumn{1}{c}{Model} & Accuracy (\si{\percent}) & $\kappa$ \\
+		\midrule
+		
+		Non-Induced & Regular & 11.67 & 0.086 \\
+		& Dual & 5 & 0.017 \\
+		
+		ECI & Regular & 10 & 0.069 \\
+		& Dual & 5 & 0.017 \\
+		
+		Induced & Regular & 8.33 & 0.052 \\
+		& Dual & 3.33 & 0 \\
+		
+		\bottomrule
+	\end{tabular}
+	
+	\vspace{0.5em}
+	\caption{
+		Classifier accuracy and Cohen's kappa ($\kappa$) against the Washington dataset when varying filtering class.
+		A higher accuracy and $\kappa$ both imply better classifier performance.
+		Here, I use the default $\mathtt{curve\_thres}=1.5$---due to the very large typical graph order, too few accurate classifications were made to reason about the effects of \texttt{curve\_thres}.
+		\label{tab:exp3}
+	}
+\end{table}
 
 %\subsection{Discussion}
 %
@@ -1560,6 +1755,7 @@ I'd also like to thank my girlfriend Vanessa Stevenson and my family for their c
 %====================================================
 \section{References}
 %====================================================
+\renewcommand*{\bibfont}{\footnotesize}
 \printbibliography[heading=none]
 
 % Fix weird underhang of last reference
