@@ -12,6 +12,12 @@ style_files = [
 	"t-gnuplot-lua-tikz.tex",
 ]
 
+roots = [
+	tables_dir,
+	plots_dir,
+	# plots_dir + "allclass/"
+]
+
 def copy_files(dir):
 	for file in style_files:
 		shutil.copyfile(style_base + file, dir + file)
@@ -33,8 +39,6 @@ def pdf_plots(dir):
 	del_files(dir)
 
 def top_pdf():
-	roots = [tables_dir, plots_dir]
-
 	for root in roots:
 		pdf_plots(root)
 

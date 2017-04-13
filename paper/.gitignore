@@ -1,7 +1,9 @@
 *.aux
 *.log
 *.bbl
+*.bcf
 *.blg
 *.out
 *.synctex.gz
+*.run.xml
 paper.pdf

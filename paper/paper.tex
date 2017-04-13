@@ -32,7 +32,7 @@
 \usepackage{booktabs}
 \usepackage{microtype}
 
-\usepackage[backend=bibtex,maxnames=3,maxbibnames=99,style=trad-abbrv]{biblatex}
+\usepackage[maxnames=3,maxbibnames=99,mincrossrefs=5,style=trad-abbrv]{biblatex}
 \addbibresource{mprop.bib}
 
 % Addendum formatting (thanks, http://tex.stackexchange.com/questions/339471/indented-addendums-using-biblatex-sourcemaps)
@@ -102,6 +102,13 @@
 	pdftitle={Graph Models and Maximum Common Subgraph for Character Analysis},
 	pdfauthor={Kyle A. Simpson}
 }
+
+\makeatletter
+\newcommand{\nosemic}{\renewcommand{\@endalgocfline}{\relax}}% Drop semi-colon ;
+\newcommand{\dosemic}{\renewcommand{\@endalgocfline}{\algocf@endline}}% Reinstate semi-colon ;
+\newcommand{\pushline}{\Indp}% Indent
+\newcommand{\popline}{\Indm\dosemic}% Undent
+\makeatother
 
 \begin{document}
 
@@ -806,13 +813,13 @@ A preliminary set of interest points is extracted from the image, split into two
 
 \begin{figure}
 	\centering
-%	\resizebox{!}{2cm}{
+	\resizebox{0.6\linewidth}{!}{
 	\begin{tikzpicture}
 		\node[draw,label=below:{Glyph Image}](h0) at (0,0) {\includegraphics[width=.2\linewidth]{../imgs/dejavu-sans/H-Up}};
 		\node[draw,label=below:{Skeleton}](h1) at (4,0) {\includegraphics[width=.2\linewidth]{images/h-skel-inv}};
 		\draw[->, ultra thick] (h0.east) to (h1.west);
 	\end{tikzpicture}
-%	}
+	}
 	
 	\vspace{0.5em}
 	\caption{
@@ -842,7 +849,7 @@ Note that when outputting the final graph, vertex position data is discarded wit
 
 \paragraph{An example walkthrough}
 %?? High-level diagram, walkthrough (like the example in the proposal) -- do theta instead?
-Consider a rough visual example aided by \cref{fig:walkthrough}---the transformation of an image of the character ``$\Theta$'' into a graph.
+Consider a rough visual example aided by \cref{fig:walkthrough}---the transformation of an image of the character `$\Theta$' into a graph.
 Firstly, our image (\cref{fig:walkthrough:glyph}) undergoes preprocessing and skeletonisation to capture the glyph's paths (\cref{fig:walkthrough:skel}).
 This binary skeleton then undergoes connected component labelling, and the algorithm  identifies two main components present in the image: an outer oval component (orange), and an inner line component (lavender) (\cref{fig:walkthrough:comp}).
 
@@ -1183,9 +1190,11 @@ Admittedly, further supplemental graphs could be added, filtering on commonly se
 	\ForEach{$v \in \operatorname{V}(\mathcal{P})$}{
 		$D_v \leftarrow \operatorname{V}(\mathcal{T})$\;
 		\ForEach{$(P,T)\in L$}{
-			$D_v \leftarrow \{ w \in D_v : v \sim_P v \Rightarrow w \sim_T w \land S_P(v) \lesspreceq{k} S_T(w) \}$
+			$D_v \leftarrow \{ w \in D_v : v \sim_P v \Rightarrow w \sim_T w \: \land$
+				$S_P(v) \lesspreceq{k} S_T(w) \}$\;
+				
 		}
-	
+		
 		\BlankLine
 		$s \leftarrow \operatorname{seq}_{\mathcal{P}}(v,v)$\;\label{alg:k-down-search:top-start}
 %		$Valids \leftarrow \{\}$\;
@@ -1236,7 +1245,7 @@ To test the effectiveness of these algorithms for character modelling and classi
 	This is explored via the construction of ``confusion matrices'' between all graphs of characters in the Latin alphabet from several fonts, both lower- and upper-case.
 	To this end, the order of the maximum common subgraph and graph edit distance are displayed via heat-maps to show character graph (dis-)similarity within and between fonts.
 	For this, I chose three fonts to investigate: \emph{DejaVu Sans}, \emph{Open Sans} (both sans-serif), and \emph{Alegreya} (serif).
-	The aim is to show that the generated graphs are reasonably distinct from one another within a human definition of similarity (i.e.\ we might expect 'o' and 'O' to produce identical graphs).
+	The aim is to show that the generated graphs are reasonably distinct from one another within a human definition of similarity (i.e.\ we might expect `o' and `O' to produce identical graphs).
 	Furthermore, I investigate whether the modifications introduced in \cref{sec:algorithm:dual} create more distinct glyph models as hypothesised.
 	The experiment is judged to be a success if most character pairs do not exhibit isomorphism within each font, having a GED close to the median graph size.
 	Naturally, a character will be isomorphic to itself \emph{within} a font, and thus another success criterion is that its model is ideally similar to the graph model of that same character from another font.
@@ -1413,9 +1422,10 @@ Similarly, each experiment was attempted at all levels of filtering defined in \
 	\centering
 	
 	\resizebox{\linewidth}{!}{
-		\begin{tabular}{lccccccc}\toprule
+		\begin{tabular}{llSSSSSS}\toprule
 			\multicolumn{1}{c}{Font} & \multicolumn{1}{c}{Model} & \multicolumn{3}{c}{Graph Order} & \multicolumn{3}{c}{Graph Size} \\
-			& & Min & Max & Median & Min & Max & Median \\
+			\cmidrule{3-5}\cmidrule{6-8}
+			& & \multicolumn{1}{c}{Min} & \multicolumn{1}{c}{Max} & \multicolumn{1}{c}{Median} & \multicolumn{1}{c}{Min} & \multicolumn{1}{c}{Max} & \multicolumn{1}{c}{Median} \\
 			\midrule
 			Alegreya & Regular & 2 & 26 & 11 & 2 & 25 & 11 \\
 			& Dual & 2 & 25 & 11 & 3 & 37 & 14.5 \\
@@ -1451,6 +1461,7 @@ While many of these are expected due to identical upper- and lower-case forms, s
 Throughout all comparisons, it is clear that many of these graphs still exhibit high similarity to one another (\SIrange{60}{70}{\percent} in the induced case), implying that many of the character graphs share identical components.
 This may arise from the fact that the MCS is not \emph{connected}, i.e. I do not impose that there must be a path between every pair of vertices in the MCS; this allows the addition of extra vertices which have no paths to the main components during matching.
 For instance, in every graph an edge marked \texttt{NORTH} between a pair of vertices is guaranteed to exist, and during search may be added to the MCS ``for free'' if it is disconnected from the current incumbent.
+In future, it may thus be worthwhile to consider the \textit{maximum common connected subgraph problem} (MCCS), which does impose such restrictions \cite{MCS-Clique-CP}.
 
 Having established the induced variant of MCS as the most discriminative, \cref{fig:heat:dual} then presents the effects of the dual encoding upon glyph similarity for this level of filtering.
 Broadly, \cref{fig:heat:dual:mcs-r,fig:heat:dual:mcs-d} show an overall reduction in similarity across the entire space of comparisons---showing that the dual graph representation is successful in making glyph models more distinct from one another.
@@ -1477,7 +1488,7 @@ Overall on the specified machine, these experiments typically took around \SI{30
 Some clear trends are visible from this data: we can observe that accuracy due to filtering level follows the same trend as character distinctiveness in Experiment 1, that stricter matching conditions (specifically, the induced variant) lead to greater classifier accuracy.
 
 Curiously, more distinctive character modelling approaches \emph{do not} lead to greater classifier performance.
-In most cases, excluding non-induced filtering and edge-count-increasing for $r=5$, the `regular` graph model outperforms its `dual` model competitor; while the prior results indicate that stricter matching and modelling should aid classification accuracy, the dual model might be overly sensitive to the angle variations and dynamics which are most likely to appear in handwritten text.
+In most cases, excluding non-induced filtering and edge-count-increasing for $r=5$, the `regular' graph model outperforms its `dual' model competitor; while the prior results indicate that stricter matching and modelling should aid classification accuracy, the dual model might be overly sensitive to the angle variations and dynamics which are most likely to appear in handwritten text.
 In this sense, the dual models are \emph{overfit} to glyphs extracted from fonts.
 The increased matching performance for non-induced filtering on the dual models can be rather roughly justified---the matching procedure has more ``leeway'' to match these overfit glyph models against one another, as non-adjacent vertices may be mapped to one another and the lax sequence overlap rules allow many conflicting edge labels to be disregarded.
 This does not, however, cancel out the fact that induced filtering is unilaterally the best option.
@@ -1520,9 +1531,9 @@ In these regards, this experiment is deemed a failure.
 \begin{table}
 \centering
 
-\begin{tabular}{lccc}
+\begin{tabular}{lSSS}
 \toprule
-\multicolumn{1}{c}{Filtering} & $r$ (px) & Accuracy (\si{\percent}) & $\kappa$ \\
+\multicolumn{1}{c}{Filtering} & \multicolumn{1}{c}{$r$ (px)} & \multicolumn{1}{c}{Accuracy (\si{\percent})} & \multicolumn{1}{c}{$\kappa$} \\
 \midrule
 Non-induced & 1 & 27.15 & 0.220 \\
 & 5 & 16.74 & 0.106 \\
@@ -1550,9 +1561,9 @@ Induced & 1 & 38.46 & 0.347 \\
 \begin{table}
 	\centering
 	
-	\begin{tabular}{lccc}
+	\begin{tabular}{lSSS}
 		\toprule
-		\multicolumn{1}{c}{Filtering} & $r$ (px) & Accuracy (\si{\percent}) & $\kappa$ \\
+		\multicolumn{1}{c}{Filtering} & \multicolumn{1}{c}{$r$ (px)} & \multicolumn{1}{c}{Accuracy (\si{\percent})} & \multicolumn{1}{c}{$\kappa$} \\
 		\midrule
 		Non-induced & 1 & 28.05 & 0.235 \\
 		& 5 & 23.08 & 0.180 \\
@@ -1578,9 +1589,9 @@ Induced & 1 & 38.46 & 0.347 \\
 \begin{table}
 	\centering
 	
-	\begin{tabular}{ccc}
+	\begin{tabular}{SSS}
 		\toprule
-		$\mathit{curve\_thres}$ & Accuracy (\si{\percent}) & $\kappa$ \\
+		\multicolumn{1}{c}{$\mathit{curve\_thres}$} & \multicolumn{1}{c}{Accuracy (\si{\percent})} & \multicolumn{1}{c}{$\kappa$} \\
 		\midrule
 		1.2 & 40.72 & 0.373 \\
 		1.35 & 38.46 & 0.347 \\
@@ -1601,9 +1612,9 @@ Induced & 1 & 38.46 & 0.347 \\
 \begin{table}
 
 \centering
-\begin{tabular}{llccc}
+\begin{tabular}{llSSS}
 	\toprule
-	\multicolumn{1}{c}{Filtering} & \multicolumn{1}{c}{Model} & $t_{r=1}$ (\si{\hour}) & $t_{r=5}$ (\si{\hour}) & $t_{r=9}$ (\si{\hour}) \\
+	\multicolumn{1}{c}{Filtering} & \multicolumn{1}{c}{Model} & \multicolumn{1}{c}{$t_{r=1}$ (\si{\hour})} & \multicolumn{1}{c}{$t_{r=5}$ (\si{\hour})} & \multicolumn{1}{c}{$t_{r=9}$ (\si{\hour})} \\
 	\midrule
 	
 	Non-Induced & Regular & 0.5 & 0.25 & 0.25 \\
@@ -1613,7 +1624,7 @@ Induced & 1 & 38.46 & 0.347 \\
 	& Dual & 2 & 1 & 0.5 \\
 	
 	Induced & Regular & 6 & 2 & 1 \\
-	& Dual & 4 & 1 & 0.5--1 \\
+	& Dual & 4 & 1 & \numrange{0.5}{1} \\
 	
 	\bottomrule
 \end{tabular}
@@ -1630,12 +1641,12 @@ Induced & 1 & 38.46 & 0.347 \\
 	
 	\begin{subfigure}[t]{0.45\linewidth}
 		\includestandalone[width=\linewidth]{../plots/allclass/Size}
-		\caption{Mean Graph Size}
+%		\caption{Mean Graph Size}
 	\end{subfigure}
 	~
 	\begin{subfigure}[t]{0.45\linewidth}
 		\includestandalone[width=\linewidth]{../plots/allclass/Line-Count}
-		\caption{Mean Line Feature Count}
+%		\caption{Mean Line Feature Count}
 	\end{subfigure}
 	
 	\vspace{0.5em}
@@ -1663,9 +1674,9 @@ Considering run-times, the vastly larger median graph order of the Washington da
 \begin{table}
 	\centering
 
-	\begin{tabular}{llcc}
+	\begin{tabular}{llSS}
 		\toprule
-		\multicolumn{1}{c}{Filtering} & \multicolumn{1}{c}{Model} & Accuracy (\si{\percent}) & $\kappa$ \\
+		\multicolumn{1}{c}{Filtering} & \multicolumn{1}{c}{Model} & \multicolumn{1}{c}{Accuracy (\si{\percent})} & \multicolumn{1}{c}{$\kappa$} \\
 		\midrule
 		
 		Non-Induced & Regular & 11.67 & 0.086 \\
@@ -1685,6 +1696,7 @@ Considering run-times, the vastly larger median graph order of the Washington da
 		Classifier accuracy and Cohen's kappa ($\kappa$) against the Washington dataset when varying filtering class.
 		A higher accuracy and $\kappa$ both imply better classifier performance.
 		Here, I use the default $\mathit{curve\_thres}=1.5$---due to the very large typical graph order, too few accurate classifications were made to reason about the effects of $\mathit{curve\_thres}$.
+		The current state-of-the-art in graph modelling achieves an accuracy of \SI{81.82}{\percent} with the `Projection' technique on this task \cite{Graphs-Handwriting}.
 		\label{tab:exp3}
 	}
 \end{table}
@@ -1788,7 +1800,7 @@ I believe a significant redesign is necessary, though given the differences betw
 %?? Perhaps it could be effective, when used with approximate GED... \cite{GED-Approx}
 The results shown necessitate investigation of these models with an approximate GED metric (such as \citeauthor{GED-Approx} \cite{GED-Approx}) to cement this work's position within the literature.
 %?? Graph order of GW data inhibits matching effectiveness. Investigate effect of adapting McSplit algorithm for this purpose? (only induced matching, but this is the best so yeah)---unlikely to be much use, so GED
-In a similar vein, having seen that the induced MCS offers the greatest classifier performance it may be useful to consider a modification of the McSplit algorithm \cite{MCS-McSplit}---although this would almost certainly provide less benefit than simply approximating the GED.
+In a similar vein, having seen that the induced MCS offers the greatest classifier performance it may be useful to consider a modification of the McSplit algorithm \cite{MCS-McSplit} or consider the MCCS rather than MCS---although this would almost certainly provide less benefit than simply approximating the edit distance.
 %?? Other approach with line/curve semantics
 There is also some value in modifying the work of existing, successful graph models such as \citeauthor{Graphs-Handwriting} \cite{Graphs-Handwriting} to see how features like line and curve segment capture might affect classification performance.
 %?? Investigate more interesting side-constraints in search -- such as temporal subgraph ismoporhism \cite{TSIP-Long} (Explain briefly, then discuss why it might be useful? (patterns, not exact matching))
