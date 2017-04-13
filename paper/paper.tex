@@ -93,9 +93,14 @@
 \titlelabel{\thetitle.\quad}
 \titleformat{\paragraph}[runin]{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
 
-\pdfinfo{
-	/Title (Graph Models and Maximum Common Subgraph for Character Analysis)
-	/Author (Kyle A. Simpson)
+%\pdfinfo{
+%	/Title (Graph Models and Maximum Common Subgraph for Character Analysis)
+%	/Author (Kyle A. Simpson)
+%}
+
+\hypersetup{
+	pdftitle={Graph Models and Maximum Common Subgraph for Character Analysis},
+	pdfauthor={Kyle A. Simpson}
 }
 
 \begin{document}
@@ -113,10 +118,6 @@ four key questions. First, what is the problem that this
 paper tackles? Second, why is this an interesting problem?
 Third, what is the solution this paper proposes?
 Finally, why is the proposed solution a good one?
-%Lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet
-%\lipsum[1]
-
-?? Write me
 \end{abstract}
 %====================================================
 %====================================================
@@ -1259,7 +1260,7 @@ Similarly, each experiment was attempted at all levels of filtering defined in \
 
 ?? SET UP VM!
 
-\subsection{Results and Discussion}
+\subsection{Results and discussion}
 
 % disable these diagrams temporarily
 %\renewcommand{\includestandalone}[3]{}%\includegraphics[width=\linewidth]{#1.png}}
@@ -1497,7 +1498,7 @@ While it might be expected that these observed features might be a useful indica
 Unfortunately, the more accurate parameter choices come at the cost of execution time.
 \Cref{tab:ex2-times} contains a guideline set of typical execution times estimated from the filesystem for this experiment, showing that these times grow for more stringent filtering levels, and typically decrease as $r$ increases.
 This presents a relatively clear accuracy/time trade-off, as the induced level of filtering in particular imposes stricter requirements on a solution.
-Overall, these did not appreciably vary according to the choice of \texttt{curve\_thres}, with the exception of the settings (induced, $r=9$, dual), where an increased threshold .
+Overall, these did not appreciably vary according to the choice of \texttt{curve\_thres}, with the exception of the settings (induced, $r=9$, dual), where an increased threshold led to faster classification time.
 
 %?? Thoughts on this approach? Failure?
 While the best observed $\kappa$ indicates a ``fair'' degree of progress above the random baseline, these results are far outmatched by the current state-of-the-art in both graph modelling of glyphs and standard recognition approaches.
@@ -1630,7 +1631,7 @@ While the median graph order is lower than the most successful approaches of \ci
 Noting that the classifier returns a default `0' label for unclassified graphs, the disturbingly high incidence of this classification confirms that time-outs during computation are the root cause of the problem.
 
 Ultimately, results on the actual effectiveness of this dataset are inconclusive for these reasons---mandating further investigation with a cheaper, approximate GED metric to establish the proposed models' true effectiveness.
-Furthermore, this issue may have silently influenced the eresults of Experiment 2.
+Furthermore, this issue may have silently influenced the results of Experiment 2, hinting that future reinvestigation of both these studies using the work of \citeauthor{GED-Approx} \cite{GED-Approx} may be worthwhile.
 Given the relatively small dataset size (and the low accuracy), it as not deemed worthwhile or meaningful to attempt to identify the affects of different \texttt{curve\_thres} on classification performance.
 Considering run-times, the vastly larger median graph order of the Washington dataset (\cref{tab:graphstats}) ensured that runs of these tests took far longer than the prior experiments, coming in at around \SIrange{24}{36}{\hour} dependant on filtering level and the chosen representation.
 
@@ -1715,41 +1716,73 @@ Interestingly, they note that the use of the Delaunay triangulation for such mod
 
 %?? Discuss ML work on handwriting modelling and its effectiveness? Why is ML better here? Fixed execution time (irrespective of training set size), so benefits from extra training in a way 
 
-%====================================================
-\section{Further Applications}
-\label{sec:applications}
-%====================================================
-
-?? Give example of graph of two circuit diagrams here
-
-?? Examine graph order---too big? Can we run SIP on it? How are the results?
+%%====================================================
+%\section{Further Applications}
+%\label{sec:applications}
+%%====================================================
+%
+%?? Give example of graph of two circuit diagrams here
+%
+%?? Examine graph order---too big? Can we run SIP on it? How are the results?
 
 %====================================================
 \section{Conclusions and Future Work}
 \label{sec:conclusion}
 %====================================================
 
-?? Draw conclusions here---sum up paper.
+%?? Draw conclusions here---sum up paper.
+Throughout this paper, I have shown the shortcomings of current general graph modelling techniques on pixel images, and presented and evaluated two alternative modelling algorithms for a simplified problem domain.
+%?? Exact GED ruled out as a metric, can't compete with current state of the art
+Generally, the new glyph graph models achieve admittedly poor performance in comparison with the current state-of-the-art in handwriting recognition and word spotting (graph models and otherwise).
+A common thread throughout has been the unsuitability of exact MCS algorithms for the task of detecting similarity in feature-rich models, where the per-graph comparison time appears to have a distinct effect on classification accuracy.
+%?? WHY did it not work as planned? Growing execution time as training set sizes (since we are comparing against \emph{all} known entries) (choice of kNN as a classifier).
+The sizeable execution time per-comparison compounds with the $k$NN classifier's design, making classification time scale with the size of the training dataset in a very costly manner as model size grows.
+%?? Downsides of approach? graph models seemingly need to be designed specifically for the task at hand (need an explicit notion of things and relationships)---whereas existing ML models are effective because they are designed to learn features of arbitrary high-dimensional data by statistics (in the case of CNNs/NNs, by learning parameters)
 
-?? WHY did it not work as planned? Growing execution time as training set sizes (since we are comparing against \emph{all} known entries) (choice of kNN as a classifier).
+The models are, however, as intuitive as hoped.
+When matching at the character-character level, I've shown that the graph structure is a seemingly natural way to model this information, making it easy not only to see \emph{why} individual misclassifications occur but to suggest modifications which make characters more distinct.
+This is a double-edged sword to some extent; while the modifications brought by the dual model allow for more effective modelling of glyph images from font data, they cause stark \emph{overfitting} due to hidden assumptions about variation in path starting angle.
 
-?? Downsides of approach? graph models seemingly need to be designed specifically for the task at hand (need an explicit notion of things and relationships)---whereas existing ML models are effective because they are designed to learn features of arbitrary high-dimensional data by statistics (in the case of CNNs/NNs, by learning parameters)
+%?? MCS/GED bad fit? i.e. p,q,b,d have small GED since all that moves is the north relation. At that point, are we really performing graph matching?
+Using only GED as the scoring metric may itself be inappropriate for preserving certain character features.
+Consider the relatively small GED between `p', `q', `b' and `d', where arguably the largest difference comes from the single orientation vertex and its \text{NORTH} edge to another keypoint.
+A more useful distance metric on these models might score the loss or inclusion of certain features to heavily penalise orientation differences, but this leads us farther from standard graph matching algorithms towards domain-specific similarity scores.
 
-?? Final thought? needs total rework -- addition of more information/hacks appears good at first, then fails.
+Existing ML and keypoint models are effective because they are designed to learn features of arbitrary high-dimensional data which are distinctive and discriminative in their own right.
+Graph models appear to need to be designed specifically for the task at hand, and for more general matching tasks it is not immediately clear if low-level image modelling in this way is possible since we require an explicit notion of entities and relationships.
+%?? Final thought? needs total rework -- addition of more information/hacks appears good at first, then fails due to overfitting.
+%?? Easy to see what we can do to make more distinct models, but with a very real risk of overfitting?
+The explored graph models seem to capture \emph{some} level of discriminative features from their input glyphs, and by varying the defined parameters it was possible to create a classifier operating appreciably above the random baseline.
+%Given that these fall far behind existing techniques in both accuracy and runtime cost, ??.
+There is perhaps some merit in elements of the outlined techniques.
+Without attempting to measure performance with an approximate GED metric, it is difficult to say whether this approach requires a complete rethink or simply further tweaking to be truly effective on the assessed tasks.
+I believe a significant redesign is necessary, though given the differences between my approaches and \citeauthor{Graphs-Handwriting} \cite{Graphs-Handwriting} I believe it may be worthwhile to investigate how their models fare with the introduction of line/curve semantics.
 
-?? Perhaps it could be effective, when used with approximate GED... \cite{GED-Approx}
+\subsection{Future work}
+%?? Future work? Approximate GED metrics? Investigation of path-based supplemental graphs?
+%?? Perhaps it could be effective, when used with approximate GED... \cite{GED-Approx}
+The results shown necessitate investigation of these models with an approximate GED metric (such as \citeauthor{GED-Approx} \cite{GED-Approx}) to cement this work's position against the literature.
+%?? Graph order of GW data inhibits matching effectiveness. Investigate effect of adapting McSplit algorithm for this purpose? (only induced matching, but this is the best so yeah)---unlikely to be much use, so GED
+In a similar vein, having seen that the induced MCS offers the greatest classifier performance it may be useful to consider a modification of the McSplit algorithm \cite{MCS-McSplit}---although this would almost certainly provide less benefit than simply approximating the GED.
+%?? Other approach with line/curve semantics
+There is also some value in modifying the work of existing, successful graph models such as \citeauthor{Graphs-Handwriting} \cite{Graphs-Handwriting} to see how features like line and curve segment capture might affect classification performance.
+%?? Investigate more interesting side-constraints in search -- such as temporal subgraph ismoporhism \cite{TSIP-Long} (Explain briefly, then discuss why it might be useful? (patterns, not exact matching))
+As alluded to above, for both this model and the proposed modification of the state-of-the-art an investigation of feature-aware custom scoring functions might be of use.
+This would allow us to penalise the omission of certain features, with the caveat that this would no longer be a standard graph matching problem.
 
-?? Future work? Approximate GED metrics? Investigation of path-based supplemental graphs?
+%?? How might it handle fonts designed for OCR? font-sizes?
 
-?? MCS/GED bad fit? i.e. p,q,b,d have small GED since all that moves is the north relation. At that point, are we really performing graph matching?
+%?? Give example of graph of two circuit diagrams here
+%?? Examine graph order---too big? Can we run SIP on it? How are the results?
+If greater performance can be achieved, it may well be worthwhile to consider other problem domains which rely upon path-based structures.
+One such domain would be the identification of common components and design patterns within \emph{circuit diagrams}.
+Since there are few ways to build components with known functionality (i.e. logic gates and amplifiers), it may be possible to locate such components and describe the blueprint at a higher level.
+The intricate structure of these diagrams would likely make MCS computation almost impossible, but if we assume that input images are relatively free of distortion then SIP algorithms become a natural fit for the problem.
 
-?? Investigate more interesting side-constraints in search -- such as temporal subgraph ismoporhism \cite{TSIP-Long} (Explain briefly, then discuss why it might be useful? (patterns, not exact matching))
-
-?? Graph order of GW data inhibits matching effectiveness. Investigate effect of adapting McSplit algorithm for this purpose? (only induced matching, but this is the best so yeah)
-
-?? How might it handle fonts designed for OCR? font-sizes?
-
-?? More general techniques? Multiscale feature graphs? (lol)
+%?? More general techniques? Multiscale feature graphs? (lol)
+The use of approximate similarity measures may enable lower-level graph models for general images, such as using multi-scale keypoint features as vertices with a suitable means of defining edges.
+While this would lead to higher graph order due to the large volume of feature vectors which SIFT-like approaches can output, approximate measures should allow the use of larger input graphs---potentially allowing the use of graph models in more general computer vision tasks.
+The specifics of how to approach such a model are very much an open question, however.
 
 %====================================================
 \noindent

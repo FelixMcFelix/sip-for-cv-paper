@@ -8,46 +8,64 @@ def makeplots():
 	# Only doing HWRT because I'm fabulously lazy (fight me)
 	base = results_dir + "search/"
 
-	for blah, pname in params:
-		result_folder = "{}hwrt-{}/".format(base, pname)
-		result_folder_d = "{}dual/hwrt-{}/".format(base, pname)
-		for r in pen_rads:
-			for t in curve_thr:
-				outdir = "{}search/{}-t{}-r{}/".format(plots_dir, pname, t, r)
-				outdir_d = "{}search/dual-{}-t{}-r{}/".format(plots_dir, pname, t, r)
-				mkdirnotex(outdir)
-				mkdirnotex(outdir_d)
+	out_all_dir = plots_dir + "allclass/"
+	out_all = out_all_dir + "vals.csv"
+	mkdirnotex(out_all)
 
-				base_graph_dir = "{}hwrt-{}/r-{}/".format(graph_dir, t, r)
-				base_graph_dir_d = "{}dual/hwrt-{}/r-{}/".format(graph_dir, t, r)
-				make_plot_set(
-					["../imgs/hwrt/test-2000-smrt.csv", "../imgs/hwrt/train-2000-smrt.csv"],
-					[base_graph_dir + "test/", base_graph_dir + "train/"],
-					"{}t{}-r{}-2000.out".format(result_folder, t, r),
-					outdir
-					)
+	with open(out_all, "wb") as outf:
+		wrt = csv.writer(outf)
 
-				make_plot_set(
-					["../imgs/hwrt/test-2000-smrt.csv", "../imgs/hwrt/train-2000-smrt.csv"],
-					[base_graph_dir_d + "test/", base_graph_dir_d + "train/"],
-					"{}t{}-r{}-2000.out".format(result_folder_d, t, r),
-					outdir_d
-					)
+		for blah, pname in params:
+			result_folder = "{}hwrt-{}/".format(base, pname)
+			result_folder_d = "{}dual/hwrt-{}/".format(base, pname)
+			for r in pen_rads:
+				for t in curve_thr:
+					outdir = "{}search/{}-t{}-r{}/".format(plots_dir, pname, t, r)
+					outdir_d = "{}search/dual-{}-t{}-r{}/".format(plots_dir, pname, t, r)
+					mkdirnotex(outdir)
+					mkdirnotex(outdir_d)
 
-	out_dir = plots_dir + "ct/"
-	dat_file = out_dir + "vals.csv"
+					send = wrt if pname == "induced" else None
 
-	call(["gnuplot", "-e",
-			"filename='{0}'; outpng='{3}{2}{1}'; outtikz='{3}{2}.tex'".format(
-				dat_file, ".png", "ct", out_dir
-			),
-			"plot_thres.gp"])
+					base_graph_dir = "{}hwrt-{}/r-{}/".format(graph_dir, t, r)
+					base_graph_dir_d = "{}dual/hwrt-{}/r-{}/".format(graph_dir, t, r)
+					make_plot_set(
+						["../imgs/hwrt/test-2000-smrt.csv", "../imgs/hwrt/train-2000-smrt.csv"],
+						[base_graph_dir + "test/", base_graph_dir + "train/"],
+						"{}t{}-r{}-2000.out".format(result_folder, t, r),
+						outdir,
+						send
+						)
 
-def make_plot_csv(split_files, graph_folders, result_file, out_folder):
+					make_plot_set(
+						["../imgs/hwrt/test-2000-smrt.csv", "../imgs/hwrt/train-2000-smrt.csv"],
+						[base_graph_dir_d + "test/", base_graph_dir_d + "train/"],
+						"{}t{}-r{}-2000.out".format(result_folder_d, t, r),
+						outdir_d,
+						None #send
+						)
+
+		out_dir = plots_dir + "ct/"
+		dat_file = out_dir + "vals.csv"
+
+		call(["gnuplot", "-e",
+				"filename='{0}'; outpng='{3}{2}{1}'; outtikz='{3}{2}.tex'".format(
+					dat_file, ".png", "ct", out_dir
+				),
+				"plot_thres.gp"])
+
+	plot_csv(out_all, out_all_dir)
+
+def make_plot_csv(split_files, graph_folders, result_file, out_folder, overall_csv):
 	label_stats = {}
 	label_counts = {}
 	label_goods = {}
 	label_accs = {}
+
+	all_good = 0
+	all_count = 0
+
+	all_stats = []
 
 	def app(lab, store, val):
 		if lab not in store:
@@ -71,11 +89,15 @@ def make_plot_csv(split_files, graph_folders, result_file, out_folder):
 				this_stat = process_graph(graph_loc +"/"+ no_ext)
 				app(label, label_stats, this_stat)
 
+				all_stats.append(this_stat)
+
 	with open(result_file) as filey:
 		for ln in filey.readlines():
 			[truth, observed, correct] = [int(x.strip()) for x in ln.split(" ")[1:]]
 			increm(truth, label_counts)
 			increm(truth, label_goods, correct==1)
+			all_count += 1
+			all_good += correct
 
 	for label in label_counts:
 		label_accs[label] = label_goods[label] / float(label_counts[label])
@@ -92,14 +114,23 @@ def make_plot_csv(split_files, graph_folders, result_file, out_folder):
 			stats = np.array(label_stats[str(label)])
 
 			# take mean over each column
-			wrt.writerow([label, acc] + list(stats.median(axis=0)))
+			wrt.writerow([label, acc] + list(stats.mean(axis=0)))
+
+	acc = all_good / float(all_count)
+
+	# print list(np.array(all_stats).mean(axis=0)) #all_stats
+
+	if overall_csv is not None:
+		overall_csv.writerow([0, acc] + list(np.array(all_stats).mean(axis=0)))
 
 	# Okay, now worry about plots eventually...
 	return out_path
 
-def make_plot_set(split_files, graph_folders, result_file, out_folder):
-	csv_dir = make_plot_csv(split_files, graph_folders, result_file, out_folder)
+def make_plot_set(split_files, graph_folders, result_file, out_folder, overall_csv):
+	csv_dir = make_plot_csv(split_files, graph_folders, result_file, out_folder, overall_csv)
+	plot_csv(csv_dir, out_folder)
 
+def plot_csv(csv_dir, out_folder):
 	# [label, acc, order, size, np.mean(degrees), line_count, curve_count, ratio]
 	y = ("Accuracy", 1)
 
