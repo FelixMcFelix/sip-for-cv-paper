@@ -43,3 +43,9 @@ To generate plots from the results:
 ```sh
 ./process_results.sh
 ```
+
+If you care about those plots being in pdf format...
+
+```sh
+python pdf-ify.py
+```
