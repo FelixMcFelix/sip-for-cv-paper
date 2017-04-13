@@ -113,11 +113,15 @@
 %====================================================
 %====================================================
 \begin{abstract}
-According to Simon Peyton Jones, an abstract should address
-four key questions. First, what is the problem that this
-paper tackles? Second, why is this an interesting problem?
-Third, what is the solution this paper proposes?
-Finally, why is the proposed solution a good one?
+%According to Simon Peyton Jones, an abstract should address
+%four key questions. First, what is the problem that this
+%paper tackles? Second, why is this an interesting problem?
+%Third, what is the solution this paper proposes?
+%Finally, why is the proposed solution a good one?
+Modern computer vision research depends upon complex vector-space models and machine learning techniques, which can be hard for humans to make sense of.
+If suitable graph models exist for these problems, then we benefit triply: problem instances become more intuitive, it becomes easier to assess model robustness, and we may use standard graph search and similarity algorithms for classification with little modification.
+I show the ineffectiveness of current general image graph models against these known similarity metrics, and propose two new models for glyph image modelling.
+These models are found to underperform compared to the state-of-the-art and computing exact graph similarity is found to be a poor fit for classification tasks, yet the intuitive nature of the models is shown to both allow and inform easy model enhancement.
 \end{abstract}
 %====================================================
 %====================================================
@@ -1258,7 +1262,7 @@ Similarly, each experiment was attempted at all levels of filtering defined in \
 
 %?? Machine statistics, find the code here\footnote{\url{https://github.com/FelixMcFelix/sip-for-cv-paper}}, roll up a nice VM for review?
 
-?? SET UP VM!
+%?? SET UP VM!
 
 \subsection{Results and discussion}
 
@@ -1492,8 +1496,11 @@ Natural variation in the handwritten samples after path splitting might leave ma
 %Why might we see these trends? Why are they not as good as expected?
 
 %?? Looked at variation in accuracy per class wrt graph order, size, degree, line/curve ratio---no correlation found.
-Within each combination of parameters, I examined whether the accuracy for each label had any correlation with mean graph order, size, degree, or line-to-curve ratio.
-While it might be expected that these observed features might be a useful indicator of difficulty within a label class, plotting these features revealed no overly distinct correlations with labelling accuracy.
+Within each combination of parameters, I examined whether the accuracy \emph{for each label} had any correlation with mean graph order, size, degree, or line-to-curve ratio.
+While it might be expected that these observed features could be a useful indicator of difficulty within a label class, plotting these features revealed no overly distinct correlations with labelling accuracy.
+To investigate whether \emph{overall} accuracy had any correlation with these statistics, I considered any parameter combinations with induced filtering upon the regular model.
+\Cref{fig:acc-vs-graphstat} shows the correlations observed between mean graph size and with accuracy---larger graph size (i.e.\ feature count) and fewer \texttt{LINE} features correlate with higher accuracy.
+None of the other statistics exhibited any correlation.
 
 Unfortunately, the more accurate parameter choices come at the cost of execution time.
 \Cref{tab:ex2-times} contains a guideline set of typical execution times estimated from the filesystem for this experiment, showing that these times grow for more stringent filtering levels, and typically decrease as $r$ increases.
@@ -1586,14 +1593,6 @@ Induced & 1 & 38.46 & 0.347 \\
 	}
 \end{table}
 
-%\begin{figure}
-%	\centering
-%	\includestandalone[width=0.5\linewidth]{../plots/ct/ct}
-%	
-%	\vspace{0.5em}
-%	\caption{Yup!}
-%\end{figure}
-
 \begin{table}
 
 \centering
@@ -1620,6 +1619,27 @@ Induced & 1 & 38.46 & 0.347 \\
 	\label{tab:ex2-times}
 }
 \end{table}
+
+\begin{figure}
+	\centering	
+	
+	\begin{subfigure}[t]{0.45\linewidth}
+		\includestandalone[width=\linewidth]{../plots/allclass/Size}
+		\caption{Mean Graph Size}
+	\end{subfigure}
+	~
+	\begin{subfigure}[t]{0.45\linewidth}
+		\includestandalone[width=\linewidth]{../plots/allclass/Line-Count}
+		\caption{Mean Line Feature Count}
+	\end{subfigure}
+	
+	\vspace{0.5em}
+	\caption{
+		Plots of mean graph size and mean counts of \texttt{LINE} edges against overall accuracy, for all parameter combinations with induced filtering and the regular model.
+		In these cases, larger graph size (i.e.\ feature count) and fewer \texttt{LINE} features correlate with higher accuracy.
+		\label{fig:acc-vs-graphstat}
+	}
+\end{figure}
 
 \paragraph{Experiment 3}
 %?? Accuracy statistics for Exp 3 fsdkjfhjksdbfksdbf dfn lkjf fbdsjkskbfj se 

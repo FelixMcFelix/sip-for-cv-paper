@@ -34,6 +34,7 @@ def makeplots():
 						[base_graph_dir + "test/", base_graph_dir + "train/"],
 						"{}t{}-r{}-2000.out".format(result_folder, t, r),
 						outdir,
+						# None
 						send
 						)
 
@@ -42,7 +43,8 @@ def makeplots():
 						[base_graph_dir_d + "test/", base_graph_dir_d + "train/"],
 						"{}t{}-r{}-2000.out".format(result_folder_d, t, r),
 						outdir_d,
-						None #send
+						None
+						# send
 						)
 
 		out_dir = plots_dir + "ct/"
@@ -150,7 +152,7 @@ def plot_csv(csv_dir, out_folder):
 	for (label_name, column) in xs:
 		call(["gnuplot", "-e",
 			"filename='{0}'; outpng='{4}{2}{1}'; outtikz='{4}{2}.tex'; xl='{2}'; xc={3}; yl='{5}'; yc={6}".format(
-				csv_dir, outext, label_name, column+1, out_folder, yl, yc+1
+				csv_dir, outext, label_name.replace(" ", "-"), column+1, out_folder, yl, yc+1
 			),
 			"plotty.gp"])
 
