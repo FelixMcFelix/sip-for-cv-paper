@@ -554,21 +554,26 @@ Two experiments were performed:
 As the image graphs were expected to be high-order, vertices were labelled with their $(x,y)$ image locations to augment the $k\downarrow$ procedure with Euclidean distance filtering to make matching feasible---vertices could be mapped to one another if their distance was smaller than 1 for the first, or 5 for the second experiment.
 These distances were chosen due to the expected similarity in each case---while the first experiment governs essentially identical images (once positions have been corrected to negate the transform), in the second case mild variance is expected.
 
-\Cref{fig:explor-bsdnrmgraph,fig:explor-bsd180graph} show that the expected isomorphism in the first experiment was \emph{not} observed---both graphs have different order and size.
-After 5 days runtime, the graph order was not exactly identified in either case, but the following bounds were obtained:
-
 \begin{table}[h]
-\centering
-\begin{tabular}{cccc}
-	\toprule
-	Experiment & Except-$k$ & $\operatorname{Ord}(\mathit{MCS})$ & Overlap (\si{\percent}) \\ \midrule
-	1 & $[61, 111]$ & $[134, 184]$ & 54.6--72.2 \\
-	2 & $[38, 217]$ & $[47, 226]$ & 18.1--86.9 \\
-	\bottomrule
-\end{tabular}
+	\centering
+	\begin{tabular}{cccc}
+		\toprule
+		Experiment & Except-$k$ & $\operatorname{Ord}(\mathit{MCS})$ & Overlap (\si{\percent}) \\ \midrule
+		1 & $[61, 111]$ & $[134, 184]$ & 54.6--72.2 \\
+		2 & $[38, 217]$ & $[47, 226]$ & 18.1--86.9 \\
+		\bottomrule
+	\end{tabular}
+	
+	\vspace{0.5em}
+	\caption{
+		Observed similarity bounds between real-world images.
+		\label{tab:badgraphs}
+	}
 \end{table}
 
-\noindent Due to the difficulty of finding an optimal $k$, both of these results have an unacceptably high degree of uncertainty---we cannot draw any conclusive answers on the actual graph similarity for this reason.
+\Cref{fig:explor-bsdnrmgraph,fig:explor-bsd180graph} show that the expected isomorphism in the first experiment was \emph{not} observed---both graphs have different order and size.
+After 5 days runtime, the graph order was not exactly identified in either case, but \cref{tab:badgraphs} shows the obtained bounds.
+Due to the difficulty of finding an optimal $k$, both of these results have an unacceptably high degree of uncertainty---we cannot draw any conclusive answers on the actual graph similarity for this reason.
 The level of uncertainty here is strongly tied to the level of filtering provided in each experiment: a higher distance threshold gives more candidate mappings for each vertex, and so weaker filtering.
 The bound in the first experiment is, however, low enough for two identical images to assert that this transformation is not isotropic.
 This heavily indicates that the approach's validity and sensitivities depend upon the choice of interest pixel detector.
@@ -839,13 +844,13 @@ Note that when outputting the final graph, vertex position data is discarded wit
 %?? High-level diagram, walkthrough (like the example in the proposal) -- do theta instead?
 Consider a rough visual example aided by \cref{fig:walkthrough}---the transformation of an image of the character ``$\Theta$'' into a graph.
 Firstly, our image (\cref{fig:walkthrough:glyph}) undergoes preprocessing and skeletonisation to capture the glyph's paths (\cref{fig:walkthrough:skel}).
-This binary skeleton then undergoes connected component labelling, and the algorithm  identifies two main components present in the image: an outer oval component (orange), and an inner line component (red) (\cref{fig:walkthrough:comp}).
+This binary skeleton then undergoes connected component labelling, and the algorithm  identifies two main components present in the image: an outer oval component (orange), and an inner line component (lavender) (\cref{fig:walkthrough:comp}).
 
 Each pixel is then examined and is classified as either an endpoint, keypoint or regular pixel according to its neighbourhood (\cref{fig:walkthrough:interest}).
 The line component here features two endpoints, which are detected from their neighbourhoods.
 In contrast, within the oval component every pixel has two contiguous blocks within its $3\times3$ neighbourhood, and so all are deemed to be ``regular''.
 
-Paths between keypoints within each component are then traced out labelled to produce the first set of edges (\cref{fig:walkthrough:traversal}).
+Paths between keypoints within each component are then traced out and labelled to produce the first set of edges (\cref{fig:walkthrough:traversal}).
 The inner component is traversed simply, starting at the left endpoint and ending at the right---the path is not split any further, and is classified as a \texttt{LINE}.
 As the outer component has no interest points, traversal begins at the leftmost point on its top row, before moving clockwise.
 Once the procedure returns to the start-point the IPAN algorithm is run on the traced path, which identifies a location of high curvature on the underside of the oval: creating a new vertex and two path segments.
@@ -1131,7 +1136,7 @@ Running this procedure on a dual graph-like transformation gives similar results
 	\vspace{0.5em}
 	\caption{
 		The dual graph of \emph{`$\Theta$'}, with path features coloured to match their parent component in \cref{fig:walkthrough:graph}.
-		Node labels here match \cref{fig:walkthrough}'s shorthand for features, where edge labels denote relative path angles.
+		Vertex labels here match \cref{fig:walkthrough}'s shorthand for features, where edge labels denote relative path angles.
 		Note that both `2' edges in the regular representation start and meet at the same point, and thus have two relative angles against each other in the glyph.
 		\label{fig:dual}
 	}
@@ -1240,7 +1245,7 @@ To test the effectiveness of these algorithms for character modelling and classi
 	Images (and graphs) were constructed from the online path data using a selection of pen-radii, for $r \in \{1,5,9\}$, to explore how different levels of connectivity would affect graph structure and matching accuracy.
 	Specifically, this online data decomposes paths into positions on a canvas with attached timestamps: images were reconstructed by applying Bresenham's line algorithm between these path points, generating a list of locations to place a circle of thickness $r$.
 	This method recreates glyph images at the scale at which they were drawn.
-	Additionally, I attempt to explore how variation of the path curvature threshold during modelling affects classifier performance, examining $\mathit{curve\_thres} \in \{1.2, 1.35. 1.5, 1.65\}$.
+	Additionally, I attempt to explore how variation of the path curvature threshold during modelling affects classifier performance, examining $\mathit{curve\_thres} \in \{1.2, 1.35, 1.5, 1.65\}$.
 	For this classifier graph edit distance is the chosen metric, setting a timeout of \SI{30}{\second} per graph comparison.
 	Due to the vast size of the dataset I restrict the database to the set of upper-case Latin alphabet characters, using a total of 2000 randomly selected glyphs split into \emph{test} and \emph{training} data.
 	As the database is already divided into a test and training set, I take subsets of each maintaining the existing proportion.
@@ -1249,7 +1254,7 @@ To test the effectiveness of these algorithms for character modelling and classi
 	
 	\item Finally, it is important to position this work in relation to existing graph models which have been applied to handwritten word recognition.
 	For this task, I apply the same classifier to a subset of the George Washington Letters dataset\footnote{\url{http://histograph.ch}} made available by \citeauthor{Graphs-Handwriting} \cite{Graphs-Handwriting}.
-	I use the same parameters on the classifier ($k=5$, \SI{30}{\second} timeout), also varying \texttt{curve\_thres} as in experiment 2.
+	I use the same parameters on the classifier ($k=5$, \SI{30}{\second} timeout), also varying $\mathit{curve\_thres}$ as in Experiment 2.
 	This experiment allows me to directly compare the modelling efficiency of my graph models combined with the defined GED against \citeauthor{Graphs-Handwriting}'s existing modelling techniques.
 	As these graphs model whole words, graph order is likely to become an issue, harming classifier performance---made aware of this, I consider a lower classifier performance ($\sim\SI{80}{\percent}$, roughly the result of \citeauthor{Graphs-Handwriting}) to be successful.
 \end{enumerate}
@@ -1386,7 +1391,7 @@ Similarly, each experiment was attempted at all levels of filtering defined in \
 	\vspace{0.5em}
 	\caption{
 		Heatmaps displaying graph (dis-)similarity between the DejaVu Sans and Alegreya typefaces.
-		Serif characters (such as those of Alegreya) modify many characters at the end of paths---ideally, core elements of the letter forms should remain identical.
+		Serifs (such as those of Alegreya) modify many characters at the end of paths---ideally, core elements of the letter forms should remain identical.
 		Criteria for analysis match those of \cref{fig:heat:sans}.
 		Aside from `o', `O' and `Q', neither the `Regular' nor `Dual' graphs reliably enable matching between two different typeface styles.
 		\label{fig:heat:vs}
@@ -1451,16 +1456,16 @@ Having established the induced variant of MCS as the most discriminative, \cref{
 Broadly, \cref{fig:heat:dual:mcs-r,fig:heat:dual:mcs-d} show an overall reduction in similarity across the entire space of comparisons---showing that the dual graph representation is successful in making glyph models more distinct from one another.
 Many of the unexpected isomorphisms \emph{have} been removed by this modification to the algorithm, yet not all; note that \{H, K\}, \{n, h\}, \{b, p\}, and \{q, d\} remain isomorphic, alongside many of the prior letters with ``identical'' upper- and lower-case forms.
 While it is unsurprising that a few such isomorphisms remain (we have not yet modelled the phenomena which actually differentiate them), revisiting \cref{fig:badisomorphism} sheds some light on the case of `H' and `K'.
-Note that in `K', the skeleton paths form then right junction start vertically leading to identical path dynamics between the two glyphs, which of course suggests further modifications which could be made to account for \emph{overall} path direction.
-I do not consider further such modification here.
+Note that in `K', the skeleton paths from the right junction start vertically leading to identical path dynamics between the two glyphs, which of course suggests further modifications which could be made to account for \emph{overall} path direction.
+I do not consider such further modifications here.
 
 \Cref{fig:heat:sans,fig:heat:vs} then demonstrate the observed similarity \emph{between} fonts of different classes, examining DejaVu Sans vs.\ Open Sans and Alegreya respectively.
 In the former case, while some portion of the expected isomorphisms were observed it is clear from the visual similarity of the fonts themselves that the model was unable to capture the core features that define many of the glyphs.
 Somewhat interestingly, changing to the `Dual' encoding from \cref{fig:heat:sans:mcs-r} to \cref{fig:heat:sans:mcs-d} \emph{removed} some of these observed isomorphisms, indicating different curvature along the traversed paths.
 Indeed, curvature may well be the root of many of the other `missing' isomorphisms, as path-splitting using the IPAN algorithm is likely to have some sensitivity to what humans might appreciate as minor variation.
 In the case of DejaVu Sans against Alegreya, while some clear glyph isomorphisms are preserved between fonts (\{o, O\}, and `Q'), the font graphs exhibit startling dissimilarity.
-A considerable factor here is the difference in graph order of these font classes; serif fonts display far more variation and ornamentation, particularly on what letter path endpoints.
-This naturally leads to more paths between these points, leading to a rather different structure overall.
+A considerable factor here is the difference in graph order of these font classes; serif fonts display far more variation and ornamentation, particularly on letter path endpoints.
+This naturally leads to more paths between these points, producing a rather different structure overall.
 Given the nature of how \texttt{NEIGHBOURHOOD} and \texttt{NORTH} relations are formed, the existence of serifs further complicates matching as these relations are more likely in practice to concern endpoints.
 
 While successful within a font, the overall results do not bode well---they indicate that the modelling techniques and/or the similarity measures are not fit for purpose when comparing writing in different styles or even regular variation within a single style.
@@ -1473,7 +1478,7 @@ Some clear trends are visible from this data: we can observe that accuracy due t
 
 Curiously, more distinctive character modelling approaches \emph{do not} lead to greater classifier performance.
 In most cases, excluding non-induced filtering and edge-count-increasing for $r=5$, the `regular` graph model outperforms its `dual` model competitor; while the prior results indicate that stricter matching and modelling should aid classification accuracy, the dual model might be overly sensitive to the angle variations and dynamics which are most likely to appear in handwritten text.
-In this sense, the dual models are \emph{overfitting} to glyphs extracted from fonts.
+In this sense, the dual models are \emph{overfit} to glyphs extracted from fonts.
 The increased matching performance for non-induced filtering on the dual models can be rather roughly justified---the matching procedure has more ``leeway'' to match these overfit glyph models against one another, as non-adjacent vertices may be mapped to one another and the lax sequence overlap rules allow many conflicting edge labels to be disregarded.
 This does not, however, cancel out the fact that induced filtering is unilaterally the best option.
 
@@ -1485,7 +1490,7 @@ Larger pen radii, while potentially enhancing the models of glyphs with unintend
 Interestingly, the contributed change to accuracy relies strongly upon the chosen model: accuracy decreases proportionally with $r$ in the dual encoding, yet consistently sees an increase in accuracy after $r=5$ in the regular model, although it is difficult to offer commentary on \emph{why} this behaviour is observed.
 %?? WHY?
 
-\Cref{tab:exp2-thres} explores the effect of varying \texttt{curve\_thres} upon accuracy, building upon the best seen classifier parameters (induced, $r=1$, regular).
+\Cref{tab:exp2-thres} explores the effect of varying $\mathit{curve\_thres}$ upon accuracy, building upon the best seen classifier parameters (induced, $r=1$, regular).
 A lower threshold value means that the algorithm is more likely to label path segments as curves rather than lines, whereas a high threshold will make curve detection less sensitive overall; extremal values in either direction will essentially remove the line-curve distinction.
 In the given examples, the statistics suggest that a more sensitive curve detector is correlated with higher matching performance (likely to some undiscovered lower bound).
 Indeed, this trend repeats throughout all tested parameter choices.
@@ -1496,16 +1501,16 @@ Natural variation in the handwritten samples after path splitting might leave ma
 %Why might we see these trends? Why are they not as good as expected?
 
 %?? Looked at variation in accuracy per class wrt graph order, size, degree, line/curve ratio---no correlation found.
-Within each combination of parameters, I examined whether the accuracy \emph{for each label} had any correlation with mean graph order, size, degree, or line-to-curve ratio.
+Within each choice of parameters, I examined whether the accuracy \emph{for each label} had any correlation with mean graph order, size, degree, or line-to-curve ratio.
 While it might be expected that these observed features could be a useful indicator of difficulty within a label class, plotting these features revealed no overly distinct correlations with labelling accuracy.
 To investigate whether \emph{overall} accuracy had any correlation with these statistics, I considered any parameter combinations with induced filtering upon the regular model.
-\Cref{fig:acc-vs-graphstat} shows the correlations observed between mean graph size and with accuracy---larger graph size (i.e.\ feature count) and fewer \texttt{LINE} features correlate with higher accuracy.
+\Cref{fig:acc-vs-graphstat} shows the correlations observed between mean graph size and accuracy---larger graph size (i.e.\ feature count) and fewer \texttt{LINE} features correlate with higher accuracy.
 None of the other statistics exhibited any correlation.
 
 Unfortunately, the more accurate parameter choices come at the cost of execution time.
 \Cref{tab:ex2-times} contains a guideline set of typical execution times estimated from the filesystem for this experiment, showing that these times grow for more stringent filtering levels, and typically decrease as $r$ increases.
 This presents a relatively clear accuracy/time trade-off, as the induced level of filtering in particular imposes stricter requirements on a solution.
-Overall, these did not appreciably vary according to the choice of \texttt{curve\_thres}, with the exception of the settings (induced, $r=9$, dual), where an increased threshold led to faster classification time.
+Overall, these did not appreciably vary according to the choice of $\mathit{curve\_thres}$, with the exception of the settings (induced, $r=9$, dual), where an increased threshold led to faster classification time.
 
 %?? Thoughts on this approach? Failure?
 While the best observed $\kappa$ indicates a ``fair'' degree of progress above the random baseline, these results are far outmatched by the current state-of-the-art in both graph modelling of glyphs and standard recognition approaches.
@@ -1536,7 +1541,7 @@ Induced & 1 & 38.46 & 0.347 \\
 \vspace{0.5em}
 \caption{
 	Classifier accuracy and Cohen's kappa ($\kappa$) for the `regular' model against the HWRT dataset when varying pen-thickness ($r$) and filtering class.
-	Here, I use the default $\mathtt{curve\_thres}=1.5$.
+	Here, I use the default $\mathit{curve\_thres}=1.5$.
 	A higher accuracy and $\kappa$ both imply better classifier performance.%, where $\kappa$ considers ground truth label counts.
 	\label{tab:exp2-reg}
 }
@@ -1575,7 +1580,7 @@ Induced & 1 & 38.46 & 0.347 \\
 	
 	\begin{tabular}{ccc}
 		\toprule
-		\texttt{curve\_thres} & Accuracy (\si{\percent}) & $\kappa$ \\
+		$\mathit{curve\_thres}$ & Accuracy (\si{\percent}) & $\kappa$ \\
 		\midrule
 		1.2 & 40.72 & 0.373 \\
 		1.35 & 38.46 & 0.347 \\
@@ -1586,9 +1591,9 @@ Induced & 1 & 38.46 & 0.347 \\
 	
 	\vspace{0.5em}
 	\caption{
-		Classifier accuracy and Cohen's kappa ($\kappa$) for the `regular' model against HWRT data as \texttt{curve\_thres} is varied, with induced filtering and $r=1$.
-		A lower \texttt{curve\_thres} means that edges are more likely to be labelled as curves, and this corresponds to better classification performance.
-		This trend is observed throughout all other examined parameter settings.
+		Classifier accuracy and Cohen's kappa ($\kappa$) for the `regular' model against HWRT data as $\mathit{curve\_thres}$ is varied, with induced filtering and $r=1$.
+		A lower $\mathit{curve\_thres}$ means that edges are more likely to be labelled as curves, and this corresponds to better classification performance.
+		This trend is observed throughout all other examined parameter choices.
 		\label{tab:exp2-thres}
 	}
 \end{table}
@@ -1646,13 +1651,13 @@ Induced & 1 & 38.46 & 0.347 \\
 %?? Repeated `0' classifications due to time-out.
 From \cref{tab:exp3}, we can see that the results on the Washington dataset are far from satisfactory, and have $\kappa$ scores so low that they are little different from random chance.
 %?? Compare graph sizes to \citeauthor{Graphs-Handwriting}
-A key factor in this lies in the graph statistics of \cref{tab:graphstats}: the regular model has a median graph order of 33, which is pushing close to the limit, keeping in mind that half of all graphs in this dataset will be \emph{larger} than this it quickly becomes clear that many of the individual GED computations timed out.
+A key factor in this lies in the graph statistics of \cref{tab:graphstats}: the regular model has a median graph order of 33, which is pushing close to the limits of $k\downarrow$, keeping in mind that half of all graphs in this dataset will be \emph{larger} than this it quickly becomes clear that many of the individual GED computations timed out.
 While the median graph order is lower than the most successful approaches of \citeauthor{Graphs-Handwriting}, many of these graphs likely exceed the capabilities of $k\downarrow$ within a \SI{30}{\second} time window.
 Noting that the classifier returns a default `0' label for unclassified graphs, the disturbingly high incidence of this classification confirms that time-outs during computation are the root cause of the problem.
 
 Ultimately, results on the actual effectiveness of this dataset are inconclusive for these reasons---mandating further investigation with a cheaper, approximate GED metric to establish the proposed models' true effectiveness.
 Furthermore, this issue may have silently influenced the results of Experiment 2, hinting that future reinvestigation of both these studies using the work of \citeauthor{GED-Approx} \cite{GED-Approx} may be worthwhile.
-Given the relatively small dataset size (and the low accuracy), it as not deemed worthwhile or meaningful to attempt to identify the affects of different \texttt{curve\_thres} on classification performance.
+Given the relatively small dataset size (and the low accuracy), it as not deemed worthwhile or meaningful to attempt to identify the affects of different $\mathit{curve\_thres}$ on classification performance.
 Considering run-times, the vastly larger median graph order of the Washington dataset (\cref{tab:graphstats}) ensured that runs of these tests took far longer than the prior experiments, coming in at around \SIrange{24}{36}{\hour} dependant on filtering level and the chosen representation.
 
 \begin{table}
@@ -1679,7 +1684,7 @@ Considering run-times, the vastly larger median graph order of the Washington da
 	\caption{
 		Classifier accuracy and Cohen's kappa ($\kappa$) against the Washington dataset when varying filtering class.
 		A higher accuracy and $\kappa$ both imply better classifier performance.
-		Here, I use the default $\mathtt{curve\_thres}=1.5$---due to the very large typical graph order, too few accurate classifications were made to reason about the effects of \texttt{curve\_thres}.
+		Here, I use the default $\mathit{curve\_thres}=1.5$---due to the very large typical graph order, too few accurate classifications were made to reason about the effects of $\mathit{curve\_thres}$.
 		\label{tab:exp3}
 	}
 \end{table}
@@ -1707,7 +1712,7 @@ These techniques typically operate by identifying locations of high variation wi
 
 \emph{Convolutional neural networks} (CNNs) have been a sizeable area of focus recently, with approaches such as \citeauthor{ConvNet} \cite{ConvNet} proving able to accurately learn image labellings from large datasets.
 These models operate by statistically learning \emph{kernels} from a corpus of training data to perform image convolution, transforming an image several times to eventually provide an output classification.
-Given that these kernels are relatively high-dimensional vectors of real values, these are not typically transformations which can be intuited easily.
+Since these kernels are relatively high-dimensional vectors of real values, these are not typically transformations which can be intuited easily.
 This reinforces the ``black-box'' nature of these models, and in combination with work on adversarial images \cite{AdversarialML} it is clear that the sensitivities and weaknesses of such models are extraordinarily difficult to estimate.
 While complex networks can require a large volume of training data and have a costly training phase, CNNs achieve very high accuracy above and beyond existing vector-space models while having good performance on modern commodity hardware.
 Primarily, this is due to the introduction of fast convolution operations on graphics processing units.
@@ -1723,7 +1728,7 @@ Within this framework, the approach I have introduced and evaluated is an offlin
 
 Currently, neural networks (both standard and convolutional) are a key model within offline recognition \cite{Handwriting-CNN-1,Handwriting-CNN-2}---able to tackle word recognition and spotting to high accuracy in different scripts and language datasets.
 Aside from this, the use of SIFT-like keypoints for the task of offline Arabic word recognition has been successfully explored within a bag-of-features Hidden Markov Model \cite{Arabic-SIFT}, achieving a lower complexity (and similar effectiveness to) competing techniques.
-This approach have been further applied to the task of word-spotting from the George Washington dataset \cite{Arabic-SIFT-Better}.
+This approach has been further applied to the task of word-spotting from the George Washington dataset \cite{Arabic-SIFT-Better}.
 
 %?? Handwriting analysis w/ kNN \cite{Graphs-Handwriting}. How does their approach differ from mine? (Path curvature characteristics vs positional data)
 Several existing approaches towards offline graph modelling of handwritten text are provided by \citeauthor{Graphs-Handwriting} \cite{Graphs-Handwriting}.
@@ -1765,7 +1770,7 @@ This is a double-edged sword to some extent; while the modifications brought by 
 
 %?? MCS/GED bad fit? i.e. p,q,b,d have small GED since all that moves is the north relation. At that point, are we really performing graph matching?
 Using only GED as the scoring metric may itself be inappropriate for preserving certain character features.
-Consider the relatively small GED between `p', `q', `b' and `d', where arguably the largest difference comes from the single orientation vertex and its \text{NORTH} edge to another keypoint.
+Consider the relatively small GED between `p', `q', `b' and `d', where arguably the largest difference comes from the single orientation vertex and its \texttt{NORTH} edge to another keypoint.
 A more useful distance metric on these models might score the loss or inclusion of certain features to heavily penalise orientation differences, but this leads us farther from standard graph matching algorithms towards domain-specific similarity scores.
 
 Existing ML and keypoint models are effective because they are designed to learn features of arbitrary high-dimensional data which are distinctive and discriminative in their own right.
@@ -1781,7 +1786,7 @@ I believe a significant redesign is necessary, though given the differences betw
 \subsection{Future work}
 %?? Future work? Approximate GED metrics? Investigation of path-based supplemental graphs?
 %?? Perhaps it could be effective, when used with approximate GED... \cite{GED-Approx}
-The results shown necessitate investigation of these models with an approximate GED metric (such as \citeauthor{GED-Approx} \cite{GED-Approx}) to cement this work's position against the literature.
+The results shown necessitate investigation of these models with an approximate GED metric (such as \citeauthor{GED-Approx} \cite{GED-Approx}) to cement this work's position within the literature.
 %?? Graph order of GW data inhibits matching effectiveness. Investigate effect of adapting McSplit algorithm for this purpose? (only induced matching, but this is the best so yeah)---unlikely to be much use, so GED
 In a similar vein, having seen that the induced MCS offers the greatest classifier performance it may be useful to consider a modification of the McSplit algorithm \cite{MCS-McSplit}---although this would almost certainly provide less benefit than simply approximating the GED.
 %?? Other approach with line/curve semantics
@@ -1789,6 +1794,8 @@ There is also some value in modifying the work of existing, successful graph mod
 %?? Investigate more interesting side-constraints in search -- such as temporal subgraph ismoporhism \cite{TSIP-Long} (Explain briefly, then discuss why it might be useful? (patterns, not exact matching))
 As alluded to above, for both this model and the proposed modification of the state-of-the-art an investigation of feature-aware custom scoring functions might be of use.
 This would allow us to penalise the omission of certain features, with the caveat that this would no longer be a standard graph matching problem.
+The work of \citeauthor{TSIP-Long} \cite{TSIP-Long} on the \emph{temporal subgraph isomorphism problem} focuses on matching general patterns of edge labels between graphs, rather than performing exact label matching.
+Rich side-constraints such as these could offer key insight on techniques to accurately match path angle dynamics in a less rigid fashion.
 
 %?? How might it handle fonts designed for OCR? font-sizes?
 
@@ -1796,11 +1803,11 @@ This would allow us to penalise the omission of certain features, with the cavea
 %?? Examine graph order---too big? Can we run SIP on it? How are the results?
 If greater performance can be achieved, it may well be worthwhile to consider other problem domains which rely upon path-based structures.
 One such domain would be the identification of common components and design patterns within \emph{circuit diagrams}.
-Since there are few ways to build components with known functionality (i.e. logic gates and amplifiers), it may be possible to locate such components and describe the blueprint at a higher level.
+Since there are few ways to build components with known functionality (i.e. logic gates and amplifiers), it may be possible to locate such components and describe the blueprint at a higher level using graph model and search techniques.
 The intricate structure of these diagrams would likely make MCS computation almost impossible, but if we assume that input images are relatively free of distortion then SIP algorithms become a natural fit for the problem.
 
 %?? More general techniques? Multiscale feature graphs? (lol)
-The use of approximate similarity measures may enable lower-level graph models for general images, such as using multi-scale keypoint features as vertices with a suitable means of defining edges.
+The use of approximate similarity measures may enable lower-level graph models for general images, such as using multi-scale keypoint features as vertices with a suitable method of defining edges.
 While this would lead to higher graph order due to the large volume of feature vectors which SIFT-like approaches can output, approximate measures should allow the use of larger input graphs---potentially allowing the use of graph models in more general computer vision tasks.
 The specifics of how to approach such a model are very much an open question, however.
 

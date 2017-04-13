@@ -2,6 +2,8 @@
 
 All scripts run on python 2.7.
 
+The core algorithms are in `makegraph.py`, `sip-mcs/solve_subgraph_isomorphism.cc` and `sip-mcs/search_subgraph_isomorphism.cc`.
+
 If you want to fully regenerate the datasets, you will need ImageMagick installed. You will also need to download a copy of the HWRT dataset -- link and instructions are located in resources/hwrt.
 This WILL take a sizeable amount of time! Only do this if you're absurdly paranoid.
 
@@ -23,7 +25,7 @@ cd sip-mcs
 make
 ```
 
-To run the experiments after this, from this folder run each of these, wait patiently until all the `search_subgraph_isomorphism` or `solve_subgraph_isomorphism` processes quit and stop spamming your terminal:
+To run the experiments after this, from this folder run each of these, then wait very patiently (read: a few days each) until all the `search_subgraph_isomorphism` or `solve_subgraph_isomorphism` processes quit and stop spamming your terminal:
 
 ```sh
 cd jobs/mcs
