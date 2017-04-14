@@ -57,15 +57,15 @@ def job_gen_mcs():
 
 	# create tasks
 	for font in fonts:
-		chars = glob.glob("{}{}\\*".format(graph_dir, font))
+		chars = glob.glob("{}{}/*".format(graph_dir, font))
 		for param, param_name in params:
 			addjobs(chars, font, param, param_name, tasks)
 			top_tasks.append("mkdir -p ../../{}{}-{}".format(mcs_res_dir, font, param_name))
 			top_tasks.append("mkdir -p ../../{}{}{}-{}".format(mcs_res_dir, dual_suffix, font, param_name))
 
 	for font1, font2 in font_comp:
-		chars = glob.glob("{}{}\\*".format(graph_dir, font1))
-		chars2 = glob.glob("{}{}\\*".format(graph_dir, font2))
+		chars = glob.glob("{}{}/*".format(graph_dir, font1))
+		chars2 = glob.glob("{}{}/*".format(graph_dir, font2))
 		for param, param_name in params:
 			addjobs(chars, font1, param, param_name, tasks, chars2, font2)
 			top_tasks.append("mkdir -p ../../{}{}{}-{}-{}".format(mcs_res_dir, dual_suffix, font1, font2, param_name))
@@ -75,6 +75,8 @@ def job_gen_mcs():
 	for i in range(0, num_cores):
 		taskdiv.append([])
 
+	print len(tasks)
+
 	for i, task in enumerate(tasks):
 		taskdiv[i%num_cores].append(task)
 
@@ -83,6 +85,7 @@ def job_gen_mcs():
 	for i in range(0, num_cores):
 		file = "job_{}.sh".format(i)
 		filep = "{}{}".format(mcs_job_folder, file)
+		print filep, len(taskdiv[i])
 		f = open(filep, "wb")
 		f.writelines(liney(per_file))
 		f.writelines(liney(taskdiv[i]))
