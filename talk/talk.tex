@@ -13,13 +13,23 @@
 \usepackage{amsmath}
 \usepackage{mathtools}
 \usepackage[labelfont=bf,textfont={it}]{caption}
+%\usepackage{subcaption}
 %\usepackage[noindentafter]{titlesec}
 
 \usepackage[maxnames=3,maxbibnames=99,mincrossrefs=5,style=trad-abbrv]{biblatex}
 \addbibresource{../paper/mprop.bib}
+% Make et al.s go all italic
+\usepackage{xpatch}
+\xpatchbibmacro{name:andothers}{%
+	\bibstring{andothers}%
+}{%
+	\bibstring[\emph]{andothers}%
+}{}{}
+\DeclareFieldFormat{addendum}{}
 
 \usepackage[binary-units]{siunitx}
 \sisetup{range-phrase=--, range-units=single}
+%\renewcommand{\deg}{\ensuremath{^{\circ}}\xspace}
 
 \usepackage{microtype}
 \usepackage{fontspec}
@@ -58,7 +68,7 @@
 \newcommand{\lesspreceq}[1]{\prescript{}{#1}{\preceq}\ }
 
 \title{Graph Models and Maximum Common Subgraph for Character Analysis}
-\date{\today}
+\date{\nth{18} April, 2017}
 \author{
 	Kyle A. Simpson (2029567s) \\
 	\tiny{\faGithub{} \url{https://github.com/FelixMcFelix} \hspace{0.5em} \faGlobe{} \url{https://mcfelix.me}}
@@ -398,8 +408,122 @@
 \section{State-of-the-art Generic Models}
 
 \begin{frame}{State-of-the-art Generic Models}
-	Eh.
+\begin{itemize}
+	\item Present work (such as \citeauthor{Plane-Graphs-From-Images} \cite{Plane-Graphs-From-Images} or \citeauthor{Submap-Iso-Images} \cite{Submap-Iso-Images}) focuses on building plane graphs for their algorithmic properties.
+	\begin{itemize}
+		\item They extract interest pixel locations then compute the \alert{Delaunay triangulation} \cite{Delaunay}, building a triangle mesh s.t.\ no point falls inside any triangle's circumcircle.
+	\end{itemize}
+	
+	\item \citeauthor{Plane-Graphs-From-Images} attempt to extend this with structural cues from image segmentation.
+	
+	\item These don't appear to capture any discriminative features: these works focus on matching elements \emph{within} an image, and \textbf{not between images}. Is this the case?
+\end{itemize}
 \end{frame}
+
+\begin{frame}{Putting \citeauthor{Plane-Graphs-From-Images} to the Test}
+\begin{columns}
+	\begin{column}{0.8\linewidth}
+		I reimplemented their work, with two experiments in mind using the \alert{$k\downarrow$} MCS algorithm \cite{Between-MCS-SIP}:
+		
+		\begin{enumerate}
+			\item Is the graph of a test image from the Berkeley Segmentation Dataset rotated $180^{\circ}$ isomorphic to itself? I.e. is this transformation isotropic?
+			
+			\item How similar are two adjacent frames from Sergio Leone's \emph{The Good, the Bad and the Ugly}?
+		\end{enumerate}
+	
+		For this, I augment graphs with positional data, applying euclidean distance filtering to help matching along.
+	%	In the first case, perfect segmentation information is known.
+	%	In the second, this must be done algorithmically.
+	\end{column}
+
+	\begin{column}{0.2\linewidth}
+		\begin{figure}
+			\centering
+			\begin{figure}
+				\includegraphics[width=\linewidth]{../paper/images/bsd-157055}
+				
+	%			\caption{BSD test image}
+	%			\label{fig:explor-bsd}
+	%		\end{figure}
+	%		~
+	%		\begin{figure}
+				\includegraphics[width=\linewidth]{../paper/images/gbu2}
+				
+	%			\caption{Film frame 1}
+	%			\label{fig:explor-ff1}
+	%		\end{figure}
+	%		~
+	%		\begin{figure}
+				\includegraphics[width=\textwidth]{../paper/images/gbu3}
+				
+	%			\caption{Film frame 2}
+	%			\label{fig:explor-ff2}
+			\caption{Three test images: BSD, GBU1 and GBU2.}
+			\end{figure}
+		\end{figure}
+	\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{The Results?}
+\begin{columns}
+	\begin{column}{0.4\linewidth}
+		\begin{table}[h]
+			\centering
+			\resizebox{0.7\linewidth}{!}{
+				\begin{tabular}{lSS}
+					\toprule
+					\multicolumn{1}{c}{Image} & \multicolumn{1}{c}{Order} & \multicolumn{1}{c}{Size} \\ \midrule
+					BSD & \num{245} & \num{707} \\
+					BSD-180 & \num{247} & \num{705} \\
+					GBU1 & \num{264} & \num{755} \\
+					GBU2 & \num{260} & \num{743} \\
+					\bottomrule
+				\end{tabular}
+			}
+			
+			\caption{
+				Graph stats for real-world images.
+			}
+		\end{table}
+		\begin{table}[h]
+			\centering
+			\resizebox{\linewidth}{!}{
+			\begin{tabular}{cccc}
+				\toprule
+				Experiment & Except-$k$ & $\text{Ord}(\mathit{MCS})$ & Overlap (\si{\percent}) \\ \midrule
+				1 & $[61, 111]$ & $[134, 184]$ & 54.6--72.2 \\
+				2 & $[38, 217]$ & $[47, 226]$ & 18.1--86.9 \\
+				\bottomrule
+			\end{tabular}
+			}
+			
+			\caption{
+				Observed similarity bounds between real-world images.
+				\label{tab:badgraphs}
+			}
+		\end{table}
+	\end{column}
+
+	\begin{column}{0.6\linewidth}
+		Findings (after 5 days running on fatanode-01):
+		\begin{itemize}
+			\item Negative results on both counts!
+			\begin{itemize}
+				\item \alert{No isomorphism in first experiment}, with lower similarity than expected.
+				\item Wide bound in second experiment---\alert{uniform graph structure hinders matching performance}.
+			\end{itemize}
+			\item Not isotropic---inherits sensitivities from interest pixel detector.
+			\item Depends heavily on perfect segmentation, to detriment of matching.
+		\end{itemize}
+	\end{column}
+\end{columns}
+\end{frame}
+
+\frame[standout]{
+	These are high-order, high-size graphs with uniform structure and no discriminative features.
+	This approach is \emph{not} appropriate for real-world matching!
+}
 
 \section{The Conclusion?}
 
