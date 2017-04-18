@@ -2,6 +2,7 @@ from config import *
 import os.path as path
 import os
 import numpy as np
+from plots import process_graph
 
 def graphstats(dir):
 	files = os.listdir(dir)
@@ -23,14 +24,16 @@ def graphstats(dir):
 def parsedir(printdir, dirs):
 	sizes = []
 	orders = []
+	degrees = []
 
 	for dir in dirs:
 		files = os.listdir(dir)
 		for file in files:
-			with open(dir+file) as f:
-				[order, sz] = f.readlines()[0].strip().split(" ")
-				sizes.append(int(sz))
-				orders.append(int(order))
+			[order, sz, deg, lns, crvs, rat] = process_graph(dir+file)
+			sizes.append(int(sz))
+			orders.append(int(order))
+			if(not np.isnan(deg)):
+				degrees.append(deg)
 
 	print "{0}:".format(printdir)
 
@@ -39,6 +42,7 @@ def parsedir(printdir, dirs):
 
 	statify("order", orders)
 	statify("size", sizes)
+	statify("degree", degrees)
 
 if __name__ == '__main__':
 	graphstats(graph_dir)

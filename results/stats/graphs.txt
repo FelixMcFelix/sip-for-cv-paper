@@ -1,132 +1,176 @@
 ../graphs/alegreya/:
 	order min: 2 max: 26 median: 11.0 mean: 12.0769230769
 	size min: 2 max: 25 median: 11.0 mean: 11.7692307692
+	degree min: 1.71428571429 max: 2.57142857143 median: 1.89736842105 mean: 1.95332560158
 ../graphs/dejavu-sans/:
 	order min: 2 max: 14 median: 6.0 mean: 6.09615384615
 	size min: 2 max: 13 median: 6.0 mean: 5.51923076923
+	degree min: 1.33333333333 max: 2.5 median: 1.75 mean: 1.80964590965
 ../graphs/dual/alegreya/:
 	order min: 2 max: 25 median: 11.0 mean: 11.7692307692
 	size min: 3 max: 37 median: 14.5 mean: 15.9038461538
+	degree min: 2.0 max: 4.0 median: 2.6 mean: 2.74360517429
 ../graphs/dual/dejavu-sans/:
 	order min: 2 max: 13 median: 6.0 mean: 5.51923076923
 	size min: 1 max: 14 median: 7.0 mean: 6.59615384615
+	degree min: 1.0 max: 4.0 median: 2.28571428571 mean: 2.35811731004
 ../graphs/dual/hwrt/r-1/:
 	order min: 0 max: 746 median: 7.0 mean: 8.72338148743
 	size min: 0 max: 1885 median: 10.0 mean: 14.1522204387
+	degree min: 0.0 max: 17.5533980583 median: 2.6 mean: 2.66910345076
 ../graphs/dual/hwrt/r-5/:
 	order min: 0 max: 377 median: 8.0 mean: 10.6078376876
 	size min: 0 max: 780 median: 10.0 mean: 18.2059477487
+	degree min: 0.0 max: 17.5945945946 median: 2.66666666667 mean: 2.82132667702
 ../graphs/dual/hwrt/r-9/:
 	order min: 0 max: 268 median: 8.0 mean: 13.6967759867
 	size min: 0 max: 1274 median: 12.0 mean: 26.5202890495
+	degree min: 0.0 max: 28.0 median: 2.75 mean: 3.04474717427
 ../graphs/dual/hwrt-1.2/r-1/:
 	order min: 2 max: 172 median: 6.0 mean: 7.34341048654
 	size min: 1 max: 398 median: 8.0 mean: 10.7935758148
+	degree min: 1.0 max: 5.84615384615 median: 2.33333333333 mean: 2.56011767446
 ../graphs/dual/hwrt-1.2/r-5/:
 	order min: 0 max: 55 median: 6.0 mean: 6.73264052905
 	size min: 0 max: 116 median: 7.0 mean: 8.59896079358
+	degree min: 1.0 max: 5.33333333333 median: 2.33333333333 mean: 2.35031978202
 ../graphs/dual/hwrt-1.2/r-9/:
 	order min: 2 max: 59 median: 7.0 mean: 6.94756731223
 	size min: 1 max: 126 median: 8.0 mean: 8.65564478035
+	degree min: 1.0 max: 5.42857142857 median: 2.33333333333 mean: 2.30817949887
 ../graphs/dual/hwrt-1.35/r-1/:
 	order min: 2 max: 172 median: 6.0 mean: 7.34341048654
 	size min: 1 max: 398 median: 8.0 mean: 10.7935758148
+	degree min: 1.0 max: 5.84615384615 median: 2.33333333333 mean: 2.56011767446
 ../graphs/dual/hwrt-1.35/r-5/:
 	order min: 0 max: 55 median: 6.0 mean: 6.73264052905
 	size min: 0 max: 116 median: 7.0 mean: 8.59896079358
+	degree min: 1.0 max: 5.33333333333 median: 2.33333333333 mean: 2.35031978202
 ../graphs/dual/hwrt-1.35/r-9/:
 	order min: 2 max: 59 median: 7.0 mean: 6.94756731223
 	size min: 1 max: 126 median: 8.0 mean: 8.65564478035
+	degree min: 1.0 max: 5.42857142857 median: 2.33333333333 mean: 2.30817949887
 ../graphs/dual/hwrt-1.5/r-1/:
 	order min: 2 max: 172 median: 6.0 mean: 7.34341048654
 	size min: 1 max: 398 median: 8.0 mean: 10.7935758148
+	degree min: 1.0 max: 5.84615384615 median: 2.33333333333 mean: 2.56011767446
 ../graphs/dual/hwrt-1.5/r-5/:
 	order min: 0 max: 55 median: 6.0 mean: 6.73264052905
 	size min: 0 max: 116 median: 7.0 mean: 8.59896079358
+	degree min: 1.0 max: 5.33333333333 median: 2.33333333333 mean: 2.35031978202
 ../graphs/dual/hwrt-1.5/r-9/:
 	order min: 2 max: 59 median: 7.0 mean: 6.94756731223
 	size min: 1 max: 126 median: 8.0 mean: 8.65564478035
+	degree min: 1.0 max: 5.42857142857 median: 2.33333333333 mean: 2.30817949887
 ../graphs/dual/hwrt-1.65/r-1/:
 	order min: 2 max: 172 median: 6.0 mean: 7.34341048654
 	size min: 1 max: 398 median: 8.0 mean: 10.7935758148
+	degree min: 1.0 max: 5.84615384615 median: 2.33333333333 mean: 2.56011767446
 ../graphs/dual/hwrt-1.65/r-5/:
 	order min: 0 max: 55 median: 6.0 mean: 6.73264052905
 	size min: 0 max: 116 median: 7.0 mean: 8.59896079358
+	degree min: 1.0 max: 5.33333333333 median: 2.33333333333 mean: 2.35031978202
 ../graphs/dual/hwrt-1.65/r-9/:
 	order min: 2 max: 59 median: 7.0 mean: 6.94756731223
 	size min: 1 max: 126 median: 8.0 mean: 8.65564478035
+	degree min: 1.0 max: 5.42857142857 median: 2.33333333333 mean: 2.30817949887
 ../graphs/dual/open-sans/:
 	order min: 2 max: 16 median: 6.0 mean: 6.01923076923
 	size min: 1 max: 18 median: 7.0 mean: 7.5
+	degree min: 1.0 max: 4.0 median: 2.33333333333 mean: 2.45182040182
 ../graphs/dual/washington-1.2/:
 	order min: 6 max: 93 median: 42.0 mean: 43.0546075085
 	size min: 6 max: 170 median: 75.0 mean: 76.5972696246
+	degree min: 2.0 max: 5.5652173913 median: 3.5 mean: 3.55980208806
 ../graphs/dual/washington-1.35/:
 	order min: 6 max: 93 median: 42.0 mean: 43.0546075085
 	size min: 6 max: 170 median: 75.0 mean: 76.5972696246
+	degree min: 2.0 max: 5.5652173913 median: 3.5 mean: 3.55980208806
 ../graphs/dual/washington-1.5/:
 	order min: 6 max: 93 median: 42.0 mean: 43.0546075085
 	size min: 6 max: 170 median: 75.0 mean: 76.5972696246
+	degree min: 2.0 max: 5.5652173913 median: 3.5 mean: 3.55980208806
 ../graphs/dual/washington-1.65/:
 	order min: 6 max: 93 median: 42.0 mean: 43.0546075085
 	size min: 6 max: 170 median: 75.0 mean: 76.5972696246
+	degree min: 2.0 max: 5.5652173913 median: 3.5 mean: 3.55980208806
 ../graphs/hwrt/r-1/:
 	order min: 0 max: 475 median: 7.0 mean: 8.21589085072
 	size min: 0 max: 746 median: 7.0 mean: 8.72338148743
+	degree min: 1.0 max: 4.68181818182 median: 2.0 mean: 1.97199900135
 ../graphs/hwrt/r-5/:
 	order min: 0 max: 262 median: 8.0 mean: 9.62117843246
 	size min: 0 max: 377 median: 8.0 mean: 10.6078376876
+	degree min: 1.0 max: 4.28571428571 median: 2.0 mean: 2.01990647345
 ../graphs/hwrt/r-9/:
 	order min: 0 max: 200 median: 9.0 mean: 11.9644246804
 	size min: 0 max: 268 median: 8.0 mean: 13.6967759867
+	degree min: 1.0 max: 5.2 median: 2.0 mean: 2.06995091837
 ../graphs/hwrt-1.2/r-1/:
 	order min: 2 max: 113 median: 7.0 mean: 7.24137931034
 	size min: 2 max: 172 median: 6.0 mean: 7.34341048654
+	degree min: 1.33333333333 max: 3.10144927536 median: 1.81818181818 mean: 1.92284443269
 ../graphs/hwrt-1.2/r-5/:
 	order min: 0 max: 40 median: 7.0 mean: 7.21492678318
 	size min: 0 max: 55 median: 6.0 mean: 6.73264052905
+	degree min: 1.33333333333 max: 2.75 median: 1.75 mean: 1.80836997117
 ../graphs/hwrt-1.2/r-9/:
 	order min: 2 max: 41 median: 7.0 mean: 7.4978743505
 	size min: 2 max: 59 median: 7.0 mean: 6.94756731223
+	degree min: 1.33333333333 max: 2.87804878049 median: 1.75 mean: 1.80008728806
 ../graphs/hwrt-1.35/r-1/:
 	order min: 2 max: 113 median: 7.0 mean: 7.24137931034
 	size min: 2 max: 172 median: 6.0 mean: 7.34341048654
+	degree min: 1.33333333333 max: 3.10144927536 median: 1.81818181818 mean: 1.92284443269
 ../graphs/hwrt-1.35/r-5/:
 	order min: 0 max: 40 median: 7.0 mean: 7.21492678318
 	size min: 0 max: 55 median: 6.0 mean: 6.73264052905
+	degree min: 1.33333333333 max: 2.75 median: 1.75 mean: 1.80836997117
 ../graphs/hwrt-1.35/r-9/:
 	order min: 2 max: 41 median: 7.0 mean: 7.4978743505
 	size min: 2 max: 59 median: 7.0 mean: 6.94756731223
+	degree min: 1.33333333333 max: 2.87804878049 median: 1.75 mean: 1.80008728806
 ../graphs/hwrt-1.5/r-1/:
 	order min: 2 max: 113 median: 7.0 mean: 7.24137931034
 	size min: 2 max: 172 median: 6.0 mean: 7.34341048654
+	degree min: 1.33333333333 max: 3.10144927536 median: 1.81818181818 mean: 1.92284443269
 ../graphs/hwrt-1.5/r-5/:
 	order min: 0 max: 40 median: 7.0 mean: 7.21492678318
 	size min: 0 max: 55 median: 6.0 mean: 6.73264052905
+	degree min: 1.33333333333 max: 2.75 median: 1.75 mean: 1.80836997117
 ../graphs/hwrt-1.5/r-9/:
 	order min: 2 max: 41 median: 7.0 mean: 7.4978743505
 	size min: 2 max: 59 median: 7.0 mean: 6.94756731223
+	degree min: 1.33333333333 max: 2.87804878049 median: 1.75 mean: 1.80008728806
 ../graphs/hwrt-1.65/r-1/:
 	order min: 2 max: 113 median: 7.0 mean: 7.24137931034
 	size min: 2 max: 172 median: 6.0 mean: 7.34341048654
+	degree min: 1.33333333333 max: 3.10144927536 median: 1.81818181818 mean: 1.92284443269
 ../graphs/hwrt-1.65/r-5/:
 	order min: 0 max: 40 median: 7.0 mean: 7.21492678318
 	size min: 0 max: 55 median: 6.0 mean: 6.73264052905
+	degree min: 1.33333333333 max: 2.75 median: 1.75 mean: 1.80836997117
 ../graphs/hwrt-1.65/r-9/:
 	order min: 2 max: 41 median: 7.0 mean: 7.4978743505
 	size min: 2 max: 59 median: 7.0 mean: 6.94756731223
+	degree min: 1.33333333333 max: 2.87804878049 median: 1.75 mean: 1.80008728806
 ../graphs/open-sans/:
 	order min: 2 max: 17 median: 6.0 mean: 6.57692307692
 	size min: 2 max: 16 median: 6.0 mean: 6.01923076923
+	degree min: 1.33333333333 max: 2.4 median: 1.77777777778 mean: 1.82279583162
 ../graphs/washington-1.2/:
 	order min: 7 max: 75 median: 33.0 mean: 34.4505119454
 	size min: 6 max: 93 median: 42.0 mean: 43.0546075085
+	degree min: 1.71428571429 max: 2.7619047619 median: 2.5 mean: 2.48984871707
 ../graphs/washington-1.35/:
 	order min: 7 max: 75 median: 33.0 mean: 34.4505119454
 	size min: 6 max: 93 median: 42.0 mean: 43.0546075085
+	degree min: 1.71428571429 max: 2.7619047619 median: 2.5 mean: 2.48984871707
 ../graphs/washington-1.5/:
 	order min: 7 max: 75 median: 33.0 mean: 34.4505119454
 	size min: 6 max: 93 median: 42.0 mean: 43.0546075085
+	degree min: 1.71428571429 max: 2.7619047619 median: 2.5 mean: 2.48984871707
 ../graphs/washington-1.65/:
 	order min: 7 max: 75 median: 33.0 mean: 34.4505119454
 	size min: 6 max: 93 median: 42.0 mean: 43.0546075085
+	degree min: 1.71428571429 max: 2.7619047619 median: 2.5 mean: 2.48984871707
