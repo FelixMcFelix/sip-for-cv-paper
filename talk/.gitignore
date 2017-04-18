@@ -1,4 +1,5 @@
 *.aux
+*.auxlock
 *.log
 *.bbl
 *.bcf
@@ -9,4 +10,4 @@
 *.nav
 *.snm
 *.toc
-talk.pdf
+*.pdf
