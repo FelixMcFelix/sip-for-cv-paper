@@ -195,7 +195,7 @@
 \end{frame}
 
 \begin{frame}{Core Questions}
-\begin{itemize}[<+- | alert@+>]
+\begin{itemize}[<alert@+>]
 	\item Are current graph models for generic image content suitable and/or effective?
 	\item How useful is exact similarity (i.e.\ Maximum Common Subgraph) on new algorithms for simpler domain models?
 	\begin{itemize}
@@ -418,7 +418,7 @@
 \section{State-of-the-art Generic Models}
 
 \begin{frame}{State-of-the-art Generic Models}
-\begin{itemize}[<+->]
+\begin{itemize}%[<+->]
 	\item Present work (such as \citeauthor{Plane-Graphs-From-Images} \cite{Plane-Graphs-From-Images} or \citeauthor{Submap-Iso-Images} \cite{Submap-Iso-Images}) focuses on building plane graphs for their algorithmic properties.
 	\begin{itemize}
 		\item They extract interest pixel locations then compute the \alert{Delaunay triangulation} \cite{Delaunay}, building a triangle mesh s.t.\ no point falls inside any triangle's circumcircle.
@@ -435,15 +435,14 @@
 	\begin{column}{0.8\linewidth}
 		I reimplemented their work, with two experiments in mind using the \alert{$k\downarrow$} MCS algorithm \cite{Between-MCS-SIP}:
 		
-		\begin{enumerate}[<+(1)->]
+		\begin{enumerate}[<alert@+(1)>]
 			\item Is the graph of a test image from the Berkeley Segmentation Dataset rotated $180^{\circ}$ isomorphic to itself? I.e. is this transformation isotropic?
 			
 			\item How similar are two adjacent frames from Sergio Leone's \emph{The Good, the Bad and the Ugly}?
 		\end{enumerate}
 	
-		\only<4->{
+%		\only<4->{
 		For this, I augment graphs with positional data, applying euclidean distance filtering to help matching along.
-		}
 	%	In the first case, perfect segmentation information is known.
 	%	In the second, this must be done algorithmically.
 	\end{column}
@@ -511,7 +510,7 @@
 
 	\begin{column}{0.6\linewidth}
 		Findings (after 5 days running on fatanode-01):
-		\begin{itemize}[<+(1)->]
+		\begin{itemize}[<+(1)-|alert@+(1)>]
 			\item Negative results on both counts!
 			\begin{itemize}
 				\item \alert{No isomorphism in first experiment}, with lower similarity than expected.
@@ -526,7 +525,7 @@
 
 \frame[standout]{
 	These are high-order, high-size graphs with uniform structure and no discriminative features.
-	This approach is \emph{not} appropriate for real-world matching!
+	\alert{This approach is \emph{not} appropriate for real-world matching!}
 }
 
 \section{Let's Narrow our Scope: Character Glyph Modelling}
@@ -538,6 +537,7 @@
 \begin{frame}{A Simple Algorithm: GlyphGraph}
 \begin{columns}
 	\begin{column}{0.4\linewidth}
+		\only<4>{\vspace{-1.5em}}
 		\begin{enumerate}[<alert@+>]
 			\item Input Image
 			\item Preprocessing (Thresholding, Skeletonisation)
@@ -601,7 +601,7 @@
 				\colorlet{pixel 3}{uofglavendar}
 				\colorlet{pixel 2}{uofgpumpkin}
 				\centering
-				\resizebox{\linewidth}{!}{
+				\resizebox{0.9\linewidth}{!}{
 					\begin{tikzpicture}
 					\foreach \line [count=\y] in \pixels {
 						\foreach \pix [count=\x] in \line {
@@ -623,7 +623,7 @@
 				\colorlet{pixel 3}{uofglavendar}
 				\colorlet{pixel 2}{uofgpumpkin}
 				\centering
-				\resizebox{\linewidth}{!}{
+				\resizebox{0.9\linewidth}{!}{
 					\begin{tikzpicture}
 					\foreach \line [count=\y] in \comps {
 						\foreach \pix [count=\x] in \line {
@@ -701,7 +701,7 @@
 					\caption{\alert{Keypoint}\label{fig:endp-reg-keyp:kp}}
 				\end{subfigure}
 				
-				\vspace{0.5em}
+				\vspace{-0.5em}
 				
 				\caption{
 					Interest Point Rules---chosen point types shown \alert{in orange}.
@@ -744,7 +744,7 @@
 				\colorlet{pixel 3}{uofglavendar}
 				\colorlet{pixel 2}{uofgpumpkin}
 				\centering
-				\resizebox{0.9\linewidth}{!}{
+				\resizebox{0.8\linewidth}{!}{
 					\large
 					\begin{tikzpicture}[scale=0.5]
 					
@@ -773,7 +773,7 @@
 				\colorlet{pixel 3}{uofglavendar}
 				\colorlet{pixel 2}{uofgpumpkin}
 				\centering
-				\resizebox{0.9\linewidth}{!}{
+				\resizebox{0.8\linewidth}{!}{
 					\large
 					\begin{tikzpicture}[scale=0.5]			
 					\node[draw, circle, color=black, fill=bg] (north) at (3,-1) {};
@@ -859,7 +859,7 @@
 		\pause
 		
 		\begin{alertblock}{How can we fix this?}
-			\begin{enumerate}[<+(1)-|alert@+(1)>]
+			\begin{enumerate}[<alert@+(1)>]
 				\item Convert feature edges into vertices.
 				\item Add an edge between feature vertices if they met at the same vertex beforehand.
 				\item Label edges with relative path angles!
@@ -948,30 +948,255 @@
 \section{How Do These Models Perform?}
 
 \begin{frame}{Quickly: Modifications to \alert{$k\downarrow$}}
-	A thing...
+	These graphs are \alert{attributed multigraphs}: vertices are labelled, and between any vertex pairs we now have a sorted sequence of edge labels.
+	I apply top-of-search filtering on vertex labels and loops, and augment propagation to ensure edges are mapped as follows:
+
+	\begin{description}[<alert@+>]
+		\item[Non-Induced] Non-induced problem, compatible sequences must share at least one label
+		\item[ECI] Edge-count-increasing. Non-induced problem, compatible sequences if there's an injective mapping from pattern sequence to target sequence
+		\item[Induced] Induced problem, compatible sequences if equal
+	\end{description}	
+	
 \end{frame}
 
 \begin{frame}{Experiments}
-	Experiment descriptions...
+	\begin{enumerate}[<alert@+>]
+		\item How do these models handle distinct styles with no variation?
+		We can plot dissimilarity dependent on style (Serif vs Sans, Sans vs Sans).
+		Is the dual model more distinct?
+		Success if GED is around median graph order.
+		
+		\item Do these models work for large databases of handwritten characters with high variation, the HWRT database?
+		Can varying pen radius, line/curve sensitivity enhance accuracy?
+		Success if ${}\sim\SI{90}{\percent}$ accuracy.
+		
+		\item What about small databases of handwritten words with little variation, the George Washington database?
+		Are the graphs too big, how do they measure up against state-of-the-art?
+		Success if ${}\sim\SI{80}{\percent}$ accuracy---\citeauthor{Graphs-Handwriting}'s result \cite{Graphs-Handwriting}.
+	\end{enumerate}
 \end{frame}
 
-\section{The Conclusion?}
+\begin{frame}{Font Analysis: MCS Variant Choice for DejaVu Sans}
+	\begin{figure}
+		\centering
+		\begin{subfigure}[b]{0.3\linewidth}
+			\includegraphics[width=\linewidth, height=0.9\linewidth]{../tables/dejavu-sans/induced-conf-nrm.pdf}
+			\caption{
+				Induced
+				\label{fig:heat:filter:induced}
+				%			goop monster quest?
+			}
+		\end{subfigure}
+		\begin{subfigure}[b]{0.3\linewidth}
+			\includegraphics[width=\linewidth, height=0.9\linewidth]{../tables/dejavu-sans/edgecountinc-conf-nrm.pdf}
+			\caption{
+				ECI
+				\label{fig:heat:filter:eci}
+				%			smile!
+			}
+		\end{subfigure}
+		\begin{subfigure}[b]{0.3\linewidth}
+			\includegraphics[width=\linewidth, height=0.9\linewidth]{../tables/dejavu-sans/edgecountdec-conf-nrm.pdf}
+			\caption{
+				%			yes!
+				Non-induced
+				\label{fig:heat:filter:non-ind}
+			}
+		\end{subfigure}
+	\end{figure}
+
+	Heatmaps showing $\text{Ord}(\textit{MCS})$, normalised.
+	These show the same trends as GED, which does hover around median size for all but serif fonts, but far clearer.
+	Brightness implies similarity, which we only want on the diagonal if possible!
+	
+	The \alert{induced variant is best on this problem}: it has the fewest unintended isomorphisms, and higher dissimilarity across the board.
+\end{frame}
+
+\begin{frame}{Font Analysis: Regular vs Dual for DejaVu Sans (Induced)}
+	\begin{figure}
+		\centering
+		\begin{subfigure}[b]{0.4\linewidth}
+			\includegraphics[width=\linewidth, height=0.9\linewidth]{../tables/dejavu-sans/induced-conf-nrm.pdf}
+			\caption{
+				Regular
+			}
+		\end{subfigure}
+		\begin{subfigure}[b]{0.4\linewidth}
+			\includegraphics[width=\linewidth, height=0.9\linewidth]{../tables/dual-dejavu-sans/induced-conf-nrm.pdf}
+			\caption{
+				Dual
+			}
+		\end{subfigure}
+	\end{figure}
+	
+	Same criteria---within this font, we see that the ``Dual'' representation removes further isomorphisms (but not all, implying a need for scale-encoding features).
+	For now, the ``Dual'' representation is successful; \alert{the graph models allowed us to intuit what was wrong, and correct for it.}
+\end{frame}
+
+\begin{frame}{Font Analysis: Open Sans vs DejaVu Sans (Induced)}
+	\begin{figure}
+		\centering
+		\begin{subfigure}[b]{0.4\linewidth}
+			\includegraphics[width=\linewidth, height=0.9\linewidth]{../tables/open-sans-dejavu-sans/induced-conf-nrm.pdf}
+			\caption{
+				Regular
+			}
+		\end{subfigure}
+		\begin{subfigure}[b]{0.4\linewidth}
+			\includegraphics[width=\linewidth, height=0.9\linewidth]{../tables/dual-open-sans-dejavu-sans/induced-conf-nrm.pdf}
+			\caption{
+				Dual
+			}
+		\end{subfigure}
+	\end{figure}
+
+	Some isomorphisms are preserved between fonts, but relatively few.
+	Examining the graphs shows different path splitting behaviour due to minor curvature variations---this does not bode well for \emph{matching between styles} of glyphs.
+	
+\end{frame}
+
+\begin{frame}{Font Analysis: Open Sans vs Alegreya (Induced)}
+	\begin{figure}
+		\centering
+		\begin{subfigure}[b]{0.4\linewidth}
+			\includegraphics[width=\linewidth, height=0.9\linewidth]{../tables/alegreya-dejavu-sans/induced-conf-nrm.pdf}
+			\caption{
+				Regular
+			}
+		\end{subfigure}
+		\begin{subfigure}[b]{0.4\linewidth}
+			\includegraphics[width=\linewidth, height=0.9\linewidth]{../tables/dual-alegreya-dejavu-sans/induced-conf-nrm.pdf}
+			\caption{
+				Dual
+			}
+		\end{subfigure}
+	\end{figure}
+	
+	Virtually no isomorphisms, or matching power.
+	Serifs on letters greatly inflate graph order and completely change neighbourhood and orientation dynamics.
+\end{frame}
 
 \begin{frame}[standout]
-Conclusion!
+	It's \alert{easy to achieve better performance for distinct tasks}, and we can see what might aid matching due to the intuitive models.
+	
+	However, we see \alert{poor performance matching between character styles}.
+	Is this indicative of classifier performance?
 \end{frame}
+
+\begin{frame}{Handwritten Data: $k$NN on HWRT}
+\begin{columns}
+	\begin{column}{0.3\textwidth}
+		\vspace{-2em}
+		\begin{table}
+			\centering
+			\resizebox{\linewidth}{!}{
+			\begin{tabular}{SSS}
+				\toprule
+				\multicolumn{1}{c}{$r$ (px)} & \multicolumn{1}{c}{Accuracy (\si{\percent})} & \multicolumn{1}{c}{$\kappa$} \\
+				\midrule
+				1 & 38.46 & 0.347 \\
+				5 & 29.86 & 0.256 \\
+				9 & 30.77 & 0.271 \\
+				\bottomrule
+			\end{tabular}
+			}
+			\vspace{-0.5em}
+			\caption{
+%				\scriptsize
+				Regular Model, Induced
+			}
+		\end{table}
+		
+		\vspace{-2.5em}
+		\begin{table}
+			\centering
+			\resizebox{\linewidth}{!}{
+			\begin{tabular}{SSS}
+				\toprule
+				\multicolumn{1}{c}{$r$ (px)} & \multicolumn{1}{c}{Accuracy (\si{\percent})} & \multicolumn{1}{c}{$\kappa$} \\
+				\midrule
+				1 & 34.84 & 0.312 \\
+				5 & 27.15 & 0.233 \\
+				9 & 26.24 & 0.222 \\
+				\bottomrule
+			\end{tabular}
+			}
+			\vspace{-0.5em}
+			\caption{
+%				\scriptsize
+				Dual Model, Induced
+			}
+		\end{table}
+		
+		\vspace{-2.5em}
+		\begin{table}
+			\centering
+			\resizebox{\linewidth}{!}{
+			\begin{tabular}{SSS}
+				\toprule
+				\multicolumn{1}{c}{$\mathit{curve\_thr}$} & \multicolumn{1}{c}{Accuracy (\si{\percent})} & \multicolumn{1}{c}{$\kappa$} \\
+				\midrule
+				1.2 & 40.72 & 0.373 \\
+				1.35 & 38.46 & 0.347 \\
+				1.5 & 38.46 & 0.347 \\
+				1.65 & 35.75 & 0.318 \\
+				\bottomrule
+			\end{tabular}
+			}
+			\vspace{-0.5em}
+			\caption{
+%				\scriptsize
+				Curve Sensitivity (Regular, Induced, $r=1$)
+			}
+		\end{table}
+	\end{column}
+	\begin{column}{0.7\textwidth}
+		\vspace{-3em}
+		\begin{itemize}
+			\item \emph{$k$-Nearest Neighbours} classifier, using GED
+			\item Median $\text{Ord}(\mathcal{G})$ is 6--7, $\text{Sz}(\mathcal{G})$ is 6--8
+			\item Lower pen-radius better, less connections in places but more representative
+			\item Induced better (again), but 6--8 times longer runtime
+			\item Regular better than dual, since it captures a very rigid notion of path dynamics
+			\item Higher curve sensitivity is better, due to earlier weaknesses
+			\item \alert{Peak performance of \SI{40.72}{\percent}}
+			\item Hasn't been before tested with graph models, so no reference point
+		\end{itemize}
+	\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Handwritten Data: $k$NN on George Washington}
+	\begin{itemize}
+		\item Regular median $\text{Ord}(\mathcal{G})$ is 33, $\text{Sz}(\mathcal{G})$ is 42
+		\item For Dual, median $\text{Ord}(\mathcal{G})$ is 42, $\text{Sz}(\mathcal{G})$ is 75
+		\item Long story short, these graphs are \alert{far too large to operate on} as they model whole words!
+		\item \citeauthor{Graphs-Handwriting} use approximate distance metrics, I'd hoped that these models would be more compact than existing approaches based on adaptive segmentation
+		\item \alert{Peak performance... \SI{11.67}{\percent} (ouch!)}
+		\item ...did this issue jeopardise the prior experiment?
+	\end{itemize}
+\end{frame}
+
+\section{Conclusions}
+
+%\begin{frame}[standout]
+%Conclusion!
+%\end{frame}
 
 \begin{frame}{Conclusion}
 	\begin{itemize}[<+- | alert@+>]
-		\item One thing
-		\item Two thing
-		\item Red Thing
-		\item Blue thing
+		\item Existing general image graph models are not appropriate or effective!
+		\item The demonstrated models are generally pretty poor but...
+		\item They are easily modifiable, and we can always have a good sense of what the machine is seeing and why!
+		\begin{itemize}
+			\item This makes it easier to \emph{overfit} to any dataset, however...
+		\end{itemize}
+		\item Future work? Apply others' techniques to HWRT dataset, examine approximate GED with my own, and consider custom cost metrics to make certain features ``more important''
 	\end{itemize}
 	
 	\pause
 	
-	\alert{\textbf{Any questions?}}
+	\only<6->{\alert{\textbf{Any questions?}}}
 \end{frame}
 
 \appendix
