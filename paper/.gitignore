@@ -6,4 +6,5 @@
 *.out
 *.synctex.gz
 *.run.xml
+*.auxlock
 paper.pdf

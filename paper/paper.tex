@@ -23,7 +23,7 @@
 
 \usepackage[labelfont=bf,textfont={bf,it}]{caption}
 \usepackage{subcaption}
-\captionsetup[figure]{justification=centering}
+%\captionsetup[figure]{justification=centering}
 \captionsetup[subfigure]{justification=centering}
 \usepackage{cleveref}
 \newcommand{\crefrangeconjunction}{--}
@@ -32,6 +32,7 @@
 \usepackage[mode=buildmissing]{standalone}
 \usepackage{booktabs}
 \usepackage{microtype}
+%\usepackage[floats]{savetrees}
 
 \usepackage[maxnames=3,maxbibnames=99,mincrossrefs=5,style=trad-abbrv]{biblatex}
 \addbibresource{mprop.bib}
@@ -1121,11 +1122,13 @@ Running this procedure on a dual graph-like transformation gives similar results
 	\node (n5) at (6.8,0) {3};
 	\end{scope}
 	
+	\draw[-, ultra thick] (n1) to [bend right=25] node [near end, fill=white] {3} (n2);
+	\draw[-, ultra thick] (n1) to [bend left=25] node [near start, fill=white] {4} (n2);
+	
 	\draw[-, ultra thick] (n0) to node [midway, fill=white] {8} (n1);
 	\draw[-, ultra thick] (n0) to node [midway, fill=white] {8} (n2);
-	\draw[-, ultra thick] (n0) to node [near end, fill=white] {0} (n3);
+	\draw[-, ultra thick] (n0) to node [midway, fill=white] {0} (n3);
 	
-	\draw[-, ultra thick] (n1) to node [near end, fill=white] {3,4} (n2);
 	\draw[-, ultra thick] (n1) to node [midway, fill=white] {8} (n3);
 	
 	\draw[-, ultra thick] (n2) to node [midway, fill=white] {8} (n3);
@@ -1528,6 +1531,20 @@ Overall, these did not appreciably vary according to the choice of $\mathit{curv
 While the best observed $\kappa$ indicates a ``fair'' degree of progress above the random baseline, these results are far outmatched by the current state-of-the-art in both graph modelling of glyphs and standard recognition approaches.
 Furthermore, the costly matching time imposed by the use of exact MCS makes the combined use of this classifier and these models very undesirable in practice, even though the graphs are typically of a suitable order.
 In these regards, this experiment is deemed a failure.
+However, this work does not disentangle the effects of the dual representation itself from the effect of the allocated angle labels---this must be explored in future work.
+
+%\if@st@tight@floats
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.85}
+\renewcommand{\dbltopfraction}{0.85}
+\renewcommand{\dblfloatpagefraction}{.85}
+\setcounter{topnumber}{25}
+\setcounter{bottomnumber}{25}
+\setcounter{totalnumber}{25}
+\setcounter{dbltopnumber}{25}
+%\fi
 
 \begin{table}
 \centering
@@ -1602,6 +1619,7 @@ Induced & 1 & 38.46 & 0.347 \\
 	\end{tabular}
 	
 	\vspace{0.5em}
+%	\vspace{0.25em}
 	\caption{
 		Classifier accuracy and Cohen's kappa ($\kappa$) for the `regular' model against HWRT data as $\mathit{curve\_thres}$ is varied, with induced filtering and $r=1$.
 		A lower $\mathit{curve\_thres}$ means that edges are more likely to be labelled as curves, and this corresponds to better classification performance.
@@ -1613,6 +1631,7 @@ Induced & 1 & 38.46 & 0.347 \\
 \begin{table}
 
 \centering
+\resizebox{0.9\linewidth}{!}{
 \begin{tabular}{llSSS}
 	\toprule
 	\multicolumn{1}{c}{Filtering} & \multicolumn{1}{c}{Model} & \multicolumn{1}{c}{$t_{r=1}$ (\si{\hour})} & \multicolumn{1}{c}{$t_{r=5}$ (\si{\hour})} & \multicolumn{1}{c}{$t_{r=9}$ (\si{\hour})} \\
@@ -1629,12 +1648,15 @@ Induced & 1 & 38.46 & 0.347 \\
 	
 	\bottomrule
 \end{tabular}
+}
 	
 \vspace{0.5em}
+%\vspace{0.25em}
 \caption{
-	Rough timing statistics for Experiment 2.
+	General timing statistics for Experiment 2, per model and variant, measured in hours.
 	\label{tab:ex2-times}
 }
+
 \end{table}
 
 \begin{figure}
@@ -1650,9 +1672,10 @@ Induced & 1 & 38.46 & 0.347 \\
 %		\caption{Mean Line Feature Count}
 	\end{subfigure}
 	
-	\vspace{0.5em}
+%	\vspace{0.5em}
+	\vspace{0.25em}
 	\caption{
-		Plots of mean graph size and mean counts of \texttt{LINE} edges against overall accuracy, for all parameter combinations with induced filtering and the regular model.
+		Plots of mean graph size and count of \texttt{LINE} edges against overall accuracy, for settings with induced filtering on the regular model.
 		In these cases, larger graph size (i.e.\ feature count) and fewer \texttt{LINE} features correlate with higher accuracy.
 		\label{fig:acc-vs-graphstat}
 	}
@@ -1809,6 +1832,7 @@ As alluded to above, for both this model and the proposed modification of the st
 This would allow us to penalise the omission of certain features, with the caveat that this would no longer be a standard graph matching problem.
 The work of \citeauthor{TSIP-Long} \cite{TSIP-Long} on the \emph{temporal subgraph isomorphism problem} focuses on matching general patterns of edge labels between graphs, rather than performing exact label matching.
 Rich side-constraints such as these could offer key insight on techniques to accurately match path angle dynamics in a less rigid fashion.
+These could also be combined with the temporal data found within the HWRT online dataset itself.
 
 %?? How might it handle fonts designed for OCR? font-sizes?
 
